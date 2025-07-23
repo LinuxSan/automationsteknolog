@@ -1,38 +1,24 @@
-## 🚀 Installation af Node-RED med Docker Compose (macOS)
+## 🍏 Installation af Node-RED med Docker Compose (macOS)
 
-Denne guide hjælper dig med at installere **Node-RED** på en Mac ved hjælp af **Docker Desktop** og **Docker Compose**. Det er en nem og vedligeholdelsesvenlig metode til at afvikle Node-RED lokalt til IoT- og automationsprojekter.
+Denne guide hjælper dig med at installere **Node-RED** på en Mac ved hjælp af **Docker Compose**. Node-RED er et flow-baseret udviklingsværktøj, særligt anvendt i IoT- og automationsprojekter.
 
----
-
-### 🍏 Trin 1: Installer Docker Desktop på macOS
-
-1. Gå til [https://www.docker.com/products/docker-desktop](https://www.docker.com/products/docker-desktop)
-2. Vælg "Download for Mac (Apple chip eller Intel chip)"
-3. Åbn den downloadede `.dmg`-fil og træk Docker-ikonet over i `Applications`
-4. Start Docker Desktop (kan tage lidt tid første gang)
-5. Bekræft at Docker kører ved at åbne Terminal og skrive:
-
-   ```bash
-   docker --version
-   docker compose version
-   ```
+> ⚠️ **Forudsætning:** Docker Desktop og Docker Compose skal være installeret og fungerende på din Mac, før du går i gang.
 
 ---
 
-### 📁 Trin 2: Opret projektmappe til Node-RED
+### 🟡 Trin 1: Opret projektmappe
 
 Åbn Terminal og kør:
 
 ```bash
-mkdir ~/node-red
-cd ~/node-red
+mkdir -p ~/node-red && cd ~/node-red
 ```
 
 ---
 
-### 📝 Trin 3: Opret `docker-compose.yml`
+### 🔵 Trin 2: Opret `docker-compose.yml`
 
-Brug `nano`, `vim` eller en teksteditor som VS Code:
+Brug din foretrukne teksteditor (fx `nano` eller Visual Studio Code):
 
 ```bash
 nano docker-compose.yml
@@ -53,23 +39,21 @@ services:
     restart: unless-stopped
 ```
 
-Gem og luk (Ctrl + O, Enter, Ctrl + X).
+Gem og luk filen (Ctrl + O, Enter, Ctrl + X).
 
 ---
 
-### ▶️ Trin 4: Start Node-RED med Docker Compose
-
-I Terminal, mens du er i mappen `~/node-red`, skriv:
+### 🟣 Trin 3: Start Node-RED med Docker Compose
 
 ```bash
 docker compose up -d
 ```
 
-Docker vil hente Node-RED billedet og starte containeren.
+Docker henter Node-RED-image og starter containeren i baggrunden.
 
 ---
 
-### 🌐 Trin 5: Åbn Node-RED i din browser
+### 🔶 Trin 4: Åbn Node-RED i browser
 
 Gå til:
 
@@ -77,37 +61,39 @@ Gå til:
 http://localhost:1880
 ```
 
-Du burde nu se brugerfladen til Node-RED.
+Du burde nu se Node-REDs grafiske floweditor.
 
 ---
 
-### 🔄 Trin 6: Stop og genstart Node-RED
+### 🧹 Trin 5: Administrér din Node-RED container
 
-* Stop Node-RED:
+* Stop:
 
-  ```bash
-  docker compose stop
-  ```
+```bash
+docker compose stop
+```
+
 * Start igen:
 
-  ```bash
-  docker compose start
-  ```
+```bash
+docker compose start
+```
+
 * Fjern container:
 
-  ```bash
-  docker compose down
-  ```
+```bash
+docker compose down
+```
 
 ---
 
-### 💡 Ekstra tips
+### 🛠️ Ekstra tips
 
-* Alle data gemmes i `./data` – det kan du tage backup af.
-* Ønsker du at tilføje fx Mosquitto eller InfluxDB, kan du udvide `docker-compose.yml`.
+* Data gemmes i `./data`-mappen – den kan du tage backup af.
+* Du kan tilføje flere services (fx Mosquitto eller PostgreSQL) i samme `docker-compose.yml`
 
 ---
 
-### 🎯 Nu er du klar!
+### 🎯 Klar til brug!
 
-Node-RED kører nu på din Mac via Docker Compose. Du er klar til at opbygge flows, forbinde sensorer og udvikle komplette IoT-løsninger direkte fra din browser. ✅
+Du har nu Node-RED kørende lokalt på din Mac via Docker Compose og kan begynde at bygge IoT-løsninger og automatisering direkte i din browser. ✅
