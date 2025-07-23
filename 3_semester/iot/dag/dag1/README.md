@@ -1,84 +1,101 @@
-# 📄 Modul 01 – Introduktion til Node‑RED og flow‑struktur
-
-## 🎯 Formål
-
-Dette første modul giver dig et solidt fundament i Node‑RED som visuelt programmerings‑ og dataintegrationsværktøj til industrielle opgaver. Du lærer centrale begreber som **node**, **flow**, `msg.payload`, runtime og *deploy*‑cyklussen og får hænderne på de vigtigste standardnoder.
-
----
-
-## 📁 Modulstruktur
-
-```
-01-intro/
-├── 01-installation-node-red/
-│   ├── README.md   # installationsguide (lokal & Docker)
-│   └── install_checklist.md
-├── 02-foerste-flow/
-│   ├── README.md   # inject → debug (”Hello flow”)
-│   └── first_flow.json
-├── 03-node-red-begreber/
-│   ├── README.md   # msg, payload, topic, flow, context
-│   └── cheat_sheet.pdf
-└── 04-standardnoder/
-    ├── 01-inject.md    # timestamp, string, repeat
-    ├── 02-debug.md     # debug‑pane & levels
-    ├── 03-function.md  # custom JS, msg‑objekt
-    ├── 04-change.md    # set, move, delete
-    ├── 05-switch.md    # routing på payload/topic
-    ├── 06-delay.md     # rate‑limit & queue
-    └── 07-template.md  # HTML & mustache‐output
-```
-
-> *Hver undermappe fungerer som mini‑workshop med kort teori, trinvise øvelser og færdige flow‑filer.*
-
----
-
-## ⏲️  Tidsplan (3 × 45 min)
-
-| Klokkeslæt      | Aktivitet          | Indhold                                                             |
-| --------------- | ------------------ | ------------------------------------------------------------------- |
-| **0:00 – 0:10** | Intro & målsætning | Kursusramme, repo‑struktur, forventninger                           |
-| **0:10 – 0:35** | Teori ①            | Node‑RED‑arkitektur, noder, wires, deploy → live‑demo               |
-| **0:35 – 1:00** | Teori ②            | `msg.payload`, topic, flow‑context, standardnoder (inject, debug)   |
-| **1:00 – 2:30** | Hands‑on A         | *01-installation-node-red* → installér, kør editor, tag screenshot  |
-| **2:30 – 2:50** | Hands‑on B         | *02-foerste-flow* → importér `first_flow.json`, udvid med ui\_gauge |
-| **2:50 – 3:00** | Opsamling          | Git commit & push, Q\&A, preview af Dag 02 (MQTT)                   |
-
----
-
-## ✅ Læringsudbytte
-
-Efter Modul 01 kan du
-
-* installere og starte Node‑RED lokalt eller med Docker,
-* forklare forskellen på node, wire og flow,
-* bygge og deploye et simpelt *inject → debug*‑flow,
-* bruge **ui\_gauge** og **ui\_chart** til at visualisere en dummy‑værdi,
-* gemme og importere flows (.json) og committe til Git.
-
----
-
-## 🔧 Forudsætninger
-
-* Laptop med **Docker Desktop** eller **Node.js ≥ 18** installeret.
-* Git‑klient og GitHub‑konto (SSH‑nøgle sat op).
-* Browser (Chrome/Edge/Firefox) til Node‑RED‑editoren.
-
----
-
-## 🏋️‍♀️ Opgaver & afleveringer
-
-1. **Installation Check** – udfyld `install_checklist.md` og commit.
-2. **Hello Flow** – importer `first_flow.json`, udvid med *ui\_gauge*, tag screenshot `hello_dashboard.png` og commit.
-3. **Forklar begreber** – i `03-node-red-begreber/README.md` beskriv med maks 100 ord forskellen mellem `msg.payload` og `msg.topic`.
-4. *(Stretch)* Tilføj en **delay‑node** der publicerer tidspunkter hvert 2 s og vis graf i *ui\_chart*.
-
-Aflevering sker som pull‑request til branch `day01_<navn>`.
-
----
-
-## 💡 Videre arbejde
-
-Når du er færdig med alle mini‑workshops i `01-intro/`, fortsæt til `dag02_mqtt_telemetri/README.md`, hvor du kobler Node‑RED op mod en MQTT‑broker og ESP32‑sensoren.
-
-Happy hacking! 🚀
+IoT-Bootcamp-2025/
+├── README.md                          # Hovedoversigt over hele forløbet
+├── KURSUS-OVERSIGT.md                 # Detaljeret kursusplan og læringsmål
+├── INSTALLATION.md                    # Setup guide til software og hardware
+├── .github/
+│   └── copilot-instructions.md        # AI assistant vejledning
+│
+├── undervisning/                      # Daglig undervisning
+│   ├── dag1-node-red-intro/
+│   │   ├── README.md                  # Teori og koncepter
+│   │   ├── opgaver.md                 # Praktiske øvelser
+│   │   ├── kode/                      # Eksempel kode og templates
+│   │   └── ressourcer/                # Billeder, flows, slides
+│   │
+│   ├── dag2-iot-monitoring/
+│   │   ├── 01-mqtt-foundation/
+│   │   │   ├── README.md              # MQTT teori
+│   │   │   ├── opgaver.md             # MQTT øvelser
+│   │   │   └── kode/
+│   │   ├── 02-heartbeat-plausibility/
+│   │   └── 03-alarm-dashboard/
+│   │
+│   ├── dag3-rest-kommandoer/
+│   ├── dag4-home-assistant/
+│   ├── dag5-coap-modbus/
+│   ├── dag6-mini-projekt/
+│   │   ├── del1-planlaegning/
+│   │   └── del2-implementation/
+│   ├── dag7-sikkerhed/
+│   ├── dag8-grafana-testing/
+│   └── dag9-praesentation/
+│
+├── hardware/                          # Hardware dokumentation
+│   ├── keystudio-smart-home-kit/
+│   │   ├── README.md                  # Kit oversigt og komponenter
+│   │   ├── pin-diagrams/              # Tilslutningsdiagrammer
+│   │   ├── sensor-guides/             # Individuelle sensor guides
+│   │   └── troubleshooting.md         # Almindelige hardware problemer
+│   │
+│   ├── esp32-setup/
+│   │   ├── micropython-installation.md
+│   │   ├── arduino-ide-setup.md
+│   │   └── driver-installation.md
+│   │
+│   └── tools-and-software/
+│       ├── node-red-installation.md
+│       ├── mqtt-broker-setup.md
+│       └── grafana-setup.md
+│
+├── student-projekter/                 # Elevernes egne projekter
+│   ├── gruppe1-smart-greenhouse/
+│   ├── gruppe2-security-system/
+│   ├── gruppe3-energy-monitor/
+│   └── template/                      # Skabelon til nye projekter
+│       ├── README.md
+│       ├── hardware-liste.md
+│       └── projekt-struktur/
+│
+├── ressourcer/                        # Fælles ressourcer
+│   ├── code-templates/                # Genbrugelige kode skabeloner
+│   │   ├── esp32-micropython/
+│   │   ├── node-red-flows/
+│   │   └── rest-api-examples/
+│   │
+│   ├── troubleshooting/               # Fejlfinding guides
+│   │   ├── common-errors.md
+│   │   ├── wifi-connectivity.md
+│   │   ├── mqtt-debugging.md
+│   │   └── sensor-calibration.md
+│   │
+│   ├── references/                    # Reference materialer
+│   │   ├── mqtt-cheat-sheet.md
+│   │   ├── micropython-quick-ref.md
+│   │   └── node-red-cookbook.md
+│   │
+│   └── eksamens-eksempler/            # Tidligere eksamensprojekter
+│       ├── 2024-bedste-projekter/
+│       └── evaluerings-kriterier.md
+│
+├── tools/                             # Udviklingsværktøjer
+│   ├── scripts/                       # Hjælpe scripts
+│   │   ├── mqtt-test-client.py
+│   │   ├── sensor-simulator.py
+│   │   └── system-health-check.sh
+│   │
+│   ├── node-red-flows/                # Færdige flows til import
+│   │   ├── basic-dashboard.json
+│   │   ├── alarm-system.json
+│   │   └── multi-sensor-monitor.json
+│   │
+│   └── docker-compose/                # Container setups
+│       ├── mqtt-broker/
+│       ├── node-red/
+│       └── grafana/
+│
+└── dokumentation/                     # Lærer og kursus dokumentation
+    ├── curriculum-mapping.md          # Koblet til nationale mål
+    ├── assessment-rubrics.md          # Bedømmelseskriterier
+    ├── lesson-plans/                  # Detaljerede lektionsplaner
+    ├── teacher-notes/                 # Lærer notater og tips
+    └── industry-connections.md        # Forbindelse til arbejdsmarkedet
