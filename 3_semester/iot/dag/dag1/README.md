@@ -1,3 +1,4 @@
+```markdown
 IoT-Bootcamp-2025/
 ├── README.md                          # Hovedoversigt over hele forløbet
 ├── KURSUS-OVERSIGT.md                 # Detaljeret kursusplan og læringsmål
@@ -99,3 +100,4 @@ IoT-Bootcamp-2025/
     ├── lesson-plans/                  # Detaljerede lektionsplaner
     ├── teacher-notes/                 # Lærer notater og tips
     └── industry-connections.md        # Forbindelse til arbejdsmarkedet
+``
