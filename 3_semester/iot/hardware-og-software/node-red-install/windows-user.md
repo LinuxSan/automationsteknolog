@@ -2,19 +2,19 @@
 
 Denne guide hjælper dig med at installere **Node-RED** på en Windows-maskine ved hjælp af **Docker Compose**. Node-RED er et flow-baseret udviklingsværktøj, særligt anvendt i IoT og automationsprojekter.
 
+> ⚠️ **Forudsætning:** Docker Desktop og Docker Compose skal være installeret og fungerende på din maskine, før du går i gang.
+
 ---
 
-### 🟢 Trin 1: Installer Docker Desktop
+### 🟢 Trin 1: Kontroller Docker-installationen
 
-1. Gå til [https://www.docker.com/products/docker-desktop](https://www.docker.com/products/docker-desktop)
-2. Download **Docker Desktop til Windows**
-3. Kør installationsfilen (kræver admin-rettigheder)
-4. Genstart computeren, hvis det kræves
-5. Tjek at Docker kører ved at åbne PowerShell og skrive:
+1. Åbn PowerShell eller CMD og tjek at Docker og Compose virker:
 
    ```bash
    docker --version
+   docker compose version
    ```
+2. Hvis du får versionsnumre retur, er du klar til næste trin.
 
 ---
 
@@ -98,4 +98,3 @@ services:
 ### 🎯 Klar til brug!
 
 Du har nu en fuldt fungerende Node-RED-installation via Docker Compose på Windows. Nu kan du begynde at bygge flows, integrere IoT-enheder og udvikle automationsløsninger direkte fra din browser. ✅
-
