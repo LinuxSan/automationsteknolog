@@ -1,4 +1,3 @@
-
 # Kursusbeskrivelse  
 ## IoT-Bootcamp – Node-RED, ESP32 & Industriel Integration  
 **Målgruppe:** Automationsteknologer og produktionsteknologer  
@@ -19,7 +18,7 @@ Efter kurset vil deltageren kunne:
 - Arbejde med REST/HTTP-endpoints og webhooks
 - Integrere Home Assistant og bygge automations
 - Gateway’e Modbus-data til MQTT
-- Udrulle OTA-opdateringer til ESP32
+- Forstå centrale principper for OTA-opdateringer (men ikke implementere det)
 - Segmentere og beskytte IoT-trafik (VLAN, certifikater, creds)
 - Visualisere og alarmere live-data (Grafana, dashboards)
 - Dokumentere og SAT/FAT-teste IoT-løsninger
@@ -36,6 +35,7 @@ Efter kurset vil deltageren kunne:
 - **Dag 6:** Modbus-integration (Modbus TCP, gateway til MQTT)
 - **Dag 7:** Netværk og sikkerhed (VLAN, TLS, firewall, security checklist)
 - **Dag 8:** Mini-projekt (prototype, dokumentation, præsentation)
+- **Intro til OTA:** Der gives en kort introduktion til OTA-opdateringsprincipper, men ikke egentlig implementation
 
 ---
 
@@ -53,7 +53,7 @@ Undervisningen er didaktisk opbygget med klar progression og med fokus på at ko
 ---
 
 ### Evaluering
-Kurset afsluttes med aflevering af et mini-projekt, hvor der dokumenteres en fungerende IoT-prototype fra sensor til dashboard, inkl. sikkerhed, opdatering og test. Løsningen præsenteres i en kort video. Der gives peer feedback og individuel refleksion.
+Kurset afsluttes med aflevering af et mini-projekt, hvor der dokumenteres en fungerende IoT-prototype fra sensor til dashboard, inkl. sikkerhed, test og dokumentation. Løsningen præsenteres i en kort video. Der gives peer feedback og individuel refleksion.
 
 ---
 
