@@ -8,9 +8,11 @@ Modbus TCP bruges bredt i industrien som grænseflade mellem intelligente enhede
 
 | Afsnit | Titel         | Indhold                                                                                                 |
 | ------ | ------------- | ------------------------------------------------------------------------------------------------------- |
-| 01     | Grundbegreber | Adresseområder, registertyper, funktionskoder, forskellen mellem TCP og RTU                             |
-| 02     | Server/Client | Praktisk kommunikation mellem Modbus TCP-klient og -server. Vi bruger simulatorer og ESP32 som eksempel |
+| 01     | Grundbegreber | Adresseområder, registertyper, funktionskoder, forskellen mellem TCP og RTU (kort introduktion)         |
+| 02     | Server/Client | Praktisk kommunikation mellem Modbus TCP-klient og -server. Vi bruger Node-RED, ESP32 og Home Assistant |
 | 03     | Gateway       | Forstå og bygge TCP ↔ RTU gateways. Node-RED og ESP32 som bro, brugsscenarier                           |
+
+> 🔧 Bemærk: Python og Node.js anvendes kun i avancerede eksempler og ikke i kerneopgaverne.
 
 ---
 
@@ -19,36 +21,23 @@ Modbus TCP bruges bredt i industrien som grænseflade mellem intelligente enhede
 * Forstå Modbus TCP som industri-protokol
 * Kunne læse og skrive registre fra fx PowerTags eller Danfoss-enheder
 * Oprette klient/server kommunikation og forstå adressering
-* Opbygge en gateway fra TCP til Modbus RTU (RS485) og tilbage
-* Integrere Modbus TCP-data i moderne systemer (fx Node-RED, MQTT, databases)
+* Få kendskab til forskellen mellem TCP og RTU (uden at arbejde direkte med RTU)
+* Integrere Modbus TCP-data i moderne systemer (fx Node-RED, MQTT, Home Assistant)
 
 ---
 
-## 🔎 Teori (Afsnit 01 – Grundbegreber)
+## 🛠 Kompetencer efter dette modul
 
-### 🔌 Hvad er Modbus TCP?
+Efter gennemført modul kan deltageren:
 
-* Protokol til læsning/skrivning af registre
-* Bruger TCP/IP i stedet for RS485 (Modbus RTU)
-* Samme funktionskoder som RTU: 01, 02, 03, 04, 05, 06, 16
-* Port 502 (standard)
-
-### 📊 Registertyper
-
-| Type  | Navn              | Funktion                     | Kan læses | Kan skrives |
-| ----- | ----------------- | ---------------------------- | --------- | ----------- |
-| 0xxxx | Coils             | Binære outputs               | ✅         | ✅           |
-| 1xxxx | Discrete Inputs   | Binære inputs                | ✅         | ❌           |
-| 3xxxx | Input Registers   | Sensorværdier                | ✅         | ❌           |
-| 4xxxx | Holding Registers | Variabler (f.eks. setpoints) | ✅         | ✅           |
-
-### 🧠 Adressering
-
-* **Offset 0 vs. 1**: Adresse 40001 kan betyde offset 0 (intern adresse 0) eller offset 1 (vises som 40001)
-* **Datatype**: 16-bit words → float og 32-bit kræver kombination af to registre
-* **Byte order**: Little-endian vs. big-endian (kan give forkerte værdier!)
+* Forklare forskellen på Modbus TCP og RTU på et grundlæggende niveau
+* Analysere registertabeller og identificere relevante adresser og datatyper
+* Opsætte og teste kommunikation mellem klient og server i et Modbus TCP-netværk
+* Bruge værktøjer som Node-RED, ESP32 eller Home Assistant til at afprøve forbindelser
+* Forstå principperne bag gateway-funktionalitet (uden at implementere RTU-kommunikation)
+* Fejlsøge almindelige problemer som forkerte adresser, timeout og byte order
+* Forstå hvordan Modbus TCP indgår som interface i hybride eller proprietære systemer
 
 ---
 
 📌 Læs videre i afsnit 02 for at komme i gang med praktisk opsætning af Modbus TCP-server og klient.
-
