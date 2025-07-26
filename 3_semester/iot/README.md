@@ -17,9 +17,10 @@ Efter endt forløb kan du …
 5. **Gateway’e Modbus TCP‑registre** til MQTT for “brown‑field” PLC‑data.
 6. **Udrulle OTA‑opdateringer** til ESP32 vha. HTTPS og versionsstyring.
 7. **Segmentere IoT‑trafik i VLAN** (pfSense/GNS3) og anvende certifikat‑autentificering.
-8. **Visualisere og alarmere** live‑data med node‑red-dashboard og Grafana.
-9. **Dokumentere og SAT/FAT‑teste** en mikro‑SCADA/smarthome‑løsning.
-10. **Præsentere teknologikæden** i en 5‑min video (sensor → cloud → dashboard + sikkerhed).
+8. **Visualisere og alarmere** live‑data med node‑red-dashboard.
+9. **Synkronisere data til sky og lokal database** med Firebase og SQL.
+10. **Analysere netværkstrafik** og beskytte CoAP/MQTT via Wireshark.
+11. **Præsentere teknologikæden** i en 5‑min video (sensor → cloud → dashboard + sikkerhed).
 
 ---
 
@@ -29,9 +30,10 @@ Efter endt forløb kan du …
 | --------------- | ------------------------------------------------ |
 | Flow‑motor      | Node‑RED (Docker eller lokal)                    |
 | Hardware        | ESP32 DevKit + KeyStudio‑sensorer                |
-| Visualisering   | node‑red-dashboard, Home Assistant, Grafana      |
-| Protokoller     | MQTT + TLS, REST (HTTP/JSON), Modbus TCP         |
-| Netværk         | Docker‑networks, pfSense (GNS3)                  |
+| Visualisering   | node‑red-dashboard, Home Assistant               |
+| Protokoller     | MQTT + TLS, REST (HTTP/JSON), Modbus TCP, CoAP   |
+| Databaser       | Firebase Realtime DB, Microsoft SQL Server       |
+| Netværk         | Docker‑networks, pfSense (GNS3), Wireshark       |
 | OTA             | MicroPython (`ota.py`), HTTPS static file‑server |
 | Sikkerhed       | Certifikat‑baseret auth, VLAN‑segmentering       |
 | Versionsstyring | Git / GitHub (1 branch pr. dag)                  |
@@ -42,74 +44,22 @@ Efter endt forløb kan du …
 
 ```text
 iot-bootcamp/
-├── README.md                   # Denne fil
-├── COURSE_SCHEDULE.md          # Dag-for-dag-oversigt
-├── common/                     # Certifikater, compose, dashboards
+├── README.md
+├── COURSE_SCHEDULE.md
+├── common/
 │   ├── certificates/
 │   ├── docker-compose.core.yml
-│   └── grafana/dashboards/
+│   └── assets/ (firmware, scripts, billeder)
 │
-├── dag01_node-red_intro/
-│   ├── README.md
-│   ├── 01_inject_debug.json
-│   ├── 02_ui_gauge.json
-│   └── assets/cheat_sheet.pdf
-│
-├── dag02_mqtt_telemetri/
-│   ├── README.md
-│   ├── 01_subscribe.json
-│   ├── 02_dashboard.json
-│   └── assets/esp32_sensor.py
-│
-├── dag03_heartbeat_watchdog/
-│   ├── README.md
-│   └── watchdog_subflow.json
-│
-├── dag04_rest_commando/
-│   ├── README.md
-│   ├── http_in_mqtt_out.json
-│   └── assets/postman_collection.json
-│
-├── dag05_home_assistant/
-│   ├── README.md
-│   ├── discovery_example.json
-│   └── assets/ha_lovelace_view.yaml
-│
-├── dag06_modbus_gateway/
-│   ├── README.md
-│   ├── modbus_to_mqtt.json
-│   └── assets/modbus_simulator.csv
-│
-├── dag07_dashboards_alarms/
-│   ├── README.md
-│   ├── dashboard_with_alarm.json
-│   └── assets/grafana_panel.json
-│
-├── dag08_ota_update/
-│   ├── README.md
-│   ├── ota_server_flow.json
-│   ├── assets/ota_client.py
-│   └── assets/firmware/v1.0.0/ …
-│
-├── dag09_netsikkerhed_vlan/
-│   ├── README.md
-│   ├── pfSense_rules.md
-│   ├── assets/docker-compose.vlan.yml
-│   └── assets/wireshark_filters.txt
-│
-├── dag10_systemdesign/
-│   ├── README.md
-│   └── assets/architecture_template.drawio
-│
-├── dag11_sat_fat/
-│   ├── README.md
-│   ├── sat_checklist.xlsx
-│   └── fat_checklist.xlsx
-│
-└── dag12_demo_video/
-    ├── README.md
-    ├── video_guidelines.md
-    └── example_pitch_structure.md
+├── dag1-node-red-intro/
+├── dag2-iot-monitoring/
+├── dag3-http/
+├── dag4-home-assistant/
+├── dag5-coap-discovery/
+├── dag6-modbus-integration/
+├── dag7-netværkssikkerhed/
+├── dag8-sky-og-lokal-baseret-lagring/
+└── dag9-mini-project/
 ```
 
 > **Bemærk:** Hver *dag‑mappe* indeholder
@@ -122,20 +72,17 @@ iot-bootcamp/
 
 ## 🧩 Moduloversigt
 
-| Modul  | Fokus                     | Centrale noder / værktøjer       |
-| ------ | ------------------------- | -------------------------------- |
-| **01** | Introduktion til Node‑RED | inject, debug, ui\_gauge         |
-| **02** | MQTT‑telemetri            | mqtt in/out, ui\_chart, TLS      |
-| **03** | Heartbeat & Watchdog      | trigger, function, status        |
-| **04** | REST‑kommando             | http in/response, change         |
-| **05** | Home Assistant            | mqtt discovery, binary\_sensor   |
-| **06** | Modbus‑gateway            | node-red-contrib-modbus          |
-| **07** | Dashboards & alarmer      | ui\_led, switch, Grafana         |
-| **08** | OTA‑update                | ota\_server flow, ota\_client.py |
-| **09** | VLAN & sikkerhed          | pfSense/GNS3, cert-auth          |
-| **10** | Systemdesign              | draw\.io, protokolvalg           |
-| **11** | SAT/FAT-test              | test-flows, multimeter           |
-| **12** | Demo & video              | OBS, peer-review                 |
+| Modul  | Fokus                            | Centrale teknologier og værktøjer            |
+| ------ | -------------------------------- | -------------------------------------------- |
+| **01** | Introduktion til Node‑RED        | inject, debug, function, ui\_gauge           |
+| **02** | MQTT-telemetri & TLS             | mqtt in/out, ESP32, broker, certifikater     |
+| **03** | HTTP & REST-integration          | http in/out, webhook, API-test               |
+| **04** | Home Assistant                   | mqtt discovery, automations, Lovelace        |
+| **05** | CoAP-discovery                   | /.well-known/core, ESP32, Node-RED, HA       |
+| **06** | Modbus TCP-integration           | modbus-klient/server, esp32, HA, gateway     |
+| **07** | Netværkssikkerhed & Wireshark    | MITM, sniffing, analyse, DTLS, TLS           |
+| **08** | Sky- og lokalbaseret datalagring | Firebase, Microsoft SQL, Node.js, Python     |
+| **09** | Mini-projekt                     | Valgfrit fokus, integration og dokumentation |
 
 ---
 
@@ -143,5 +90,5 @@ iot-bootcamp/
 
 * Du kan levere en fuldt fungerende IoT-prototype **(sensor → dashboard)**,
   opdateret via OTA og adskilt i sikkert VLAN.
-* Du dokumenterer flows, sikkerhed, tests og designvalg i GitHub.
-* Du præsenterer løsningen i en **5‑min video** med live data, alarms og failover‑demo.
+* Du dokumenterer flows og designvalg i GitHub.
+* Du præsenterer løsningen i en **5‑min video** med live data og sikkerhedsovervejelser.
