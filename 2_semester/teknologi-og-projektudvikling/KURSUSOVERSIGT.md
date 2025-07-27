@@ -1,49 +1,49 @@
-
 # 🗂️ KURSUS-OVERSIGT: Teknologi og Projektudvikling (5 ECTS)
 
 ## 📌 Kursusstruktur
 
-Dette kursus strækker sig over 12 undervisningsdage og kombinerer visuel programmering i Node-RED, dataanalyse i Python, sensorintegration via ESP32 og dokumentationspraksis med GitHub.
+Dette kursus strækker sig over 12 undervisningsdage og fokuserer på dataanalyse i Python, sensorintegration via ESP32, PLC-kommunikation via Snap7 og dokumentationspraksis med GitHub.
+
+Node-RED indgår ikke i dette forløb for at sikre fokus på kernekompetencer inden for måling, databehandling og systemintegration.
 
 Kursusplanen følger mappestrukturen i projektmappen:
 
 ```
 📂 teknologi-og-projektudvikling/
 ├── undervisning/
-│   ├── dag01_node-red-intro.md
-│   ├── dag02_node-red-serial.md
-│   ├── dag03_python-intro.md
-│   ├── dag04_python-pandas.md
-│   ├── dag05_python-serial.md
-│   ├── dag06_git-og-dokumentation.md
+│   ├── dag01_intro-github-python.md
+│   ├── dag02_python-csv-pandas.md
+│   ├── dag03_esp32-intro.md
+│   ├── dag04_python-serial.md
+│   ├── dag05_pandas-visualisering.md
+│   ├── dag06_git-dokumentation.md
 │   ├── dag07_miniprojekt-1.md
-│   ├── dag08_esp32-sensor.md
-│   ├── dag09_node-python-plc.md
-│   ├── dag10_dokumentation.md
+│   ├── dag08_python-databehandling.md
+│   ├── dag09_snap7-plc.md
+│   ├── dag10_dokumentation-test.md
 │   ├── dag11_miniprojekt-2.md
 │   └── dag12_praesentation.md
 ```
 
 ## 📅 Kursusforløb med fokusområder
 
-| Dag | Emne                            | Hovedtema                          |
-| --- | ------------------------------- | ---------------------------------- |
-| 1   | Node-RED + GitHub intro         | Flow-forståelse og versionskontrol |
-| 2   | Seriel data i Node-RED          | Kommunikation med hardware         |
-| 3   | Python intro                    | Grundlæggende programmering        |
-| 4   | Pandas og datavisualisering     | Dataanalyse og grafer              |
-| 5   | Seriel læsning i Python         | Input fra ESP32                    |
-| 6   | Git og dokumentation            | Projekthåndtering og dokumentation |
-| 7   | Mini-projekt 1                  | Simpelt system fra sensor til CSV  |
-| 8   | ESP32 sensoropsætning           | Hardware og dataoutput             |
-| 9   | Node-RED + Python + PLC (Snap7) | Integration til Siemens PLC        |
-| 10  | Dokumentation og test           | Signalvej, blokdiagram, testlog    |
-| 11  | Mini-projekt 2                  | Fuldt system og dokumentation      |
-| 12  | Præsentation og evaluering      | Formidling og peer feedback        |
+| Dag | Emne                        | Hovedtema                                   |
+| --- | --------------------------- | ------------------------------------------- |
+| 1   | GitHub + Python intro       | Kursusintro, versionsstyring, Python-basics |
+| 2   | Python + CSV + Pandas intro | Dataimport og analyse                       |
+| 3   | ESP32 intro                 | Sensoropsætning og seriel dataudgang        |
+| 4   | Python + pyserial           | Modtagelse og lagring af seriel data        |
+| 5   | Pandas visualisering        | Glidende gennemsnit og plots                |
+| 6   | Git og dokumentation        | Struktur, kravspecifikation, signalvej      |
+| 7   | Mini-projekt 1              | Simpelt system fra sensor til CSV           |
+| 8   | Python databehandling       | Rensning og strukturering af ESP32-data     |
+| 9   | Snap7 + PLC-integration     | Data fra S7-PLC via Python                  |
+| 10  | Dokumentation og test       | Blokdiagram, testlog, kravopfyldelse        |
+| 11  | Mini-projekt 2              | Fuldt system og dokumentation               |
+| 12  | Præsentation og evaluering  | Formidling og peer feedback                 |
 
 ## 🧰 Brugte teknologier
 
-* **Node-RED**: datastrømme, dashboard, seriel input
 * **Python**: `pandas`, `matplotlib`, `pyserial`, `snap7`
 * **ESP32**: sensorer, `analogRead()`, `Serial.print()`
 * **Git/GitHub**: versionsstyring, `README.md`, projektsamarbejde
@@ -54,21 +54,21 @@ Kursusplanen følger mappestrukturen i projektmappen:
 Studerende arbejder løbende med:
 
 * Kravspecifikation (`README.md`)
-* Flowdiagrammer og signalbeskrivelser (`docs/`)
-* Testlog og dokumentation af fejl/ændringer
+* Signalbeskrivelser og blokdiagrammer (`docs/`)
+* Testlog og dokumentation af datakvalitet og fejl
 * Versionshistorik via Git
 
 ## ✅ Aflevering og evaluering
 
-* Et GitHub-repository per gruppe
-* Inkluderer Node-RED flows, ESP32-kode, Python scripts og dokumentation
-* Afleveres og præsenteres mundtligt i uge 12
+* Ét GitHub-repository per gruppe
+* Indeholder ESP32-kode, Python scripts, CSV-filer og dokumentation
+* Mundtlig fremlæggelse i slutningen af kurset (dag 12)
 
 **Vurdering baseres på:**
 
-* Funktionalitet og realiseret system
-* Dokumentation og versionsstyring
-* Præsentation og refleksion
+* Funktionalitet og realiseret løsning
+* Kvalitet af dokumentation og datastruktur
+* Refleksion og præsentation
 
 ---
 
