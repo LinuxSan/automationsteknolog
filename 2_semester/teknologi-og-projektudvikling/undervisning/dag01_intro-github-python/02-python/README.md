@@ -45,6 +45,13 @@ Herunder finder du en anbefalet struktur over guides og opgaver i **begynder-Pyt
 * `SyntaxError`, `TypeError`, `NameError`
 * brug af `print()` til debug
 
+**07-klasser.md**
+*Introduktion til klasser.*
+
+* `__init__`, `self`
+* brug af `Class` for bedre struktur
+
+
 ---
 
 ## 📝 Opgavesæt
