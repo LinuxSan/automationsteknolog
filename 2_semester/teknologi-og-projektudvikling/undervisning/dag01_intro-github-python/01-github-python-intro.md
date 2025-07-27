@@ -1,108 +1,76 @@
 # 📘 README – Dag 01: GitHub + Python Intro
 
-Velkommen til første undervisningsdag i faget **Teknologi og Projektudvikling**.
+Velkommen til første undervisningsdag i **Teknologi og Projektudvikling**.
 
-Denne dag introducerer jer til:
-
-* Projektopstart med GitHub
-* Grundlæggende Python-programmering
-* Brug af `.gitignore`
-* Installation af GitHub CLI og Visual Studio Code
+Denne introduktionsdag handler om at opbygge fundamentet for resten af forløbet: du skal lære at arbejde versionsstyret og struktureret med dine projekter, forstå filstruktur i udviklingsarbejde og forberede din computer med de nødvendige værktøjer.
 
 ---
 
-## 📁 Find installationsvejledninger
+## 🧭 Formål med dagen
 
-Inden du kan arbejde videre, skal du have de nødvendige værktøjer installeret.
+* Få installeret og sat GitHub CLI og Visual Studio Code korrekt op
+* Forstå hvordan man opretter og kloner GitHub repositories
+* Få indblik i projektstruktur og hvordan dokumentation og kode organiseres
+* Forstå hvad `.gitignore` er og hvorfor den bruges
 
-Navigér til følgende mappe i projektstrukturen:
+---
+
+## 🔧 Installationer
+
+Før du går i gang, skal du installere software, som vi bruger resten af semesteret.
+
+Navigér til:
 
 ```
 automationsteknolog/2_semester/teknologi-og-projektudvikling/hardware-og-software/
 ```
 
-Her vælger du den installationsvejledning (.md-fil), der passer til dit operativsystem:
+Der finder du installationsvejledninger i `.md`-filer for:
 
-| Platform | Filnavn                                                                  |
-| -------- | ------------------------------------------------------------------------ |
-| Windows  | `installation-vscode-windows.md` og `installation-github-cli-windows.md` |
-| Linux    | `installation-vscode-linux.md` og `installation-github-cli-linux.md`     |
-| macOS    | `installation-vscode-macos.md` og `installation-github-cli-macos.md`     |
-
-Følg vejledningerne trin for trin. Hvis du sidder fast, så spørg underviseren eller en medstuderende.
+| Platform | Vejledninger                                                            |
+| -------- | ----------------------------------------------------------------------- |
+| Windows  | `installation-vscode-windows.md` + `installation-github-cli-windows.md` |
+| Linux    | `installation-vscode-linux.md` + `installation-github-cli-linux.md`     |
+| macOS    | `installation-vscode-macos.md` + `installation-github-cli-macos.md`     |
 
 ---
 
-## 🛠️ Arbejdsopgaver
+## 📚 Relevante guides til dagen
 
-### 1. Opret GitHub repository og klon det
+Disse guides fører dig gennem dagens aktiviteter i rækkefølge:
 
-1. Log ind på [https://github.com](https://github.com)
-2. Opret et nyt **privat** repository med navnet:
-
-   ```
-   gruppe-XX-projekt
-   ```
-3. Åbn terminal og kør:
-
-   ```bash
-   gh repo clone brugernavn/gruppe-XX-projekt
-   cd gruppe-XX-projekt
-   ```
-
-### 2. Tilføj en README og `.gitignore`
-
-1. Opret en tom `README.md` i roden:
-
-   ```bash
-   echo "# Gruppe XX – Teknologi og Projektudvikling" > README.md
-   ```
-2. Opret en `.gitignore`:
-
-   ```bash
-   echo "__pycache__/
-   ```
-
-\*.csv
-.vscode/" > .gitignore
-
-````
-3. Commit og push:
-```bash
-git add .
-git commit -m "Init: README og .gitignore"
-git push
-````
-
-### 3. Opret mappestruktur til projektet
-
-```bash
-mkdir python
-mkdir esp32
-data
-mkdir docs
-```
-
-> Sørg for at din struktur svarer til den officielle template (udleveres af underviser)
+1. `01-github-python-intro.md` – Introduktion til forløbet og GitHub som samarbejdsværktøj
+2. `02-Opret-og-klon-et-GitHub-repository.md` – Oprettelse og kloning af eget repo
+3. `03-Tilføj-struktur-og-filer-til-GitHub-repo.md` – Struktur, README og .gitignore
+4. `07-github-opgaver.md` – Fælles opgavesæt for hele Git-forløbet
 
 ---
 
-## 🧪 Afprøvning
+## 🎯 Læringsmål og kompetencer
 
-* Åbn dit repo på GitHub og tjek at:
+Du lærer:
 
-  * Mappestrukturen er korrekt
-  * `.gitignore` og `README.md` er med
-  * Du kan pushe ændringer uden fejl
+* At anvende GitHub CLI til at arbejde med versioner af dit projekt
+* At arbejde med et repository lokalt og online
+* At opbygge korrekt mappe- og dokumentstruktur
+* At bruge `.gitignore` til at filtrere støj fra versionering
+
+Du opnår kompetencer inden for:
+
+* Versionsstyring og dokumentation
+* Samarbejde i udviklingsprojekter
+* Strukturering af kode og filer
 
 ---
 
-## 📚 Opgaver for GitHub
+## 💼 Relevans for erhvervslivet
 
-* ✅ Du har oprettet og clonet dit repo
-* ✅ Du har struktureret mapperne korrekt
-* ✅ Du har committed og pushed en README og .gitignore
-* 🔁 Du ved hvordan man bruger `git add`, `commit`, `push` og `status`
-* 🔍 Du har forstået hvordan `.gitignore` fungerer
+I virksomheder der arbejder med software- eller automationsudvikling er det afgørende, at kode og dokumentation:
 
-> Næste trin: Python-intro og `basis.py`, som du arbejder videre med efter GitHub-setup er færdigt.
+* Kan deles og spores versionsmæssigt
+* Er organiseret og dokumenteret entydigt
+* Kan udvikles parallelt af flere personer via branches
+
+Git og GitHub er **standardværktøjer** i brancher som embedded udvikling, PLC-integration, webudvikling, databearbejdning, mv. Du træner derfor på en praksisnær måde fra første dag.
+
+> Denne dag er fundamentet. Det hele starter med versionsstyring, struktur og samarbejde.
