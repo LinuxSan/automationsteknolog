@@ -1,89 +1,88 @@
-# 🐍 Installation af nyeste Python-version i Visual Studio Code (Windows/macOS/Linux)
+# 🪟 Installation af nyeste Python-version i VS Code på Windows
 
-Denne guide hjælper dig med at installere den nyeste version af Python og sikre korrekt integration i Visual Studio Code.
+Denne guide hjælper dig med at installere den nyeste version af Python og konfigurere det i Visual Studio Code på Windows.
 
 ---
 
 ## 🧰 Forudsætninger
 
-* Du har allerede installeret VS Code
-  (se evt. installationsguide for dit styresystem)
-* Internetforbindelse og rettigheder til at installere software
+* Du har allerede installeret Visual Studio Code
+* Du har administratorrettigheder på din Windows-PC
 
 ---
 
 ## 1️⃣ Download og installer Python
 
 1. Gå til den officielle side:
-   👉 [https://www.python.org/downloads/](https://www.python.org/downloads/)
-2. Klik på **Download Python 3.x.x** (øverste version)
-3. Kør installationsfilen
-4. **VIGTIGT:** Sæt flueben i:
+   👉 [https://www.python.org/downloads/windows/](https://www.python.org/downloads/windows/)
+2. Klik på **Download Python 3.x.x** under "Latest"
+3. Kør den downloadede installationsfil
+4. **VIGTIGT!** Sæt flueben i:
 
    * ✅ "Add Python 3.x to PATH"
-5. Klik "Install Now"
-
-> macOS: Installer `.pkg`-filen.
-> Linux: Brug evt. `sudo apt install python3.11` eller nyeste via source.
+5. Klik på **Install Now**
+6. Når installationen er færdig, klik på **Close**
 
 ---
 
 ## 2️⃣ Bekræft installationen
 
-Åbn terminal (eller kommandoprompt på Windows):
+Åbn Kommandoprompt (cmd) og skriv:
 
-```bash
+```cmd
 python --version
 ```
 
 eller
 
-```bash
-python3 --version
+```cmd
+py --version
 ```
 
-Du skal se den nyeste version f.eks. `Python 3.12.x`
+Du bør se noget ala `Python 3.12.x`
 
 ---
 
-## 3️⃣ Opsætning i Visual Studio Code
+## 3️⃣ Installer Python-udvidelse i VS Code
 
-1. Start VS Code
-2. Åbn en `.py`-fil eller opret en ny
-3. Klik på **Python-versionen** i øverste højre hjørne af editoren (eller nede i statusbaren)
-4. Vælg den Python 3.x-installation du netop har installeret
-
-   * Hvis den ikke vises: Tryk `Ctrl + Shift + P` → "Python: Select Interpreter"
-
----
-
-## 4️⃣ Installer Python-udvidelse i VS Code
-
-1. Gå til Extensions (🔌-ikon i venstre menu)
-2. Søg efter **Python** (Microsoft)
-3. Klik **Install**
-4. (Valgfrit) Installer også **Pylance** for bedre IntelliSense og ydeevne
+1. Start Visual Studio Code
+2. Gå til Extensions-panelet (venstre menu med 🔌-ikon)
+3. Søg efter **Python** og vælg den officielle fra Microsoft
+4. Klik på **Install**
+5. (Valgfrit) Installer **Pylance**-udvidelsen for bedre IntelliSense
 
 ---
 
-## 5️⃣ Test det hele virker
+## 4️⃣ Vælg korrekt Python-fortolker
 
-1. Opret en fil `test.py`:
+1. Åbn en `.py`-fil eller opret en ny
+2. Klik på den viste Python-version i statusbaren (nederst til venstre)
+3. Vælg den nyinstallerede `Python 3.x` fra listen
+
+   * Hvis den ikke vises, tryk `Ctrl + Shift + P` → skriv: "Python: Select Interpreter"
+
+---
+
+## 5️⃣ Test din installation
+
+1. Opret en fil `test.py` med følgende indhold:
 
 ```python
 import sys
 print("Din Python-version:", sys.version)
 ```
 
-2. Kør filen via højreklik → **Run Python File in Terminal**
-3. Du bør se din aktuelle Python-version printet
+2. Højreklik på filen og vælg **Run Python File in Terminal**
+3. Du bør nu se din Python-version printet i terminalen nederst i VS Code
 
 ---
 
 ## ✅ Klar til brug!
 
-Du har nu den nyeste Python-version integreret i Visual Studio Code og kan begynde at kode og analysere data uden problemer.
+Python og VS Code er nu klar til brug. Du kan installere ekstra biblioteker via terminalen:
 
-> Tip: Brug `pip install` i terminalen for at installere ekstra biblioteker (f.eks. `pandas`, `matplotlib`, `snap7`)
+```cmd
+pip install pandas matplotlib snap7
+```
 
-Kontakt underviser hvis du oplever fejl eller har brug for hjælp til opsætningen.
+> Kontakt underviser hvis du har problemer med installationen eller opsætningen.
