@@ -93,4 +93,36 @@ Dette script demonstrerer, hvordan et simpelt Python-program hurtigt kan blive t
 
 ---
 
-> Streamlit er en nem vej til at bygge interaktive værktøjer til analyse og visualisering – især når du vil præsentere data for andre uden at vise koden. Det giver en effektiv og professionel måde at dele indsigt og gøre tekniske analyser tilgængelige for ikke-programmører.
+## 🚀 Udvidelse: Simuleret realtid med Streamlit
+
+Du kan også bruge Streamlit til at vise data løbende – næsten som realtidsopdatering – ved at læse fra en log-fil og opdatere grafen gentagne gange.
+
+```python
+import streamlit as st
+import pandas as pd
+import time
+
+st.title("📈 Realtidssimulering")
+
+# Knappen starter loopet
+if st.button("Start simulering"):
+    placeholder = st.empty()
+    for i in range(30):
+        data = pd.read_csv("log.csv")
+        placeholder.line_chart(data["værdi"])
+        time.sleep(1)
+```
+
+> Dette kræver, at `log.csv` bliver opdateret løbende af et andet script – fx via ESP32 eller Python-script der logger seriel data.
+
+---
+
+## 📌 Ekstra idéer
+
+* Tilføj et `st.stop()` hvis brugeren vil afbryde loopet
+* Vis både nyeste måling og hele målehistorikken
+* Kombinér med annotering eller tærskel-alarm
+
+---
+
+> Streamlit gør det muligt at lave simple "soft real-time" dashboards – og er en god vej til at simulere og teste interface før den endelige løsning er klar.
