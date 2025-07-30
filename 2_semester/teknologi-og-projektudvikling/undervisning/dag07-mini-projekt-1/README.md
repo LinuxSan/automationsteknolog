@@ -1,14 +1,19 @@
-# 🏡 Dag 07 – Mini-projekt: Smart House Dataflow (ESP32 ↔ Python)
+# 🏡 Dag 07 – Mini-projekt: Sensorbaseret måling (ESP32 ↔ Python)
 
-I dette mini-projekt skal du samle de teknikker, du har lært i de forrige moduler, i ét sammenhængende forløb. Du skal opsamle målinger fra et ESP32-baseret Smart House-sæt (fra Keyestudio), gemme og analysere data i Python samt visualisere og validere værdier med sanity checks og plausibilitetstests.
+I dette mini-projekt skal du samle de teknikker, du har lært i de forrige moduler, i ét sammenhængende forløb. Du skal opsamle målinger fra et ESP32-baseret sensormodul, gemme og analysere data i Python samt visualisere og validere værdier med sanity checks og plausibilitetstests.
 
-Projektet bygger på sensorer monteret i dit Smart House-kit, f.eks. DHT22 (temp/fugt), LDR (lys), MQ2 (gas). Sensorer kan vælges og kombineres efter eget valg.
+Projektet bruger tre specifikke sensorer:
+- DHT22 (temperatur og luftfugtighed)
+- LDR (lyssensor)
+- MQ2 (gassensor)
+
+Sensorerne tilsluttes ESP32, og data sendes til computeren over seriel port.
 
 ---
 
 ## 🎯 Mål for projektet
 
-- Læse data fra én eller flere sensorer på ESP32 (MicroPython)
+- Læse data fra DHT22, LDR og MQ2 med ESP32 og MicroPython
 - Sende data i fast format over seriel port (fx: `25.4,48.1,700`)
 - Tidsstemple og gemme data i Pandas på PC'en via VS Code
 - Validere data med sanity check og plausibilitetstest
@@ -20,8 +25,7 @@ Projektet bygger på sensorer monteret i dit Smart House-kit, f.eks. DHT22 (temp
 ## 📦 Hardware og software
 
 - ESP32 med MicroPython installeret (brug Thonny til upload)
-- Keyestudio Smart House-kit (KS5009)
-- Sensorer: DHT22, LDR, MQ2, m.m.
+- Sensorer: DHT22, LDR og MQ2 (gassensor)
 - VS Code på PC med Python + Pandas + Matplotlib
 - Seriel forbindelse (USB)
 
@@ -30,7 +34,7 @@ Projektet bygger på sensorer monteret i dit Smart House-kit, f.eks. DHT22 (temp
 ## 📁 Mappestruktur (forslag)
 
 ```
-smart-house-project/
+sensorprojekt/
 ├── esp32/
 │   └── main.py             # MicroPython-script til ESP32
 ├── python/
@@ -45,16 +49,18 @@ smart-house-project/
 
 ## 📡 Trin 1 – ESP32 kode (MicroPython i Thonny)
 
-Eksempel på script (tilpas til dine sensorer):
+Eksempel på script (tilpas til dine pins):
 
 ```python
-from machine import Pin
+from machine import Pin, ADC
 from dht import DHT22
 import time
 
-sensor = DHT22(Pin(14))
-ldr = machine.ADC(Pin(34))
-ldr.atten(machine.ADC.ATTN_11DB)
+sensor = DHT22(Pin(14))           # DHT22
+ldr = ADC(Pin(34))                # LDR
+ldr.atten(ADC.ATTN_11DB)
+gas = ADC(Pin(35))                # MQ2
+gas.atten(ADC.ATTN_11DB)
 
 while True:
     try:
@@ -62,14 +68,13 @@ while True:
         temp = sensor.temperature()
         hum = sensor.humidity()
         lys = ldr.read()
-        print(f"{temp},{hum},{lys}")
+        gas_val = gas.read()
+        print(f"{temp},{hum},{lys},{gas_val}")
         time.sleep(1)
     except:
         print("Fejl i måling")
         time.sleep(1)
 ```
-
-Upload scriptet med **Thonny** til din ESP32 og kør det direkte derfra.
 
 ---
 
@@ -87,14 +92,15 @@ data = []
 
 while len(data) < 100:
     linje = ser.readline().decode().strip()
-    if linje.count(',') == 2:
+    if linje.count(',') == 3:
         try:
-            temp, hum, lys = map(float, linje.split(","))
+            temp, hum, lys, gas = map(float, linje.split(","))
             data.append({
                 "tid": pd.Timestamp.now(),
                 "temp": temp,
                 "fugt": hum,
-                "lys": lys
+                "lys": lys,
+                "gas": gas
             })
         except:
             continue
@@ -110,7 +116,8 @@ pd.DataFrame(data).to_csv("data/målinger.csv", index=False)
 Brug funktioner fra tidligere opgaver til at filtrere:
 - `0 < temp < 40`
 - `20 < fugt < 90`
-- `lys < 4096`
+- `0 < lys < 4096`
+- `0 < gas < 4096`
 - ændring fra sidste måling må ikke overstige defineret tærskel
 
 ---
@@ -119,7 +126,7 @@ Brug funktioner fra tidligere opgaver til at filtrere:
 
 Lav to grafer:
 - Rå vs. filtrerede data (sanity + plausibilitet)
-- Fejltælling over tid
+- Fejltælling over tid eller pr. sensor
 
 ---
 
@@ -133,5 +140,4 @@ Lav to grafer:
 
 ---
 
-> Et Smart House uden sensorkontrol er bare en kasse med lys i. Giv det intelligens med Python og ESP32!
-
+> Data er kun brugbare, hvis de giver mening. Dette projekt lærer dig at forbinde sensorer, analysere signaler og sikre datas kvalitet med både teknik og sund fornuft.
