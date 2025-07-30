@@ -1,0 +1,58 @@
+# 🧪 Opgave 3 – Tæl hvor mange målinger der blev sorteret fra
+
+## 📘 Introduktion
+
+Når du filtrerer og renser dine data, fjernes målinger der er ugyldige eller uden for definerede grænser. Det er vigtigt at kunne dokumentere, hvor meget data der er fjernet – både af hensyn til gennemsigtighed og kvalitetssikring.
+
+Denne opgave handler om at sammenligne dit oprindelige datasæt med det rensede datasæt for at få indblik i datatab.
+
+---
+
+## 🎯 Formål
+
+- Sammenligne størrelsen på rå og filtreret datasæt
+- Udregne og logge antallet af sorterede målinger
+- Forstå konsekvensen af dine filtreringskriterier
+
+---
+
+## 🛠️ Kompetencer
+
+Ved at løse denne opgave træner du:
+- Fil- og datamanipulation i Pandas
+- Brug af `len()` og simple beregninger
+- Logning og dokumentation af dataprocesser
+
+---
+
+## 📂 Opgavebeskrivelse
+
+1. Indlæs `målinger.csv` og `renset_data.csv` fra `data/` mappen
+2. Beregn hvor mange rækker der er i hver fil
+3. Udregn forskellen og vis resultatet i terminalen
+4. Gem evt. log som `.txt` eller skriv til `print()`
+
+---
+
+## 💻 Eksempel
+
+```python
+import pandas as pd
+
+rå = pd.read_csv("../data/målinger.csv")
+renset = pd.read_csv("../data/renset_data.csv")
+
+antal_rå = len(rå)
+antal_renset = len(renset)
+
+fjernet = antal_rå - antal_renset
+print(f"Der blev sorteret {fjernet} målinger fra ud af {antal_rå}.")
+```
+
+---
+
+## ✅ Klar til næste skridt?
+
+Når du har talt og dokumenteret mængden af frafiltreret data, er du klar til:
+
+🧼 **Opgave 4 – Lav en funktion der wrapper hele renseforløbet**
