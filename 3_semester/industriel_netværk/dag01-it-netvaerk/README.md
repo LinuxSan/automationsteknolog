@@ -32,6 +32,7 @@ Velkommen til første undervisningsdag i Industrielt Netværk!
 |-----|-----------------------------|-----------|----------------------|
 | 1   | Find IP- og MAC-adresse     | Individuel| `.md` + screenshot   |
 | 2   | Opsæt GNS3 netværk & ping   | Individuel| `.md` + screenshots  |
+| 3   | Lav en beskrivelse af Hub, switch og Router | Gruppe | `.md` |
 
 Alle besvarelser skal dokumenteres og lægges i en undermappe med dit navn (eller gruppe) her i `dag01-it-netvaerk`.
 
