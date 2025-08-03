@@ -20,8 +20,8 @@ Formålet er at lære at dele et netværk op i subnet og forstå, hvordan adress
 1. Opret et nyt GNS3-projekt (fx “SubnetToPC”)
 2. Indsæt:
     - **2 x VPCS** (Virtual PC)
-    - **1 x Ethernet Switch**
-3. Forbind begge PC’er til switchen
+    - **1 x Ethernet Router**
+3. Forbind begge PC’er til Router
 
 ### 2. Tildel IP-adresser i forskellige subnet
 
