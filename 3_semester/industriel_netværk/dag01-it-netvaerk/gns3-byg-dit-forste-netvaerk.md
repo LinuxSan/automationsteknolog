@@ -1,8 +1,3 @@
-Her er et **cheat sheet** som du kan lægge direkte ind i opgaven (eller som separat fil), med **helt konkrete trin-for-trin-vejledninger** for både GNS3, Docker-images, IP-adressering og ping – uden at forudsætte Linux-erfaring.
-
----
-
-```markdown
 # 💡 Cheat sheet: Kom godt i gang med GNS3-netværk, IP-adresser og ping
 
 ## 1. Start GNS3 og opret et simpelt netværk
@@ -130,6 +125,3 @@ ping 192.168.1.10
 ---
 
 **Denne cheat sheet må gerne gemmes, printes eller udvides med egne erfaringer!**
-```
-
----
