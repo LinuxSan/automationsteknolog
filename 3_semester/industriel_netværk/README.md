@@ -1,5 +1,3 @@
-```markdown
-
 # 🏭 Industrielt Netværk – PLC, Bus & Industriel Integration
 
 *12 × 3 timer • Aarhus Maskinmesterskole • 2025*
@@ -106,5 +104,3 @@ Har du brug for hjælp?
 ---
 
 God arbejdslyst – og velkommen til det industrielle netværksunivers! 🏭🦾
-
-```
