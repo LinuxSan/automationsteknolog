@@ -6,7 +6,7 @@ Formålet er at give dig praktisk erfaring med VLAN-segmentering, så du kan se,
 
 ## 🎯 Kompetencer
 
-- Kan konfigurere VLAN på en (simuleret) switch i GNS3
+- Kan konfigurere VLAN på en (simuleret) Router i GNS3
 - Forstår, hvordan VLAN adskiller trafik mellem enheder på samme fysiske netværk
 - Kan teste kommunikation mellem PC’er i samme og forskellige VLAN
 - Kan dokumentere VLAN-opsætning og resultater
@@ -20,16 +20,16 @@ Formålet er at give dig praktisk erfaring med VLAN-segmentering, så du kan se,
 1. Opret et nyt projekt (fx “VLANtoPC”)
 2. Indsæt:
     - **2 x VPCS**
-    - **1 x Ethernet Switch** (vælg fx “Ethernet switch” eller “Managed Switch” hvis tilgængelig)
-3. Forbind begge PC’er til switchen
+    - **1 x Ethernet Router** (vælg fx “Ethernet Router” eller “Managed Router” hvis tilgængelig)
+3. Forbind begge PC’er til Routeren
 
 ### 2. Konfigurer VLAN (i GNS3)
 
-- Brug en **Managed Switch** (fx GNS3s “Ethernet Switch” eller “Cisco IOSv Switch” hvis du har licens)
-    - Hvis din switch har en web/CLI, opret to VLAN:
+- Brug en **Managed Router** (fx GNS3s “Ethernet Router” eller “Cisco IOSv Router” hvis du har licens)
+    - Hvis din Router har en web/CLI, opret to VLAN:
       - VLAN 10: Port 1 (PC1)
       - VLAN 20: Port 2 (PC2)
-    - Alternativ: Forklar hvordan du ville gøre det på rigtig udstyr, hvis din GNS3-switch ikke understøtter VLAN.
+    - Alternativ: Forklar hvordan du ville gøre det på rigtig udstyr, hvis din GNS3-Router ikke understøtter VLAN.
 
 ### 3. Tildel IP-adresser (samme subnet)
 
@@ -70,7 +70,7 @@ ping 192.168.10.10
 
 - Tag screenshots af:
   - Netværk i GNS3
-  - Switch-konfiguration (hvis muligt)
+  - Router-konfiguration (hvis muligt)
   - Ping-resultater i begge tilfælde (samme vs. forskellige VLAN)
 
 ---
