@@ -1,8 +1,5 @@
-Her er et **overordnet README-udkast** til *Industrielt Netværk* i samme stil som dit IoT-fags repo, men 100% fokuseret på OT, klassiske netværk, PLC, busser, segmentering, sikkerhed osv.
-
----
-
 ````markdown
+
 # 🏭 Industrielt Netværk – PLC, Bus & Industriel Integration
 
 *12 × 3 timer • Aarhus Maskinmesterskole • 2025*
