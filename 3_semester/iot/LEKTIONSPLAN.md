@@ -1,6 +1,6 @@
 
 # Detaljeret Forløbsplan  
-## IoT-undervisning (8 dage)  
+## IoT-undervisning (12 dage)  
 **Aarhus Maskinmesterskole**  
 **Underviser:** Anders S. Østergaard  
 **Opdateret:** Juli 2025
