@@ -75,21 +75,6 @@
 - Hands-on opgaver med flow.set(), file-node, SQLite/InfluxDB
 - Ekstra: adgangskontrol, backup-rutine, dashboard-integration
 
-**Moduler:**  
-1. REST API Grundbegreber  
-2. REST Grundbegreber  
-3. IoT Data Storage i Skyen  
-4. HTTP Endpoints  
-5. Actuator Control  
-6. Avanceret Data Visualisering  
-7. Predictive Analytics for IoT Data  
-8. Web Interface  
-9. Security  
-10. System Integration & Automatisering  
-
-**Den røde tråd:**  
-Bygger videre på Node-RED og MQTT, forbereder til integration og sikkerhed.
-
 ---
 
 ## Dag 4: Home Assistant & Integrering
