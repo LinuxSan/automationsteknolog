@@ -77,40 +77,42 @@ return msg;
 
 ---
 
-## 🔴 Del 4 – Brug SQLite eller InfluxDB til persistence
+## 🔴 Del 4 – Forberedelse til databaseintegration
 
 ### 🎯 Læringsmål
+* Du forstår, hvordan data kan håndteres midlertidigt og gemmes i filer, mens vi forbereder os på databaseintegration senere i forløbet.
 
-* Du kan gemme data i database via REST input
+---
 
 ### 🔧 Opgave
 
-1. Installer `node-red-node-sqlite` eller `node-red-contrib-influxdb`
-2. Lav POST endpoint til at skrive til DB:
+#### 1. Midlertidig lagring i flow memory
+1. Fortsæt med at gemme og hente data midlertidigt i Node-RED's flow memory ved hjælp af `flow.set()` og `flow.get()`, som vist i tidligere opgaver.
 
-   * SQLite: `INSERT INTO temperature VALUES (...)`
-   * InfluxDB: `sensor=room value=22.5`
-3. Lav GET endpoint til at læse historik
+#### 2. Permanent lagring i filer
+1. Brug den eksisterende tilgang til at gemme data i en JSON-fil ved hjælp af `file`-noden. Dette giver dig en simpel metode til vedvarende lagring uden en database.
 
-💬 Refleksion: Hvornår er database bedre end fil eller memory?
+#### 3. Introduktion til databaseforberedelse
+1. Forstå, at databaseintegration vil blive introduceret senere i forløbet for at håndtere større datamængder og mere komplekse forespørgsler.
+2. Når vi når til databaserne, vil du arbejde med værktøjer som MariaDB og lære at:
+    - Oprette tabeller til struktureret datalagring.
+    - Skrive data til databasen via REST-endpoints.
+    - Hente historiske data gennem SQL-forespørgsler.
+
+💬 **Refleksion:** Hvordan kan midlertidig lagring og filbaseret lagring hjælpe dig med at forstå grundlæggende REST-datahåndtering, før du arbejder med databaser?
 
 ---
 
 ## 🧭 Afslutning og overblik
 
-📋 Tjekliste:
+📋 **Tjekliste:**
+* [ ] Har du gemt data midlertidigt i `flow.set()`?
+* [ ] Har du prøvet at gemme data i en JSON-fil?
+* [ ] Er du klar til næste trin, hvor vi introducerer databaser?
 
-* [ ] Har du gemt data med `flow.set()`?
-* [ ] Har du skrevet til en JSON-fil?
-* [ ] Har du CRUD-endpoints med korrekt logik?
-* [ ] Har du prøvet at gemme til database?
+🧠 **Ekstra:**
+* Lav en backup-rutine for dine filer (f.eks. eksport af JSON hver time).
+* Integrér visning i et dashboard med `ui_table` eller `ui_text`-noder.
+* Tænk over, hvordan du kunne bruge en database til at håndtere flere data.
 
-🧠 Ekstra:
-
-* Lav backup-rutine (fx eksport af JSON hver time)
-* Integrér visning i dashboard med `ui_table` eller `ui_text`-noder
-* Kombinér storage med adgangskontrol (kun POST med token)
-
----
-
-📌 Disse øvelser giver dig grundlæggende erfaring med REST-lagring – både i hukommelse, fil og database – som fundament for mere avancerede IoT-løsninger.
+📌 Brug af midlertidig lagring og filer giver dig et godt fundament for at forstå REST-datahåndtering, inden du går videre til mere avancerede teknologier som databaser.
