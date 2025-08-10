@@ -5,9 +5,7 @@
 **Underviser:** Anders S. Østergaard  
 **Opdateret:** Juli 2025
 
----
 
-## Indholdsfortegnelse
 1. [Dag 1: Node-RED Introduktion](#dag-1-node-red-introduktion)
 2. [Dag 2: IoT Monitoring (MQTT)](#dag-2-iot-monitoring-mqtt)
 3. [Dag 3: REST Kommandoer & Data Storage](#dag-3-rest-kommandoer--data-storage)
@@ -15,7 +13,9 @@
 5. [Dag 5: CoAP & Resource Discovery](#dag-5-coap--resource-discovery)
 6. [Dag 6: Modbus-integration](#dag-6-modbus-integration)
 7. [Dag 7: Netværk & Sikkerhed](#dag-7-netværk--sikkerhed)
-8. [Dag 8: Mini-projekt](#dag-8-mini-projekt)
+8. [Dag 8: RTDB (Real time database)](#dag-8-mini-projekt)
+9. [Dag 9: Mini Projekt](#dag-9-mini-projekt)
+11. [Dag 11: Opsamling på mini projekt](#dag-11-opsamling-på-mini-projekt)
 
 ---
 
@@ -159,7 +159,31 @@ Bygger videre på Node-RED og MQTT, forbereder til integration og sikkerhed.
 
 ---
 
-## Dag 8: Mini-projekt
+## Dag 8: RTDB (Real time database)
+**Emne:** Forbindelse til RTDB fra både Node-RED og ESP32
+**Indhold:**
+- Forbind Node-RED til RTDB (REST API)
+- Node-RED "POST" til RTDB
+- Node-RED "PUT" til RTDB
+- Node-RED "GET" fra RTDB
+- ESP32 sender data til RTDB via HTTP/REST
+- ESP32 henter data fra RTDB
+
+**Læringsaktiviteter:**
+- Opsæt RTDB (fx Firebase eller lokal REST-database)
+- Lav flow i Node-RED der skriver/læser til RTDB
+- Programmer ESP32 til at sende og hente data fra RTDB
+- Test og visualiser data fra begge platforme
+
+**Materialer/Opgaver:**
+- Node-RED flow-eksempler
+- ESP32 kodeeksempler (python)
+- REST endpoint dokumentation
+- Testdata og visualisering
+
+---
+
+## Dag 9: Mini-projekt
 **Emne:** Projektarbejde, integration og demo  
 **Indhold:**  
 - Mini-projekt: sensor → cloud → visualisering
@@ -172,6 +196,27 @@ Bygger videre på Node-RED og MQTT, forbereder til integration og sikkerhed.
 
 **Materialer/Opgaver:**  
 - Projekt-canvas, SAT/FAT worksheet, video
+
+---
+
+## Dag 11: Opsamling på mini-projekt
+**Emne:** Præsentation og evaluering af mini-projekter
+**Indhold:**
+- Grupperne præsenterer deres IoT-løsninger
+- Fælles feedback og diskussion
+- Refleksion over proces og resultater
+- Hvad fungerede godt, og hvad kan forbedres?
+- Perspektivering til industri og videre arbejde
+
+**Læringsaktiviteter:**
+- Præsentation af projekter
+- Peer review og feedback
+- Fælles refleksion og opsamling
+
+**Materialer/Opgaver:**
+- Præsentationsslides
+- Evalueringsskema
+- Noter fra diskussion og feedback
 
 ---
 
