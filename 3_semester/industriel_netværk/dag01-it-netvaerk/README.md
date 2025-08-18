@@ -38,8 +38,9 @@ Velkommen til første undervisningsdag i Industrielt Netværk!
 | 1   | Find din IP- og MAC-adresse                      | Individuel  | `.md` + screenshot  |
 | 2   | Byg netværk i GNS3 med Ubuntu-container          | Individuel  | `.md` + screenshot  |
 | 3   | Tildel IP og test ping mellem PC’er og Ubuntu    | Individuel  | `.md` + screenshot  |
-| 4   | Beskriv hub, switch, router, LAN, MAN, WAN, P2P, M2M | Individuel/Gruppe | `.md`           |
-| 5   | Reflekter over dagens netværksopgaver            | Individuel  | `.md`               |
+| 4   | Ping google                                      | Individuel  | `.md` + screenshot  |
+| 5   | Beskriv hub, switch, router, LAN, MAN, WAN, P2P, M2M | Individuel/Gruppe | `.md`           |
+| 6   | Reflekter over dagens netværksopgaver            | Individuel  | `.md`               |
 
 Alle besvarelser skal dokumenteres og lægges i en undermappe med dit navn (eller gruppe) her i `dag01-it-netvaerk`.
 
