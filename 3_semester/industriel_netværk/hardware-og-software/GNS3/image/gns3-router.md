@@ -1,161 +1,193 @@
-# Design og Konfiguration af GNS3 Linux Router Appliance
+# 🧭 ITiFN Router (Docker) — Trin-for-trin (med emojis)
 
-Dette dokument beskriver design, konfiguration og import af en Linux-router appliance til brug i GNS3. Routeren understøtter VLAN, IPv4/IPv6 routing, NAT, og DHCPv6/SLAAC og er baseret på Debian Minimal.
+## 🔧 0) Variabler
 
----
-
-## 🧰 **Design**
-
-Routeren er designet til at være enkel og effektiv med følgende funktioner:
-
-- **VLAN Support**: 802.1Q trunking og subinterfaces.
-- **IPv4 Routing**: Statisk routing og subnetting.
-- **NAT**: IPv4 NAT og NAT64.
-- **IPv6 Routing**: Statisk routing og SLAAC via `radvd`.
-- **DHCPv6**: Support for DHCPv6 og SLAAC.
-
----
-
-## 📦 **Base Image**
-
-### **Specifikationer**
-- **OS**: Debian 12 Minimal (CLI-only).
-- **Format**: `qcow2` eller Docker-image.
-- **Ressourcer i GNS3**: 
-  - Disk: 2–4 GB (qcow2) eller Docker-container.
-  - RAM: 256–512 MB.
-
----
-
-## 🛠️ **Installerede Pakker**
-
-Installér følgende pakker i routeren:
 ```bash
-apt install -y iproute2 ifupdown vlan net-tools iptables nftables isc-dhcp-server \
-               radvd wide-dhcpv6-client tayga curl vim tcpdump systemd-resolved
+export USERNAME="DIT_DOCKERHUB_BRUGERNAVN"     # fx acmeorg
+export REPO="docker.io/${USERNAME}"
+export BASE_TAG="${REPO}/itifn-base:1.0"
+export ROUTER_TAG="${REPO}/itifn-router:1.0"
+
+export BASEDIR="/home/aso/code/AAMS/Teknolog/03-semester/01-netværk/gns3/router"
+mkdir -p "$BASEDIR/itifn/itifn-base" "$BASEDIR/itifn/itifn-router"
+cd "$BASEDIR"
 ```
 
-### **Konfigurationsfiler**
-Alle nødvendige konfigurationsfiler placeres i følgende mapper:
-- `/etc/network/interfaces`
-- `/etc/sysctl.conf`
-- `/etc/nftables.conf`
-- `/etc/radvd.conf`
-- `/etc/tayga.conf`
+## 📦 1) Base-image (Alpine)
 
----
+`itifn/itifn-base/Dockerfile`
 
-## 🔁 **Netværksfunktioner**
-
-### **IP Forwarding**
-Aktiver IP forwarding for IPv4 og IPv6 i `/etc/sysctl.conf`:
-```plaintext
-net.ipv4.ip_forward=1
-net.ipv6.conf.all.forwarding=1
+```dockerfile
+FROM alpine:3.20
+LABEL maintainer="Anders Sandø Østergaard <aso@aams.dk>"
+RUN apk add --no-cache bash iproute2 iputils busybox-extras ethtool \
+    dhclient python3 perl tcpdump ca-certificates tini
+ENTRYPOINT ["/sbin/tini","--"]
+CMD ["bash"]
 ```
 
-### **VLAN Subinterfaces**
-Opsæt VLAN subinterfaces med følgende kommando:
+🛠️ Byg:
+
 ```bash
-ip link add link eth0 name eth0.10 type vlan id 10
+docker build -t "$BASE_TAG" itifn/itifn-base
 ```
 
-### **Statisk Routing**
-- **IPv4**:
-  ```bash
-  ip route add <destination> via <gateway>
-  ```
-- **IPv6**:
-  ```bash
-  ip -6 route add <destination> via <gateway>
-  ```
+## 🧱 2) Router-image
 
-### **NAT**
-- **IPv4 NAT**:
-  Brug iptables med `MASQUERADE`:
-  ```bash
-  iptables -t nat -A POSTROUTING -o <interface> -j MASQUERADE
-  ```
-- **NAT64**:
-  Konfigurer Tayga til stateless NAT64:
-  - Konfigurationen placeres i `/etc/tayga.conf`.
+`itifn/itifn-router/Dockerfile`
 
-### **IPv6 Router Announcements**
-Brug `radvd` til SLAAC:
-- Konfigurationsfil: `/etc/radvd.conf`.
+```dockerfile
+ARG BASE
+FROM ${BASE}
+LABEL maintainer="Anders Sandø Østergaard <aso@aams.dk>"
+COPY entrypoint.sh /bin/entrypoint.sh
+RUN chmod +x /bin/entrypoint.sh
+ENTRYPOINT ["/sbin/tini","--","/bin/entrypoint.sh"]
+CMD ["bash"]
+```
 
-### **DHCPv6**
-Opsæt DHCPv6 med `wide-dhcpv6-client/server` (valgfrit).
+`itifn/itifn-router/entrypoint.sh`
 
----
+```sh
+#!/bin/sh
+set -eu
+IFACES="${IFACES:-all default lo eth0}"
+for iface in $IFACES; do
+  sysctl -w "net.ipv6.conf.${iface}.autoconf=0" >/dev/null || true
+  sysctl -w "net.ipv6.conf.${iface}.dad_transmits=0" >/dev/null || true
+  sysctl -w "net.ipv6.conf.${iface}.accept_ra=0" >/dev/null || true
+  sysctl -w "net.ipv6.conf.${iface}.router_solicitations=0" >/dev/null || true
+done
+[ "${IPV4_FORWARD:-0}" = "1" ] && sysctl -w net.ipv4.ip_forward=1 >/dev/null || true
+[ "${IPV6_FORWARD:-0}" = "1" ] && sysctl -w net.ipv6.conf.all.forwarding=1 >/dev/null || true
+exec "$@"
+```
 
-## 📁 **Filstruktur**
+🚀 Byg:
 
-Routerens konfiguration er organiseret som følger:
-- `/etc/network/interfaces`
-- `/etc/nftables.conf`
-- `/etc/sysctl.conf`
-- `/etc/radvd.conf`
-- `/etc/tayga.conf`
-- `/usr/local/bin/router-boot.sh` ← eksekveres automatisk ved opstart.
+```bash
+docker build --build-arg BASE="$BASE_TAG" -t "$ROUTER_TAG" itifn/itifn-router
+```
 
----
+## ☁️ 3) Publicér (til GNS3-VM/remote)
 
-## 🧱 **GNS3 Appliance Definition**
+```bash
+docker login -u "$USERNAME"
+docker push "$BASE_TAG"
+docker push "$ROUTER_TAG"
+```
 
-### **QEMU Appliance**
-Opret en GNS3 appliance-definition i JSON-format:
+💾 Alternativ uden Hub: `docker save | gzip` → `scp` → `docker load` på serveren.
+
+## 🖱️ 4) GNS3-GUI template
+
+1. **Edit → Preferences → Docker → Docker containers → New**
+2. **Name**: `ITiFN Router`
+3. **Image**: `"$ROUTER_TAG"`
+4. **Adapters**: `4`
+5. **Console type**: `None`
+6. **Run as privileged**: **On**
+7. **Environment**:
+
+   * `IFACES=all default lo eth0`
+   * `IPV4_FORWARD=1`
+   * `IPV6_FORWARD=1`
+8. **OK → Apply**
+
+Brug: Træk noden ind, start, højreklik → **Console** (`bash`).
+
+## 🌐 5) Hurtige net-kommandoer
+
+```bash
+# aktiver interface
+ip link set eth1 up
+
+# IPv4
+ip addr add 192.168.0.15/24 dev eth0
+
+# IPv6
+ip -6 addr add 2001:db8:1::1/64 dev eth1
+
+# default routes
+ip route replace default via 192.168.0.1 dev eth0
+ip -6 route replace default via 2001:db8::1 dev eth0
+```
+
+### 🧩 VLAN
+
+```bash
+ip link add link eth1 name eth1.10 type vlan id 10
+ip link set eth1 up; ip link set eth1.10 up
+ip addr add 10.10.10.1/24 dev eth1.10
+ip -6 addr add 2001:db8:10::1/64 dev eth1.10
+```
+
+### ✅ Tjek
+
+```bash
+ip addr show
+ip route; ip -6 route
+ping -c 2 8.8.8.8
+ping -6 -c 2 2001:4860:4860::8888
+```
+
+## 🧩 6) Enkel “persistens” via Environment (valgfrit)
+
+Tilføj i `entrypoint.sh` før `exec "$@"`:
+
+```sh
+[ -n "${IP4_ETH1:-}" ] && { ip link set eth1 up; ip addr add "$IP4_ETH1" dev eth1; }
+[ -n "${IP6_ETH1:-}" ] && { ip link set eth1 up; ip -6 addr add "$IP6_ETH1" dev eth1; }
+[ -n "${GW4:-}" ]      && ip route replace default via "$GW4" dev eth0
+[ -n "${GW6:-}" ]      && ip -6 route replace default via "$GW6" dev eth0
+```
+
+🌱 Sæt i template → **Environment**:
+
+```
+IP4_ETH1=192.168.10.1/24
+IP6_ETH1=2001:db8:10::1/64
+GW4=192.168.0.1
+GW6=2001:db8::1
+```
+
+## 🛠️ 7) Fejlfinding
+
+* 🔒 **Pull-fejl**: Brug præcist image-tag. Test `docker pull "$ROUTER_TAG"` på GNS3-server.
+* 🧷 **Sysctl virker ikke**: Template skal være **privileged**.
+* 🧭 **Ingen rute**: Sæt gateway eller IP i samme subnet. `ip route` viser sandheden.
+* 🖥️ **Console**: `None` for Docker-noder.
+
+## 📦 8) (Valgfrit) `.gns3a`-skabelon
+
+Erstat `IMAGE_TAG_HERE` med `"$ROUTER_TAG"`.
+
 ```json
 {
-  "name": "linux-router",
+  "name": "ITiFN Router (Docker)",
   "category": "router",
   "vendor_name": "Custom",
-  "qemu": {
-    "ram": 512,
-    "adapters": 4,
-    "hda_disk_image": "linux-router.qcow2",
-    "platform": "x86_64",
-    "qemu_options": ""
-  }
+  "registry_version": 8,
+  "status": "stable",
+  "description": "Alpine router. IPv6 RA disabled. Bash shell.",
+  "maintainer": "Anders Sandø Østergaard <aso@aams.dk>",
+  "settings": [
+    {
+      "default": true,
+      "template_type": "docker",
+      "template_properties": {
+        "image": "IMAGE_TAG_HERE",
+        "adapters": 4,
+        "console_type": "none",
+        "privileged": true,
+        "environment": [
+          "IFACES=all default lo eth0",
+          "IPV4_FORWARD=1",
+          "IPV6_FORWARD=1"
+        ],
+        "category": "router"
+      }
+    }
+  ]
 }
 ```
-
-### **Docker Appliance**
-Hvis du bruger Docker, skal du definere appliance i GNS3 Preferences:
-1. Gå til **Edit → Preferences → Docker Containers**.
-2. Klik på **New** og udfyld følgende:
-   - **Name**: `Linux Router`.
-   - **Image**: `linux-router`.
-   - **Number of Adapters**: 4.
-   - **RAM**: 256–512 MB.
-
----
-
-## 🧪 **Import og Brug**
-
-### **Import i GNS3**
-1. **QEMU Method**:
-   - Importér `.qcow2` diskbilledet via **File → Import Appliance**.
-   - Vælg `linux-router.gns3a` filen og følg guiden.
-   
-2. **Docker Method**:
-   - Følg guiden i **Docker Appliance**-sektionen ovenfor.
-
-### **Opsætning i Projekt**
-1. Træk routeren ind i arbejdsområdet.
-2. Forbind den til andre enheder som switches, routere eller VPC'er.
-3. Konfigurer og test netværksfunktionerne som NAT, VLAN, IPv4/IPv6 routing, osv.
-
----
-
-## 🟩 **Klar til Levering?**
-
-Jeg kan levere følgende:
-1. **En .qcow2 disk**: Klar til at importere i GNS3.
-2. **En .gns3a appliance-definition**.
-3. **Et startup-script**: Automatisk aktiverer IPv4/IPv6 forwarding og NAT.
-
-**Alternativt**, hvis du ønsker at bygge image fra ISO eller Dockerfile:
-- Jeg kan guide dig i processen.
-
-Lad mig vide, hvad du har brug for! 😊
