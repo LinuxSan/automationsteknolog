@@ -1,6 +1,6 @@
-# Step-by-Step Guide: Design, Konfiguration, og Import af GNS3 Linux Router Appliance
+# Design og Konfiguration af GNS3 Linux Router Appliance
 
-Dette dokument guider dig gennem oprettelsen, konfigurationen og importen af en Linux-router appliance til brug i GNS3. Routeren understøtter VLAN, IPv4/IPv6 routing, NAT, og DHCPv6/SLAAC og er baseret på Debian Minimal.
+Dette dokument beskriver design, konfiguration og import af en Linux-router appliance til brug i GNS3. Routeren understøtter VLAN, IPv4/IPv6 routing, NAT, og DHCPv6/SLAAC og er baseret på Debian Minimal.
 
 ---
 
@@ -20,16 +20,16 @@ Routeren er designet til at være enkel og effektiv med følgende funktioner:
 
 ### **Specifikationer**
 - **OS**: Debian 12 Minimal (CLI-only).
-- **Format**: `qcow2`.
+- **Format**: `qcow2` eller Docker-image.
 - **Ressourcer i GNS3**: 
-  - Disk: 2–4 GB.
+  - Disk: 2–4 GB (qcow2) eller Docker-container.
   - RAM: 256–512 MB.
-  
+
 ---
 
 ## 🛠️ **Installerede Pakker**
 
-Installer følgende pakker for at forberede routeren:
+Installér følgende pakker i routeren:
 ```bash
 apt install -y iproute2 ifupdown vlan net-tools iptables nftables isc-dhcp-server \
                radvd wide-dhcpv6-client tayga curl vim tcpdump systemd-resolved
@@ -77,7 +77,7 @@ ip link add link eth0 name eth0.10 type vlan id 10
   iptables -t nat -A POSTROUTING -o <interface> -j MASQUERADE
   ```
 - **NAT64**:
-  Konfigurer Tayga for stateless NAT64:
+  Konfigurer Tayga til stateless NAT64:
   - Konfigurationen placeres i `/etc/tayga.conf`.
 
 ### **IPv6 Router Announcements**
@@ -103,6 +103,7 @@ Routerens konfiguration er organiseret som følger:
 
 ## 🧱 **GNS3 Appliance Definition**
 
+### **QEMU Appliance**
 Opret en GNS3 appliance-definition i JSON-format:
 ```json
 {
@@ -119,33 +120,31 @@ Opret en GNS3 appliance-definition i JSON-format:
 }
 ```
 
----
-
-## 🧪 **Test og Brug**
-
-### **Importer Appliance i GNS3**
-1. **Download nødvendige filer**:
-   - `.qcow2` diskbilledet for Debian 12 Minimal.
-   - Appliance-definitionen (`linux-router.gns3a`).
-
-2. **Importer appliance**:
-   - Åbn GNS3 GUI.
-   - Klik på **File → Import Appliance**.
-   - Vælg `linux-router.gns3a` filen og følg guiden:
-     - Vælg den korrekte `.qcow2` diskfil.
-     - Tildel ressourcer som RAM og antal netværksadaptere.
-
-3. **Tilføj appliance til projekt**:
-   - Træk routeren fra venstre side (Devices-panelet) ind i arbejdsområdet.
-
-4. **Tildel interfaces**:
-   - Forbind routeren til andre enheder som switches eller andre routere.
+### **Docker Appliance**
+Hvis du bruger Docker, skal du definere appliance i GNS3 Preferences:
+1. Gå til **Edit → Preferences → Docker Containers**.
+2. Klik på **New** og udfyld følgende:
+   - **Name**: `Linux Router`.
+   - **Image**: `linux-router`.
+   - **Number of Adapters**: 4.
+   - **RAM**: 256–512 MB.
 
 ---
 
-### **Konfigurer Funktioner**
-- Indstil IPv4 og IPv6 routing.
-- Opsæt DHCPv6, NAT, og VLAN subinterfaces.
+## 🧪 **Import og Brug**
+
+### **Import i GNS3**
+1. **QEMU Method**:
+   - Importér `.qcow2` diskbilledet via **File → Import Appliance**.
+   - Vælg `linux-router.gns3a` filen og følg guiden.
+   
+2. **Docker Method**:
+   - Følg guiden i **Docker Appliance**-sektionen ovenfor.
+
+### **Opsætning i Projekt**
+1. Træk routeren ind i arbejdsområdet.
+2. Forbind den til andre enheder som switches, routere eller VPC'er.
+3. Konfigurer og test netværksfunktionerne som NAT, VLAN, IPv4/IPv6 routing, osv.
 
 ---
 
@@ -155,3 +154,8 @@ Jeg kan levere følgende:
 1. **En .qcow2 disk**: Klar til at importere i GNS3.
 2. **En .gns3a appliance-definition**.
 3. **Et startup-script**: Automatisk aktiverer IPv4/IPv6 forwarding og NAT.
+
+**Alternativt**, hvis du ønsker at bygge image fra ISO eller Dockerfile:
+- Jeg kan guide dig i processen.
+
+Lad mig vide, hvad du har brug for! 😊
