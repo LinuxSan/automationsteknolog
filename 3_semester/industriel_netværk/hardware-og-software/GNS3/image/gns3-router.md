@@ -1,83 +1,109 @@
+# Step-by-Step Guide: Design, Konfiguration, og Import af GNS3 Linux Router Appliance
 
-## 🧰 Design for GNS3 Linux Router Appliance
-
-Dette dokument beskriver design og konfiguration af en **simpel, effektiv Linux-router** til brug i GNS3, som understøtter:
-
-* ✅ VLAN (802.1Q trunk og subinterfaces)
-* ✅ IPv4 routing og subnetting
-* ✅ NAT (IPv4 og NAT64)
-* ✅ IPv6 routing (statisk og radvd)
-* ✅ DHCPv6 og SLAAC support
-
-Routeren vil være baseret på **Debian Minimal** og anvende QEMU i GNS3.
+Dette dokument guider dig gennem oprettelsen, konfigurationen og importen af en Linux-router appliance til brug i GNS3. Routeren understøtter VLAN, IPv4/IPv6 routing, NAT, og DHCPv6/SLAAC og er baseret på Debian Minimal.
 
 ---
 
-### 📦 Base Image
+## 🧰 **Design**
 
-* **OS**: Debian 12 Minimal (CLI-only)
-* **Format**: `qcow2`
-* **Størrelse**: 2–4 GB disk, 256–512 MB RAM i GNS3
+Routeren er designet til at være enkel og effektiv med følgende funktioner:
+
+- **VLAN Support**: 802.1Q trunking og subinterfaces.
+- **IPv4 Routing**: Statisk routing og subnetting.
+- **NAT**: IPv4 NAT og NAT64.
+- **IPv6 Routing**: Statisk routing og SLAAC via `radvd`.
+- **DHCPv6**: Support for DHCPv6 og SLAAC.
 
 ---
 
-### 🛠️ Installerede pakker (forhåndskonfigureret)
+## 📦 **Base Image**
 
+### **Specifikationer**
+- **OS**: Debian 12 Minimal (CLI-only).
+- **Format**: `qcow2`.
+- **Ressourcer i GNS3**: 
+  - Disk: 2–4 GB.
+  - RAM: 256–512 MB.
+  
+---
+
+## 🛠️ **Installerede Pakker**
+
+Installer følgende pakker for at forberede routeren:
 ```bash
 apt install -y iproute2 ifupdown vlan net-tools iptables nftables isc-dhcp-server \
                radvd wide-dhcpv6-client tayga curl vim tcpdump systemd-resolved
 ```
 
-> Alle konfigurationsfiler placeres i `/etc/network/interfaces`, `/etc/sysctl.conf`, `/etc/nftables.conf`, `/etc/radvd.conf`, og `/etc/tayga.conf`
+### **Konfigurationsfiler**
+Alle nødvendige konfigurationsfiler placeres i følgende mapper:
+- `/etc/network/interfaces`
+- `/etc/sysctl.conf`
+- `/etc/nftables.conf`
+- `/etc/radvd.conf`
+- `/etc/tayga.conf`
 
 ---
 
-### 🔁 Netværksfunktioner (klar til brug)
+## 🔁 **Netværksfunktioner**
 
-* 🔧 **IP forwarding** (IPv4 og IPv6):
+### **IP Forwarding**
+Aktiver IP forwarding for IPv4 og IPv6 i `/etc/sysctl.conf`:
+```plaintext
+net.ipv4.ip_forward=1
+net.ipv6.conf.all.forwarding=1
+```
 
-  * Aktiveret i `/etc/sysctl.conf` med:
+### **VLAN Subinterfaces**
+Opsæt VLAN subinterfaces med følgende kommando:
+```bash
+ip link add link eth0 name eth0.10 type vlan id 10
+```
 
-    ```
-    net.ipv4.ip_forward=1
-    net.ipv6.conf.all.forwarding=1
-    ```
+### **Statisk Routing**
+- **IPv4**:
+  ```bash
+  ip route add <destination> via <gateway>
+  ```
+- **IPv6**:
+  ```bash
+  ip -6 route add <destination> via <gateway>
+  ```
 
-* 🌐 **VLAN subinterfaces**:
+### **NAT**
+- **IPv4 NAT**:
+  Brug iptables med `MASQUERADE`:
+  ```bash
+  iptables -t nat -A POSTROUTING -o <interface> -j MASQUERADE
+  ```
+- **NAT64**:
+  Konfigurer Tayga for stateless NAT64:
+  - Konfigurationen placeres i `/etc/tayga.conf`.
 
-  * Konfigureret via `ip link add link eth0 name eth0.10 type vlan id 10`
+### **IPv6 Router Announcements**
+Brug `radvd` til SLAAC:
+- Konfigurationsfil: `/etc/radvd.conf`.
 
-* 🔁 **Statisk routing**:
-
-  * IPv4: `ip route add ...`
-  * IPv6: `ip -6 route add ...`
-
-* 🔄 **NAT (IPv4 og NAT64):**
-
-  * IPv4 NAT: iptables MASQUERADE
-  * NAT64: via Tayga (stateless NAT64 for IPv6→IPv4 translation)
-
-* 📡 **radvd** til IPv6 router announcements (SLAAC)
-
-* 📬 **wide-dhcpv6-client/server** til DHCPv6 (valgfrit)
+### **DHCPv6**
+Opsæt DHCPv6 med `wide-dhcpv6-client/server` (valgfrit).
 
 ---
 
-### 📁 Filstruktur i appliance
+## 📁 **Filstruktur**
 
-* `/etc/network/interfaces`
-* `/etc/nftables.conf`
-* `/etc/sysctl.conf`
-* `/etc/radvd.conf`
-* `/etc/tayga.conf`
-* `/usr/local/bin/router-boot.sh` ← eksekveres automatisk
+Routerens konfiguration er organiseret som følger:
+- `/etc/network/interfaces`
+- `/etc/nftables.conf`
+- `/etc/sysctl.conf`
+- `/etc/radvd.conf`
+- `/etc/tayga.conf`
+- `/usr/local/bin/router-boot.sh` ← eksekveres automatisk ved opstart.
 
 ---
 
-### 🧱 GNS3 Appliance Definition (gns3a)
+## 🧱 **GNS3 Appliance Definition**
 
-Filen definerer:
-
+Opret en GNS3 appliance-definition i JSON-format:
 ```json
 {
   "name": "linux-router",
@@ -95,24 +121,37 @@ Filen definerer:
 
 ---
 
-### 🧪 Test og brug
+## 🧪 **Test og Brug**
 
-Importer appliance og brug som ethvert andet netværkselement i GNS3:
+### **Importer Appliance i GNS3**
+1. **Download nødvendige filer**:
+   - `.qcow2` diskbilledet for Debian 12 Minimal.
+   - Appliance-definitionen (`linux-router.gns3a`).
 
-* Tilføj til projekt
-* Tildel interfaces
-* Konfigurer IPv4 og IPv6 routing, DHCPv6, NAT og VLAN’er
+2. **Importer appliance**:
+   - Åbn GNS3 GUI.
+   - Klik på **File → Import Appliance**.
+   - Vælg `linux-router.gns3a` filen og følg guiden:
+     - Vælg den korrekte `.qcow2` diskfil.
+     - Tildel ressourcer som RAM og antal netværksadaptere.
+
+3. **Tilføj appliance til projekt**:
+   - Træk routeren fra venstre side (Devices-panelet) ind i arbejdsområdet.
+
+4. **Tildel interfaces**:
+   - Forbind routeren til andre enheder som switches eller andre routere.
 
 ---
 
-### 🟩 Klar til levering?
+### **Konfigurer Funktioner**
+- Indstil IPv4 og IPv6 routing.
+- Opsæt DHCPv6, NAT, og VLAN subinterfaces.
 
-Hvis du ønsker det:
+---
 
-* Jeg kan generere:
+## 🟩 **Klar til Levering?**
 
-  * En `.qcow2` disk (du downloader og importerer)
-  * En `.gns3a` appliance-definition
-  * Et startup-script til både IPv4/IPv6 forwarding og NAT
-
-> Sig til, om du vil have det som en downloadbar pakke, eller om du selv vil bygge image fra ISO – jeg kan guide dig i begge tilfælde.
+Jeg kan levere følgende:
+1. **En .qcow2 disk**: Klar til at importere i GNS3.
+2. **En .gns3a appliance-definition**.
+3. **Et startup-script**: Automatisk aktiverer IPv4/IPv6 forwarding og NAT.
