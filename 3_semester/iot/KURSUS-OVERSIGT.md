@@ -1,65 +1,68 @@
-# Kursusbeskrivelse  
-## IoT-Bootcamp – Node-RED, ESP32 & Industriel Integration  
-**Målgruppe:** Automationsteknologer og produktionsteknologer  
-**Udbyder:** Aarhus Maskinmesterskole  
-**Underviser:** Anders S. Østergaard  
+Rettet. Her er en version der matcher forløbsplanen.
+
+# Kursusbeskrivelse
+
+## IoT-Bootcamp – Node-RED, ESP32 & Industriel Integration
+
+**Målgruppe:** Automationsteknologer og produktionsteknologer
+**Udbyder:** Aarhus Maskinmesterskole
+**Underviser:** Anders S. Østergaard
 
 ---
 
 ### Formål
-Kurset giver deltagerne en praksisnær og helhedsorienteret forståelse for IoT-løsninger i moderne automation. Gennem hands-on arbejde med standard hardware og software opbygges kompetencer til at designe, implementere, sikre og dokumentere komplette IoT-systemer fra sensor til dashboard.
+
+Kurset giver deltagerne en praksisnær og helhedsorienteret forståelse for IoT-løsninger i moderne automation. Fokus er komplette kæder fra sensor til dashboard, inkl. integration, sikkerhed og dokumentation.&#x20;
 
 ---
 
 ### Læringsmål
+
 Efter kurset vil deltageren kunne:
-- Opbygge dataflows i Node-RED
-- Publicere og modtage data via MQTT (inkl. TLS og topics)
-- Arbejde med REST/HTTP-endpoints og webhooks
-- Integrere Home Assistant og bygge automations
-- Gateway’e Modbus-data til MQTT
-- Forstå centrale principper for OTA-opdateringer (men ikke implementere det)
-- Segmentere og beskytte IoT-trafik (VLAN, certifikater, creds)
-- Visualisere og alarmere live-data (Grafana, dashboards)
-- Dokumentere og SAT/FAT-teste IoT-løsninger
-- Præsentere teknologikæden og prototype i en video
+
+* Opbygge dataflows i Node-RED (inject, debug, function, ui\_komponenter).&#x20;
+* Publicere og modtage data via MQTT inkl. topics og QoS, samt analysere trafikken i Wireshark.&#x20;
+* Arbejde med REST/HTTP-endpoints og simple CRUD-mønstre.&#x20;
+* Integrere Home Assistant via MQTT discovery og bygge Lovelace-dashboards.&#x20;
+* Udføre CoAP resource discovery og bygge CoAP→MQTT-gateway.&#x20;
+* Gateway’e Modbus TCP-registre til MQTT.&#x20;
+* Segmentere og beskytte IoT-trafik med VLAN, firewall-regler og TLS-heartbeat.&#x20;
+* Visualisere og alarmere live-data i Node-RED/Home Assistant.&#x20;
+* Synkronisere data via Firebase Realtime Database.&#x20;
+* Dokumentere løsningen og anvende SAT/FAT-artefakter; præsentere i en kort video.&#x20;
 
 ---
 
 ### Kursusindhold (overblik)
-- **Dag 1:** Node-RED introduktion (flow-programmering, editor, simple flows)
-- **Dag 2:** IoT-monitorering (MQTT, topics, QoS, dataopsamling, ESP32 integration)
-- **Dag 3:** REST API og data storage (HTTP endpoints, CRUD, persistens, database)
-- **Dag 4:** Home Assistant integration (MQTT discovery, dashboard, automations)
-- **Dag 5:** CoAP og resource discovery (CoAP-server, klient og gateway)
-- **Dag 6:** Modbus-integration (Modbus TCP, gateway til MQTT)
-- **Dag 7:** Netværk og sikkerhed (VLAN, TLS, firewall, security checklist)
-- **Dag 8:** Mini-projekt (prototype, dokumentation, præsentation)
-- **Intro til OTA:** Der gives en kort introduktion til OTA-opdateringsprincipper, men ikke egentlig implementation
+
+* **Dag 1:** Node-RED introduktion
+* **Dag 2:** IoT-monitorering (MQTT)
+* **Dag 3:** Smart-house integration
+* **Dag 4:** REST kommandoer & Data Storage
+* **Dag 5:** Home Assistant & Integrering
+* **Dag 6:** CoAP & Resource Discovery
+* **Dag 7:** Smart-house integration (udbygning)
+* **Dag 8:** Modbus-integration
+* **Dag 9:** Firebase RTDB integration
+* **Dag 10:** Netværk & Sikkerhed
+* **Dag 11:** Mini-projekt
+* **Dag 12:** Afslutning
+
 
 ---
 
 ### Pædagogisk tilgang
 
-Undervisningen er didaktisk opbygget med klar progression og med fokus på at koble teori og praksis.
-
-- **Indledningsvis** bruges cirka **1/3 af tiden på teori**: Fælles introduktion, tavlegennemgang og diskussion, hvor grundbegreber gennemgås og relateres til konkrete cases.
-- **2/3 af tiden** allokeres til **praktisk, hands-on arbejde**: Deltagerne arbejder individuelt eller i små grupper med opgaver, eksperimenter og mini-projekter.  
-- **Learning by doing**: Det praktiske arbejde er centreret omkring reelle problemstillinger fra industrien, hvor deltagerne eksperimenterer, fejlsøger og løser opgaver på egen hånd – med underviseren som facilitator og sparringspartner.
-- **Iterativ læring**: Deltagerne bygger løbende videre på deres løsninger, så forståelsen udvikles gradvist. Hver dag afsluttes med opsamling, refleksion og feedback for at skabe helhed og transfer.
-- **Autenticitet**: Opgaver og projekter tager udgangspunkt i virkelighedsnære scenarier, typisk med hardware og software, som anvendes i branchen.
-- **Dokumentation og formidling**: Deltagerne dokumenterer løbende deres arbejde og afslutter med en præsentation/video, der træner formidling af tekniske løsninger.
+Progression med kobling mellem teori og praksis. Ca. 1/3 klasseundervisning og 2/3 hands-on i grupper. Iterativ opbygning, daglig opsamling og refleksion. Dokumentation undervejs.
 
 ---
 
 ### Evaluering
-Kurset afsluttes med aflevering af et mini-projekt, hvor der dokumenteres en fungerende IoT-prototype fra sensor til dashboard, inkl. sikkerhed, test og dokumentation. Løsningen præsenteres i en kort video. Der gives peer feedback og individuel refleksion.
+
+Aflevering af mini-projekt: fungerende prototype fra sensor til dashboard inkl. sikkerhed, test og dokumentation. Kort video/demonstration. Peer-feedback og individuel refleksion.&#x20;
 
 ---
 
 ### Forudsætninger
-Grundlæggende kendskab til IT, netværk og automation er en fordel, men ikke et krav. Al software er open source, og der arbejdes med billige standardkomponenter.
 
----
-
-*Detaljeret dag-for-dag-plan findes i "Detaljeret Forløbsplan".*
+Basalt kendskab til IT, netværk og automation er en fordel, ikke et krav. Der arbejdes med standardkomponenter og open-source software.
