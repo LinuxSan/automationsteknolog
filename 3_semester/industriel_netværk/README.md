@@ -77,7 +77,7 @@ industrielt-netvaerk/
 | **02** | Subnet, VLAN, segmentering   | GNS3, routing, ping/traceroute     |
 | **03** | Profibus & IO-Link (teori)   | Slides, quiz, case-eksempler       |
 | **04** | Rotationsøvelser 1           | Fysisk Profibus/IO-Link/Modbus     |
-| **05** | Dokumentation & rapportering | Netværksdiagram, fejlskema         |
+| **05** | Siemens Opgaver              | Siemens kommunikation              |
 | **06** | Profinet & EtherNet/IP       | TIA Portal, GNS3, video/quiz       |
 | **07** | Rotationsøvelser 2           | Fysisk/virtuel PLC, UR/AUBO, tags  |
 | **08** | Fejlfinding & sikkerhed      | GNS3 firewall/ACL, fejlscenarier   |
