@@ -2,23 +2,23 @@
 
 ## 📝 Formål
 
-Formålet er at lære, hvordan du får en virtuel PC (VPCS eller Ubuntu/Docker) i GNS3 til at kommunikere med internettet. Du får erfaring med NAT, gateway og praktisk routing – som bruges i al industriel netværksintegration.
+Formålet er at lære, hvordan du får en virtuel PC (VPCS eller Ubuntu/Docker) i GNS3 til at kommunikere med internettet. Du får erfaring med Cloud, gateway og praktisk routing – som bruges i al industriel netværksintegration.
 
 ## 🎯 Kompetencer
 
-- Kan forbinde en GNS3-node til internettet via NAT
+- Kan forbinde en GNS3-node til internettet via Cloud
 - Kan forstå gateway/bro-forbindelse mellem lokalnet og internet
 - Kan teste og dokumentere ekstern netværksforbindelse (ping, DNS, web)
 
 ---
 
-## 1. Forbind din PC til internettet (med NAT i GNS3)
+## 1. Forbind din PC til internettet (med Cloud i GNS3)
 
-### A. Tilføj NAT-node (nemmeste metode)
+### A. Tilføj Cloud-node (nemmeste metode)
 
-1. I GNS3, find **NAT** under “All devices” (eller “End devices”).
-2. Træk en **NAT-node** ind på arbejdsområdet.
-3. Forbind din VPCS eller Ubuntu (eller begge) til NAT-node med “Add a link”.
+1. I GNS3, find **Cloud** under “All devices” (eller “End devices”).
+2. Træk en **Cloud-node** ind på arbejdsområdet.
+3. Forbind din VPCS eller Ubuntu (eller begge) til Cloud-node med “Add a link”.
 4. Tænd alle noder (grøn “Play”-knap).
 
 ### B. Tildel IP-adresse og gateway
@@ -29,7 +29,7 @@ Formålet er at lære, hvordan du får en virtuel PC (VPCS eller Ubuntu/Docker) 
 dhcp
 
 ````
-(så henter PC’en automatisk IP, gateway og DNS fra NAT)
+(så henter PC’en automatisk IP, gateway og DNS fra Cloud)
 
 - Hvis du bruger **Ubuntu**:
 - I terminalen skriv:
@@ -90,14 +90,14 @@ apt update
 ## 📷 Dokumentation
 
 - Screenshot af:
-  - Din GNS3-topologi med NAT-node og PC/Ubuntu forbundet
+  - Din GNS3-topologi med Cloud-node og PC/Ubuntu forbundet
   - Ping-resultater til 8.8.8.8 og google.com
 
 ---
 
 ## Refleksion
 
-- Hvad er forskellen på en NAT-node og en almindelig switch?
+- Hvad er forskellen på en Cloud-node og en almindelig switch?
 - Hvad sker der, hvis du ikke tildeler gateway (eller bruger forkert subnet)?
 - Hvordan kan du bruge denne opsætning i industrielt netværk?
 
