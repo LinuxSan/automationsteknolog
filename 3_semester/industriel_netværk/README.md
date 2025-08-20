@@ -99,7 +99,7 @@ industrielt-netvaerk/
 ## 🤝 Hjælp & support
 
 Har du brug for hjælp?
-👉 Opret et GitHub issue eller spørg underviseren i Teams.
+👉 Opret et GitHub issue eller spørg underviseren
 
 ---
 
