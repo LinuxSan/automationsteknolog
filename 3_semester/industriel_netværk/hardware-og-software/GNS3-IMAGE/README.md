@@ -122,7 +122,3 @@ Når der kommer en ny version, fx `:1.1`:
 * Console: `None`
 * Start command: `bash`
 * Privileged: `On`
-
----
-
-✅ **Resultat:** De studerende kan nu tilføje både **PC** og **Router** til ethvert GNS3-projekt uden lokale filer. GNS3 VM henter images automatisk fra Docker Hub, og Console giver direkte adgang til bash i hver node.
