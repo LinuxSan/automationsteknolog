@@ -1,78 +1,71 @@
-# 🖧 Subnetting med to PC’er i GNS3
+# Lab: 2 Linux‑PC’er + 1 Linux‑router (statisk routing) — Minimal
 
-## 📝 Formål
+> **Mål**: Få PC1 og PC2 til at pinge hinanden via en simpel Linux‑router. Ingen firewall. Kun IPv4.
 
-Formålet er at lære at dele et netværk op i subnet og forstå, hvordan adressering påvirker kommunikation mellem to enheder.
-
-## 🎯 Kompetencer
-
-- Kan opbygge et simpelt netværk i GNS3
-- Kan tildele IP-adresser i forskellige subnet
-- Kan forudsige og teste, om to PC’er kan kommunikere på tværs af subnet
-- Kan dokumentere og reflektere over netværksopsætning
-
----
-
-## Opgave: Sådan gør du
-
-### 1. Opsætning i GNS3
-
-1. Opret et nyt GNS3-projekt (fx “SubnetToPC”)
-2. Indsæt:
-    - **2 x VPCS** (Virtual PC)
-    - **1 x Ethernet Router**
-3. Forbind begge PC’er til Router
-
-### 2. Tildel IP-adresser i forskellige subnet
-
-- Til **VPCS1**:
-```
-
-ip 192.168.10.10/24 192.168.10.1
+## Topologi og IP‑plan
 
 ```
-- Til **VPCS2**:
+PC1 ──(eth0)── Router ──(eth1)── PC2
 ```
 
-ip 192.168.20.10/24 192.168.20.1
+| Enhed  | Interface | IP/Mask         | Gateway      |
+| ------ | --------- | --------------- | ------------ |
+| PC1    | eth0      | 192.168.10.2/24 | 192.168.10.1 |
+| Router | eth0      | 192.168.10.1/24 | —            |
+| Router | eth1      | 192.168.20.1/24 | —            |
+| PC2    | eth0      | 192.168.20.2/24 | 192.168.20.1 |
 
+## Kommandoer (midlertidig lab‑opsætning)
+
+Tilpas `ethX` til dine interface‑navne.
+
+### PC1
+
+```bash
+ip addr replace 192.168.10.2/24 dev eth0
+ip link set eth0 up
+ip route replace default via 192.168.10.1
 ```
-*(Her er de i hvert sit subnet: .10.0/24 og .20.0/24)*
 
-### 3. Test forbindelsen
+### Router
 
-- På **VPCS1**:
+```bash
+ip addr replace 192.168.10.1/24 dev eth0
+ip addr replace 192.168.20.1/24 dev eth1
+ip link set eth0 up; ip link set eth1 up
+sysctl -w net.ipv4.ip_forward=1
 ```
 
-ping 192.168.20.10
+### PC2
 
+```bash
+ip addr replace 192.168.20.2/24 dev eth0
+ip link set eth0 up
+ip route replace default via 192.168.20.1
 ```
-- På **VPCS2**:
+
+## Verifikation
+
+```bash
+# fra PC1
+ping -c3 192.168.10.1   # router eth0
+ping -c3 192.168.20.1   # router eth1
+ping -c3 192.168.20.2   # PC2
+traceroute 192.168.20.2
 ```
 
-ping 192.168.10.10
+Hvis det fejler, tjek i rækkefølge:
 
+```bash
+ip -br link           # interfaces skal være UP
+ip -br a              # korrekte adresser
+ip r                  # PC1/PC2 skal have default via router
+cat /proc/sys/net/ipv4/ip_forward  # på router: 1
 ```
-- **Spørgsmål:** Kan PC’erne nå hinanden?  
-- Forklar hvorfor/hvorfor ikke.
 
----
+## Aflevering (kort)
 
-## 📷 Dokumentation
+* Skærmbillede af `ip a` og `ip r` på alle tre maskiner
+* Ping og traceroute fra PC1 til PC2
 
-- Tag screenshot af:
-  - Dit netværk i GNS3
-  - Ping-forsøg fra begge PC’er
-
----
-
-## Refleksion
-
-- Hvad skete der, da du pingede mellem subnettene?
-- Hvorfor er subnetting vigtigt i industrielt netværk?
-
----
-
-Når du forstår subnetting, er du klar til at koble flere segmenter sammen senere!
-
-**Sig til hvis du vil have næste trin (samme subnet, derefter router/gateway, så VLAN, osv.)!**
+> Bonus (valgfrit): Gem opsætningen permanent med netplan eller systemd‑networkd. Ikke et krav i denne opgave.
