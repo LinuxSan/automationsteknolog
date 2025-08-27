@@ -1,7 +1,22 @@
 
 # 02 — Split 192.168.1.0/24 til 4 subnet (/26) — IP‑range for subnet #2
 
-**Formål:** Split et /24 i fire lige store /26‑subnet. Angiv IP‑range for **subnet #2**.
+### Formål (forbedret)
+
+* Træne sikker opdeling af et /24 i fire /26.
+* Anvende fast metode: *prefix → blokstørrelse → net → broadcast → host-range*.
+* Identificere præcis host-range for **subnet #2** uden hjælpemidler.
+
+### Læringsmål
+
+Efter opgaven kan du:
+
+1. Forklare sammenhængen mellem prefix, host-bits og antal adresser for /26.
+2. Beregne blokstørrelse og brugbare værter i et /26.
+3. Liste de fire /26-net i 192.168.1.0/24 korrekt og finde net/broadcast for hvert.
+4. Udlede første og sidste brugbare IP i **subnet #2**.
+5. Validere svaret med multipla-reglen og “broadcast = næste net − 1”.
+6. Tjekke om en vilkårlig IP hører til i **subnet #2**.
 
 ## Forudsætninger
 
