@@ -1,6 +1,17 @@
 # 01 — Split 192.168.1.0/24 til 2 subnet (/25) — net + broadcast
 
-**Formål:** Øv grundlæggende subnetting. Du splitter et /24 i to lige store /25‑subnet og angiver net- og broadcast‑adresser for hvert subnet.
+## Formål (forbedret)
+- Træne sikker og hurtig opdeling af et /24 i to /25 uden værktøj.
+- Indøve fast metode: prefix → blokstørrelse → net → broadcast → host-range.
+- Klargøre adressering til efterfølgende VLAN- og routing-øvelser.
+
+## Læringsmål
+- Efter opgaven kan du:
+- Forklare relationen mellem prefix, host-bits og antal adresser.
+- Beregne blokstørrelse for /25 og udlede brugbare værter.
+- Udpege net- og broadcast-adresser for begge /25 i 192.168.1.0/24.
+- Angive første og sidste brugbare IP pr. subnet.
+- Validere løsningen med multipla-reglen og “broadcast = næste net − 1”.
 
 ## Forudsætninger
 
