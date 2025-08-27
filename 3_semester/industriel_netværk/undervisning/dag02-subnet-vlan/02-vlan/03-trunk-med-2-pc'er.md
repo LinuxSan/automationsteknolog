@@ -1,146 +1,128 @@
-# GNS3 — 802.1Q trunk mellem to Linux‑enheder + 2 PC’er (L2‑øvelse)
+## Opgave 2 — Inter-VLAN routing, let og roligt
 
-**Mål:** Byg en **trunk** mellem to Linux‑noder (R1↔R2). PC1 og PC2 er i samme VLAN over trunken. Ingen routing. Kun L2.
-
-## Topologi
-
-```
-PC1 ── R1 ──(trunk: eth1)── R2 ── PC2
-        ^                     ^
-      access                 access
-```
-
-Noder findes i GNS3: `R1` og `R2` (Linux), `PC1`, `PC2` (Linux). Direkte links som vist.
-
-## VLAN og IP‑plan
-
-* VLAN10 (ID 10): 192.168.10.0/24  →  PC1 = 192.168.10.2,  PC2 = 192.168.10.3
-* VLAN20 (ID 20): bruges i **Del B** til isolations‑test
+**Tænk sådan her:** Der er to rum med hver sin farve. PC1 bor i rum 10. PC2 bor i rum 20. R1 er dørmanden. Når vi tænder dørmanden, kan de to rum tale sammen.
 
 ---
 
-## Del A — Trunk op, PC’er i samme VLAN over trunken
+### Forudsætning
 
-### 1) R1: VLAN‑bevidst bridge + access + trunk
+Opgave 1 virker:
 
-```bash
-# Bridge med VLAN‑filtrering
-ip link add br0 type bridge vlan_filtering 1
-ip link set br0 up
-ip link set eth0 up; ip link set eth1 up
-ip link set eth0 master br0
-ip link set eth1 master br0
-
-# Ryd default VLAN 1 membership (valgfrit for tydelighed)
-bridge vlan del dev eth0 vid 1 2>/dev/null || true
-bridge vlan del dev eth1 vid 1 2>/dev/null || true
-
-# eth0 = ACCESS i VLAN10 (untagged)
-bridge vlan add dev eth0 vid 10 pvid untagged
-
-# eth1 = TRUNK tillader VLAN10 og VLAN20 (tagged)
-bridge vlan add dev eth1 vid 10
-bridge vlan add dev eth1 vid 20
-```
-
-### 2) R2: samme model
-
-```bash
-ip link add br0 type bridge vlan_filtering 1
-ip link set br0 up
-ip link set eth0 up; ip link set eth1 up
-ip link set eth0 master br0
-ip link set eth1 master br0
-
-bridge vlan del dev eth0 vid 1 2>/dev/null || true
-bridge vlan del dev eth1 vid 1 2>/dev/null || true
-
-# eth0 = ACCESS i VLAN10
-bridge vlan add dev eth0 vid 10 pvid untagged
-
-# eth1 = TRUNK (vid10,20)
-bridge vlan add dev eth1 vid 10
-bridge vlan add dev eth1 vid 20
-```
-
-### 3) PC1 og PC2: IP i VLAN10 (ingen gateway)
-
-```bash
-# PC1
-ip addr flush dev eth0
-ip addr add 192.168.10.2/24 dev eth0
-ip link set eth0 up
-
-# PC2
-ip addr flush dev eth0
-ip addr add 192.168.10.3/24 dev eth0
-ip link set eth0 up
-```
-
-### 4) Test
-
-Fra **PC1**
-
-```bash
-ping -c3 192.168.10.3
-```
-
-Forventet: succes. L2 rammer går PC1→R1(access VLAN10)→R1 trunk tagger→R2 trunk→R2 access VLAN10→PC2.
+* PC1 ↔ R1 i **VLAN10**
+* PC2 ↔ R1 i **VLAN20**
+* På R1 findes **eth0.10** og **eth0.20** allerede (trunk-varianten).
 
 ---
 
-## Del B — Vis isolation mellem VLAN over samme trunk
-
-Skift **PC2** til VLAN20 (nyt subnet) og bekræft at ping fra PC1 fejler.
-
-### 5) R2: gør eth0 til ACCESS i VLAN20
+### Trin 1 — Tænd dørmanden på R1
 
 ```bash
-# Fjern VLAN10 som access
-bridge vlan del dev eth0 vid 10
-# Sæt VLAN20 som access
-bridge vlan add dev eth0 vid 20 pvid untagged
+sysctl -w net.ipv4.ip_forward=1
+ip -4 route
 ```
 
-### 6) PC2: ny IP i VLAN20
+* Første linje åbner døren mellem rum 10 og 20.
+* Anden linje viser, at R1 kender begge net som “connected”.
+
+### Trin 2 — Tjek at begge børn kan snakke med dørmanden
+
+**PC1**
 
 ```bash
-ip addr flush dev eth0
-ip addr add 192.168.20.3/24 dev eth0
-ip link set eth0 up
+ip -4 addr; ip r
+ping -c2 10.10.10.1
 ```
 
-### 7) Test igen
-
-Fra **PC1**
+**PC2**
 
 ```bash
-ping -c3 192.168.20.3   # forventet FEJL (VLAN‑isolation)
+ip -4 addr; ip r
+ping -c2 10.10.20.1
 ```
 
-Valgfrit: Tilføj en **PC3** på R1’s access‑port i VLAN20 og bekræft at **PC3↔PC2** virker over samme trunk.
+### Trin 3 — Test PC1 ↔ PC2
 
----
-
-## Fejlsøgning
+**Fra PC1**
 
 ```bash
-ip -br link
-bridge vlan show                # se pvid/untagged/tagged pr. port
-bridge link show                 # medlemskab i br0
-ip neigh                         # ARP udfyldes ved trafik
+ping -c3 10.10.20.2
+traceroute 10.10.20.2 || tracepath 10.10.20.2
 ```
 
-**Typiske fejl**
+* Ét hop via R1 er korrekt.
 
-* Access‑port sat med forkert `pvid`/`untagged`
-* Trunk mangler et VLAN på én side → føj `bridge vlan add dev eth1 vid <id>`
-* IP’er sat i samme /24 men på forskellige VLAN → virker ikke (adskilte L2‑domæner)
+### Se trafikken (valgfrit)
 
----
+* Trunk-kablet på R1:
 
-## Aflevering
+```bash
+tcpdump -ni eth0 'vlan and icmp'
+```
 
-* `bridge vlan show` fra begge bro‑noder
-* `ip a` fra PC’er
-* Ping‑resultater for Del A (succes) og Del B (forventet fejl)
+* Eller specifikt:
+
+```bash
+tcpdump -ni eth0 'vlan 10 and icmp'
+tcpdump -ni eth0 'vlan 20 and icmp'
+```
+
+### Hurtig fejlsøgning
+
+```bash
+ip -br a        # IP’er sidder på eth0.10 og eth0.20
+ip r            # R1 har to connected /24
+ip neigh        # ARP for PC1 og PC2
+```
+
+* Ingen svar PC1→PC2 → `ip_forward` er 0 på R1.
+* PC når sin GW men ikke modpart → forkert default-gateway på PC’en.
+* Stadig problemer → trunkport mod R1 mangler VLAN 10/20 eller subinterface er DOWN.
+
+## Variant B — To kabler, ingen trunk (R1: eth0 til PC1, eth1 til PC2)
+
+**Tænk simpelt:** Der er to rum. PC1 taler i rum A. PC2 taler i rum B. R1 står i midten og åbner døren mellem A og B.
+
+**Tænd døren på R1**
+
+```bash
+sysctl -w net.ipv4.ip_forward=1
+ip -4 route
+```
+
+* Første linje tænder “må gå mellem rum”.
+* Anden linje viser, at R1 kender begge net (10.10.10.0/24 og 10.10.20.0/24 som “connected”).
+
+**Test**
+
+* Fra PC1:
+
+  ```bash
+  ping -c3 10.10.20.2
+  traceroute 10.10.20.2 || tracepath 10.10.20.2
+  ```
+
+  Ét hop via R1 er korrekt.
+* Valgfrit fra PC2:
+
+  ```bash
+  ping -c3 10.10.10.2
+  ```
+
+**Se trafikken på R1**
+
+```bash
+tcpdump -ni eth0 icmp    # PC1-siden
+tcpdump -ni eth1 icmp    # PC2-siden
+```
+
+**Hurtig fejlsøgning**
+
+```bash
+ip -br a        # IP’er på de rigtige interfaces
+ip r            # R1 har to connected /24
+ip neigh        # ARP for PC1 og PC2 ses efter lokale pings
+```
+
+* Ingen svar PC1→PC2: `ip_forward` er 0 på R1. Tænd den.
+* PC kan nå sin GW men ikke modpart: forkert default-gateway på PC’en.
+* Intet på tcpdump på den ene side: forkert kabel/port eller interface-navn.
