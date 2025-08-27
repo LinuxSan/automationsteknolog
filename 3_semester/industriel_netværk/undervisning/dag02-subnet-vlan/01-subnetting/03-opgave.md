@@ -57,6 +57,9 @@ Find korrekte interface-navne med `ip -br link` og erstat `eth0/eth1`.
 
   * R1-eth1: **første brugbare** i Subnet #2
   * PC2: vilkårlig **brugbar** i Subnet #2 (ikke R1-IP)
+ 
+<img width="3456" height="2160" alt="Screenshot From 2025-08-27 17-39-50" src="https://github.com/user-attachments/assets/47b7d7cd-54a4-48c7-92a1-628f70b635d5" />
+
 
 ### 1) Router (R1)
 
