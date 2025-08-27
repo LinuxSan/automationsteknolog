@@ -1,7 +1,3 @@
-Her er Opgave 1 omskrevet i samme pædagogiske stil.
-
----
-
 # Opgave 1 — To VLAN i GNS3 med isolation, let og roligt
 
 **Tænk sådan her:** To farvede rum på samme etage. PC1 bor i rum 10. PC2 bor i rum 20. Dørmanden (R1) står i døren men sover. Når dørmanden sover, kan rummene ikke tale sammen.
