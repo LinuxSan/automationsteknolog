@@ -165,7 +165,7 @@ sysctl -w net.ipv4.ip_forward=1
 ping -c3 10.10.20.2   # fra PC1
 traceroute 10.10.20.2 || tracepath 10.10.20.2
 ```
-## Appendiks — Kommandoforklaringer til Opgave 1
+## Appendiks
 
 * ```sh
   sysctl -w net.ipv4.ip_forward=0|1
