@@ -165,40 +165,83 @@ sysctl -w net.ipv4.ip_forward=1
 ping -c3 10.10.20.2   # fra PC1
 traceroute 10.10.20.2 || tracepath 10.10.20.2
 ```
-## Appendiks — Kommandoforklaring
+## Appendiks — Kommandoforklaringer til Opgave 1
 
-* `sysctl -w net.ipv4.ip_forward=0|1`
-  Slår IPv4-routing fra(0) eller til(1) i kernel. Midlertidig ændring.
+* ```sh
+  sysctl -w net.ipv4.ip_forward=0|1
+  ```
 
-* `ip link add link eth0 name eth0.<VLAN> type vlan id <VID>`
-  Opretter 802.1Q subinterface på `eth0`. Kræver 8021q på værten. Bruges til trunk.
+  Slår IPv4-routing fra (0) eller til (1) i kernel. Midlertidigt til næste reboot.
 
-* `ip addr add <IP/CIDR> dev <interface>`
-  Tildeler IP-adresse til interface. Midlertidig konfiguration.
+* ```sh
+  ip link add link eth0 name eth0.<VID> type vlan id <VID>
+  ```
 
-* `ip link set <interface> up`
-  Aktiverer interfacet. Nødvendig før trafik kører.
+  Opretter 802.1Q-subinterface på `eth0` med VLAN-ID `<VID>`. Kræver 8021q på værten.
 
-* `ip -d link show <interface>`
-  Viser linkdetaljer. For VLAN vises tag id og parent-link.
+* ```sh
+  ip addr add <IP/CIDR> dev <interface>
+  ```
 
-* `ip addr flush dev <interface>`
-  Fjerner alle IP-adresser på interfacet. God til “clean state”.
+  Tildeler IP-adresse til et interface. Gælder indtil reboot eller flush.
 
-* `ip route replace default via <GW>`
-  Sætter eller erstatter default-route til gateway. Midlertidig ændring.
+* ```sh
+  ip link set <interface> up
+  ```
 
-* `ip -4 route`
-  Viser IPv4-rutetabellen. Tjek for “connected” net og default.
+  Aktiverer interfacet. Skal være UP før det kan sende/modtage.
 
-* `ping -c<N> <destination>`
-  Sender N ICMP-eko. Brug til reachability-test.
+* ```sh
+  ip -d link show <interface>
+  ```
 
-* `traceroute <dst> || tracepath <dst>`
-  Viser hop for hop. `tracepath` virker ofte uden sudo.
+  Viser linkdetaljer. For VLAN ses parent-link og VLAN-ID.
 
-* `tcpdump -ni eth0 'vlan and icmp'`
-  Sniffer ICMP der er 802.1Q-tagget på `eth0`. `-n` ingen DNS. `-i` vælger interface.
+* ```sh
+  ip addr flush dev <interface>
+  ```
 
-* `tcpdump -ni eth0 icmp` / `tcpdump -ni eth1 icmp`
-  Sniffer ICMP på den angivne side. Bruges i “to kabler”-varianten til at se hver VLAN-side.
+  Fjerner alle IP-adresser fra interfacet. God “clean state”.
+
+* ```sh
+  ip route replace default via <GW>
+  ```
+
+  Opretter eller erstatter default-route til gateway `<GW>`.
+
+* ```sh
+  ip -4 route
+  ```
+
+  Viser IPv4-rutetabellen. Bruges til at bekræfte “connected” net og default.
+
+* ```sh
+  ping -c<N> <destination>
+  ```
+
+  Sender N ICMP-eko til `<destination>`. Bruges til reachability-test.
+
+* ```sh
+  tcpdump -ni eth0 'vlan and icmp'
+  ```
+
+  Sniffer tagget ICMP på trunk-link `eth0`. `-n` = ingen DNS-opslag, `-i` vælger interface.
+
+* ```sh
+  tcpdump -ni eth0 icmp
+  tcpdump -ni eth1 icmp
+  ```
+
+  Sniffer ICMP på en specifik side. Bruges i “to kabler”-varianten.
+
+* ```sh
+  traceroute <destination>
+  ```
+
+  Viser ruten hop-for-hop via TTL. Kræver ofte root/installeret pakke.
+
+* ```sh
+  tracepath <destination>
+  ```
+
+  Alternativ til `traceroute`. Virker typisk uden sudo.
