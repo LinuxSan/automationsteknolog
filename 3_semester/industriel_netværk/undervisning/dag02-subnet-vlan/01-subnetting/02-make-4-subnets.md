@@ -59,7 +59,7 @@ Start ved 192.168.1.0. Læg blokstørrelsen til for at finde næste net.
 * **Subnet #4**
   Net: `____________`  ·  Broadcast: `____________`
 
-### Trin 5 — IP‑range for subnet #2 (det du skal aflevere)
+### Trin 5 — IP‑range for subnet
 
 * Første brugbare IP: `____________`
 * Sidste brugbare IP: `____________`
