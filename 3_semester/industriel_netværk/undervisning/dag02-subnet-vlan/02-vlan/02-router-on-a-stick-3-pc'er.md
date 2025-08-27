@@ -1,131 +1,108 @@
-# GNS3 — 3 VLAN på Linux‑router + 3 Linux‑PC’er (router‑on‑a‑stick)
+# Opgave 1 — To VLAN i GNS3 med isolation
 
-**Mål:** Inter‑VLAN routing mellem tre VLAN. PC1 (VLAN10) kan ping’e PC2 (VLAN20) og PC3 (VLAN30) via Linux‑routerens trunk.
+### Formål
 
-## Topologi (GNS3)
+* Etablér VLAN10 og VLAN20 med korrekt access og trunk.
+* Verificér L2-isolation uden routing.
 
-```
-PC1 ─┐         ┌─ R1 (Linux‑router)
-PC2 ─┼─ Switch ┤  trunk: eth0 (802.1Q)
-PC3 ─┘         └─────────────────────
-```
+### Læringsmål
 
-Switch’en er VLAN‑uvidende i GNS3 og lader 802.1Q‑tags passere.
+Du kan:
 
-## IP‑plan
-
-* **VLAN10 (ID 10)**: 192.168.10.0/24  →  R1 = 192.168.10.1,  PC1 = 192.168.10.2
-* **VLAN20 (ID 20)**: 192.168.20.0/24  →  R1 = 192.168.20.1,  PC2 = 192.168.20.2
-* **VLAN30 (ID 30)**: 192.168.30.0/24  →  R1 = 192.168.30.1,  PC3 = 192.168.30.2
-
-> Tilpas interface‑navne hvis dine ikke hedder `eth0`.
+1. Sætte access- og trunkporte i GNS3-switch.
+2. Oprette 802.1Q-subinterfaces på Linux-router.
+3. Dokumentere at kryds-VLAN ikke virker uden routing.
 
 ---
 
-## Trin 0 — Oprydning (alle noder)
+## Topologi
+
+PC1 — SW — R1
+PC2 — SW — R1
+
+* PC1 i VLAN10, PC2 i VLAN20.
+* SW→R1 er trunk med VLAN 10 og 20.
+
+## Adresseplan
+
+| VLAN | Net        | Router IP  | PC IP      | Maske |
+| ---: | ---------- | ---------- | ---------- | ----- |
+|   10 | 10.10.10.0 | 10.10.10.1 | 10.10.10.2 | /24   |
+|   20 | 10.10.20.0 | 10.10.20.1 | 10.10.20.2 | /24   |
+
+---
+
+## Trin A — Byg i GNS3
+
+* Noder: Ethernet switch, Linux-router (R1), to Linux-PC’er (PC1, PC2).
+* Kabler: PC1→SW e1, PC2→SW e2, R1→SW e8.
+
+## Trin B — Switch
+
+* Opret VLAN 10 og 20.
+* e1: access VLAN 10.
+* e2: access VLAN 20.
+* e8: trunk, allowed VLANs 10,20.
+* Hvis “dot1q” trunk ikke findes: brug to R1-interfaces og to access-porte.
+
+## Trin C — Router R1
 
 ```bash
-ip addr flush dev eth0
-ip link set eth0 up
-```
-
-## Trin 1 — Router (R1): trunk + tre subinterfaces
-
-```bash
-# Opret VLAN‑subinterfaces
+sysctl -w net.ipv4.ip_forward=0
 ip link add link eth0 name eth0.10 type vlan id 10
 ip link add link eth0 name eth0.20 type vlan id 20
-ip link add link eth0 name eth0.30 type vlan id 30
-
-# Tildel IP’er
-ip addr add 192.168.10.1/24 dev eth0.10
-ip addr add 192.168.20.1/24 dev eth0.20
-ip addr add 192.168.30.1/24 dev eth0.30
-
-# Aktivér
+ip addr add 10.10.10.1/24 dev eth0.10
+ip addr add 10.10.20.1/24 dev eth0.20
 ip link set eth0.10 up
 ip link set eth0.20 up
-ip link set eth0.30 up
-
-# Slå routing til
-sysctl -w net.ipv4.ip_forward=1
-```
-
-Tjek:
-
-```bash
 ip -d link show eth0.10
 ip -d link show eth0.20
-ip -d link show eth0.30
-cat /proc/sys/net/ipv4/ip_forward   # 1
 ```
 
-## Trin 2 — PC1 (VLAN10)
+## Trin D — PC1 og PC2
 
 ```bash
-ip link add link eth0 name eth0.10 type vlan id 10
-ip addr add 192.168.10.2/24 dev eth0.10
-ip link set eth0.10 up
-ip route replace default via 192.168.10.1 dev eth0.10
+# PC1 i VLAN10 (access-port)
+ip addr flush dev eth0
+ip addr add 10.10.10.2/24 dev eth0
+ip route replace default via 10.10.10.1
+ping -c2 10.10.10.1
+
+# PC2 i VLAN20 (access-port)
+ip addr flush dev eth0
+ip addr add 10.10.20.2/24 dev eth0
+ip route replace default via 10.10.20.1
+ping -c2 10.10.20.1
 ```
 
-## Trin 3 — PC2 (VLAN20)
+## Verificering
+
+* PC1 → 10.10.20.2 skal **fejle** når routing er OFF:
 
 ```bash
-ip link add link eth0 name eth0.20 type vlan id 20
-ip addr add 192.168.20.2/24 dev eth0.20
-ip link set eth0.20 up
-ip route replace default via 192.168.20.1 dev eth0.20
+sysctl -w net.ipv4.ip_forward=0
+ping -c3 10.10.20.2
 ```
 
-## Trin 4 — PC3 (VLAN30)
+* Snif tags på R1:
 
 ```bash
-ip link add link eth0 name eth0.30 type vlan id 30
-ip addr add 192.168.30.2/24 dev eth0.30
-ip link set eth0.30 up
-ip route replace default via 192.168.30.1 dev eth0.30
+tcpdump -ni eth0 'vlan and icmp'
 ```
-
-## Trin 5 — Test
-
-Fra **PC1**:
-
-```bash
-ping -c2 192.168.10.1   # egen gateway
-ping -c2 192.168.20.1   # anden SVI
-ping -c2 192.168.30.1   # tredje SVI
-ping -c3 192.168.20.2   # PC2
-ping -c3 192.168.30.2   # PC3
-traceroute 192.168.30.2 # via R1
-```
-
-Gentag valgfrit fra PC2/PC3.
-
----
 
 ## Fejlsøgning
 
+* Forkert access-VLAN på e1/e2 → ARP timeouts.
+* Trunk uden VLAN20 → PC2 når ikke 10.10.20.1.
+* 8021q mangler i værts-kernel → “Operation not supported”. Indlæs modulet på værten.
+* Maske/gateway forkert på PC.
+
+## Videre til Opgave 2
+
+Tænd inter-VLAN routing og test:
+
 ```bash
-ip -br link                 # UP?
-ip -br a                    # korrekte IP’er på eth0.{10,20,30}
-ip -d link show eth0.10     # VLAN id = 10
-ip -d link show eth0.20     # VLAN id = 20
-ip -d link show eth0.30     # VLAN id = 30
-cat /proc/sys/net/ipv4/ip_forward
-ip neigh
+sysctl -w net.ipv4.ip_forward=1
+ping -c3 10.10.20.2   # fra PC1
+traceroute 10.10.20.2 || tracepath 10.10.20.2
 ```
-
-**Typiske fejl**
-
-* IP lagt på `eth0` i stedet for `eth0.<vlan>`
-* Forkert default‑route på PC’er
-* `ip_forward=0` på R1
-
----
-
-## Aflevering
-
-* `ip -d link`, `ip a`, `ip r` fra alle tre PC’er og R1
-* Ping/traceroute PC1→PC2 og PC1→PC3
-* Kort note om evt. fejl og fix
