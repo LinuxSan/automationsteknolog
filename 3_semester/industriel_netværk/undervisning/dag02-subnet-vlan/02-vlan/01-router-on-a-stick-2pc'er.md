@@ -5,9 +5,9 @@
 ## Topologi (GNS3)
 
 ```
-PC1 ─┐         ┌─ R1 (Linux‑router)
+PC1 ─┐                   ┌─ R1 (Linux‑router)
      ├─(Ethernet switch)─┤
-PC2 ─┘         └─ trunk på R1: eth0 (802.1Q)
+PC2 ─┘                   └─ trunk på R1: eth0 (802.1Q)
 ```
 
 Alle tre noder er koblet til den samme GNS3 Ethernet‑switch. Switchen er “dum” og lader 802.1Q‑tags passere.
