@@ -1,4 +1,4 @@
-# 01 — Subnetting
+# 01 — Split net op i 2 subnets
 
 ## Formål (forbedret)
 - Træne sikker og hurtig opdeling af et /24 i to /25 uden værktøj.
