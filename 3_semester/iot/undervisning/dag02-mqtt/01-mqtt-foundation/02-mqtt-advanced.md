@@ -1,114 +1,191 @@
-# 📦 MQTT Avanceret Funktionalitet – QoS, Retain, Last Will
+# 📦 MQTT Avanceret Funktionalitet — QoS, Retain, Last Will
 
-Dette dokument bygger videre på det grundlæggende MQTT-arbejde og introducerer mere avancerede emner, som er vigtige i driftssikre og intelligente IoT-systemer. Du lærer gennem opgaver og refleksion.
-
-> ⚠️ **Forudsætning:** Du har gennemført "MQTT Foundation" og har Mosquitto-broker kørende.
-
----
-
-## 🔁 Del 1 – QoS (Quality of Service)
-
-### 🎯 Læringsmål
-
-* Du forstår forskellen på QoS 0, 1 og 2
-* Du kan teste hvordan QoS påvirker levering og stabilitet
-
-### 1.1 Sammenlign QoS-niveauer
-
-Åbn to terminaler – brug forskellige QoS-værdier:
-
-```bash
-mosquitto_sub -t test/qos -q 0
-mosquitto_pub -t test/qos -q 0 -m "QoS 0 besked"
-```
-
-Skift til:
-
-```bash
-mosquitto_sub -t test/qos -q 1
-mosquitto_pub -t test/qos -q 1 -m "QoS 1 besked"
-```
-
-Og til:
-
-```bash
-mosquitto_sub -t test/qos -q 2
-mosquitto_pub -t test/qos -q 2 -m "QoS 2 besked"
-```
-
-> 🔎 **Refleksion:** Hvornår er det vigtigt at sikre at beskeden bliver leveret præcist én gang?
+> ⚠️ **Forudsætning:** Mosquitto-broker kører på `localhost:1883`. Klienter installeret:
+>
+> ```bash
+> sudo apt-get update && sudo apt-get install -y mosquitto-clients
+> ```
 
 ---
 
-## 📌 Del 2 – Retained Messages
+## 🔁 Del 1 — QoS (Quality of Service)
 
-### 🎯 Læringsmål
+🎯 **Mål:** Forstå QoS 0/1/2 og se effekten i praksis.
 
-* Du kan sende retained beskeder og forstå hvordan de bruges
+> Tilføj evt. login: `-u user1 -P 'kode'`
 
-### 2.1 Send en retained besked
+### 1.1 QoS 0 — *best effort*
 
-```bash
-mosquitto_pub -t status/rum1 -r -m "Lys tændt"
-```
-
-Subscriber senere:
+Terminal A:
 
 ```bash
-mosquitto_sub -t status/rum1
+mosquitto_sub -v -t 'test/qos' -q 0
 ```
 
-> Du burde få beskeden med det samme, selvom du ikke var tilsluttet før.
-
-> 🔍 **Diskutér:** Hvordan adskiller retained fra realtime-pub/sub?
-
----
-
-## 🕊️ Del 3 – Last Will & Testament (LWT)
-
-### 🎯 Læringsmål
-
-* Du kan konfigurere en klient til at sende en LWT-besked ved uventet afbrydelse
-
-### 3.1 Simuler nedbrud med LWT
-
-Start en klient med LWT:
+Terminal B:
 
 ```bash
-mosquitto_sub -t status/plc1 &
-mosquitto_pub -t status/plc1 -i plc1 -l --will-topic status/plc1 --will-message "offline" --will-qos 1
+mosquitto_pub -t 'test/qos' -q 0 -m 'QoS 0 besked'
 ```
 
-Afslut processen med `Ctrl+C`, og observer "offline" beskeden i en anden subscriber.
+### 1.2 QoS 1 — *mindst én gang*
 
-> 🧠 **Refleksion:** Hvorfor er LWT vigtigt i overvågningssystemer og alarmer?
+Terminal A:
+
+```bash
+mosquitto_sub -v -t 'test/qos' -q 1
+```
+
+Terminal B:
+
+```bash
+mosquitto_pub -t 'test/qos' -q 1 -m 'QoS 1 besked'
+```
+
+### 1.3 QoS 2 — *præcis én gang*
+
+Terminal A:
+
+```bash
+mosquitto_sub -v -t 'test/qos' -q 2
+```
+
+Terminal B:
+
+```bash
+mosquitto_pub -t 'test/qos' -q 2 -m 'QoS 2 besked'
+```
+
+🔎 **Refleksion:** Hvornår kræver du præcis-én-gang (QoS 2) fremfor QoS 1?
 
 ---
 
-## 🧪 Del 4 – Node-RED og avancerede egenskaber
+## 📌 Del 2 — Retained Messages
 
-### 🎯 Læringsmål
+🎯 **Mål:** Mestre retained til seneste status ved ny tilslutning.
 
-* Du kan konfigurere QoS og retained i Node-RED MQTT-noder
-* Du forstår hvordan Last Will bruges med sensorer eller gateways
+### 2.1 Send retained
 
-### 4.1 Test retained fra Node-RED
+```bash
+mosquitto_pub -t 'status/rum1' -r -m 'Lys tændt'
+```
 
-1. Brug **inject** → **mqtt out**
-2. Sæt retained til "true" og QoS til 1
-3. Subscriber via terminal og observer resultat
+### 2.2 Abonnér senere og modtag straks
 
-> 🔧 Du kan også simulere sensorstatus og vise det i Node-RED dashboard
+```bash
+mosquitto_sub -v -t 'status/rum1'
+```
+
+### 2.3 Opdatér retained
+
+```bash
+mosquitto_pub -t 'status/rum1' -r -m 'Lys slukket'
+```
+
+### 2.4 Slet retained (nul payload)
+
+```bash
+mosquitto_pub -t 'status/rum1' -r -n
+```
+
+🔍 **Diskussion:** Retained = seneste tilstand. Realtime pub/sub = kun mens man er online.
 
 ---
 
-## 📝 Afsluttende refleksion
+## 🕊️ Del 3 — Last Will & Testament (LWT)
 
-* Hvad er forskellen mellem stabilitet og aktualitet?
-* Hvornår giver det mening at bruge QoS 0 vs 2?
-* Hvordan kan Last Will forbedre pålidelighed i dit system?
+🎯 **Mål:** Udsend “offline” automatisk ved uventet afbrydelse.
+
+### 3.1 Overvåg LWT-topic
+
+Terminal A:
+
+```bash
+mosquitto_sub -v -t 'status/plc1'
+```
+
+### 3.2 Start klient med Will og birth
+
+Terminal B (holder forbindelsen åben og sætter Will):
+
+```bash
+mosquitto_pub -i plc1 \
+  --will-topic 'status/plc1' --will-message 'offline' --will-qos 1 --will-retain \
+  -t 'status/plc1' -m 'online' -r -l
+```
+
+> `-l` = læs linjer fra stdin og hold forbindelsen åben.
+
+### 3.3 Simulér nedbrud
+
+I tredje terminal:
+
+```bash
+pkill -9 -f "mosquitto_pub -i plc1"
+```
+
+✅ Forvent: `status/plc1 offline` i Terminal A.
+
+> ℹ️ Graceful stop (Ctrl+C i Terminal B) sender **ikke** Will.
+
+🧠 **Refleksion:** Hvorfor er LWT kritisk i overvågning/alarmer?
 
 ---
 
-📘 Klar til at integrere dine MQTT-kundskaber i virkelige IoT-løsninger!
+## 🧪 Del 4 — Node-RED: QoS, Retain, Will/Birth
 
+🎯 **Mål:** Brug avancerede egenskaber i Node-RED.
+
+### 4.1 Broker-opsætning
+
+* Samme host: **Server** `127.0.0.1`, **Port** `1883`, **Use WebSockets** off.
+* I samme Docker-net som Mosquitto: **Server** `mosquitto`, **Port** `1883`.
+* Sæt brugernavn/password hvis krævet. Gem.
+
+### 4.2 Retained + QoS fra Node-RED
+
+1. `inject` → `mqtt out`.
+2. Topic `status/rum1`, **QoS = 1**, **Retain = true**.
+3. Deploy.
+4. Terminal:
+
+   ```bash
+   mosquitto_sub -v -t 'status/rum1'
+   ```
+5. Tryk inject. Stop subscriber. Tryk inject igen. Start subscriber.
+   ✅ Forvent retained med det samme.
+
+### 4.3 Will/Birth i brokerconfig
+
+* **Birth**: Topic `status/nodered`, payload `online`, retain on, QoS 1.
+* **Will**: Topic `status/nodered`, payload `offline`, retain on, QoS 1.
+* Deploy og observer i subscriber.
+
+---
+
+## 🔧 Hurtig fejlfinding
+
+* ❌ Ingen modtagelse: publikér **efter** subscriber er connected eller brug `-r`.
+* ❌ `not authorised`: tjek bruger/kode eller midlertidigt `allow_anonymous true`.
+* ❌ WebSockets fejler: kræver i Mosquitto:
+
+  ```conf
+  listener 9001
+  protocol websockets
+  ```
+
+  og i Node-RED: **Use WebSockets = on**, port `9001`.
+* ❌ Forkert linjeending i `mosquitto.conf`:
+
+  ```bash
+  sudo apt-get install -y dos2unix && dos2unix mosquitto.conf
+  ```
+
+---
+
+## ✅ Opsummering
+
+* **QoS** styrer leveringssikkerhed (0/1/2).
+* **Retain** giver seneste status til nye abonnenter.
+* **LWT** giver automatisk “offline” ved uventet disconnect.
+* **Node-RED** kan sætte QoS/Retain og Birth/Will centralt i broker-config.
