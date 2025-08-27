@@ -1,7 +1,3 @@
-Ja. Start her.
-
----
-
 # Opgave — Routing mellem 2 subnets (ingen VLAN)
 
 **Idé:** To adskilte L2-segmenter. Én Linux-router i midten. To Linux-PC’er i hver sit subnet.
