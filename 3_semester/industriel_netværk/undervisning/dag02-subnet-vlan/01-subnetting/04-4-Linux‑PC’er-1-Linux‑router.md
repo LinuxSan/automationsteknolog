@@ -1,148 +1,149 @@
-# GNS3 — 4 Linux‑PC’er + 1 Linux‑router med /26‑subnet fra Opgave 2
+# Opgave — GNS3-PC ping’er fysisk PLC på andet /25-subnet
 
-**Mål:** Brug dine **fire /26‑subnet** fra *Opgave 2* til at få PC1↔PC2↔PC3↔PC4 til at ping’e via én Linux‑router. Ingen firewall. Kun IPv4.
+### Formål
 
----
+* Split et `/24` i to `/25`. Få end-to-end forbindelse mellem virtuel PC og fysisk PLC via Linux-router.
+* Træn IP-tildeling, default-gateways og basis-routing. Ingen firewall.
 
-## Del A — Notér dine /26‑resultater først
+### Læringsmål
 
-Udfyld fra *Opgave 2*.
+Efter opgaven kan du:
 
-**Subnet #1**
-Net: `____________________` · Broadcast: `____________________`   
-Første brugbare: `____________________` · Sidste brugbare: `____________________`
-
-**Subnet #2**
-Net: `____________________` · Broadcast: `____________________`   
-Første brugbare: `____________________` · Sidste brugbare: `____________________`
-
-**Subnet #3**
-Net: `____________________` · Broadcast: `____________________`   
-Første brugbare: `____________________` · Sidste brugbare: `____________________`
-
-**Subnet #4**
-Net: `____________________` · Broadcast: `____________________`   
-Første brugbare: `____________________` · Sidste brugbare: `____________________`
-
-> Brug altid `/26` notation.
+1. Designe to `/25` fra `192.168.0.0/24` og vælge gyldige host-IP’er.
+2. Konfigurere Linux-router med to L3-interfaces og `ip_forward`.
+3. Sætte korrekt default-route på PC og PLC.
+4. Verificere trafik med `ping` og `traceroute/tracepath`.
+5. Fejlsøge med `ip -br a`, `ip r`, `ip neigh`, `tcpdump`.
 
 ---
 
-## Del B — GNS3 step‑by‑step (Linux‑router + 4 Linux‑PC’er)
+## Topologi
 
-**Antag** noderne allerede findes: `R1` (Linux‑router), `PC1`, `PC2`, `PC3`, `PC4`.
-**Kabling:** `PC1—R1:eth0`, `PC2—R1:eth1`, `PC3—R1:eth2`, `PC4—R1:eth3`.
+`PC1 —(Subnet A /25)— R1 —(Subnet B /25)— Cloud(PC’ens fysiske ethernet-port) ——[direkte kabel]—— PLC`
 
-### IP‑plan (map dine subnet)
+Cloud bindes til **din computers fysiske ethernet-port**. Porten går direkte i PLC.
 
-* **LAN1** = *Subnet #1*:  PC1 ↔ R1‑eth0
-  R1‑eth0 = **første brugbare** i Subnet #1.
-  PC1 = **en anden brugbar** i Subnet #1.
-* **LAN2** = *Subnet #2*:  PC2 ↔ R1‑eth1
-  R1‑eth1 = **første brugbare** i Subnet #2.
-  PC2 = **en anden brugbar** i Subnet #2.
-* **LAN3** = *Subnet #3*:  PC3 ↔ R1‑eth2
-  R1‑eth2 = **første brugbare** i Subnet #3.
-  PC3 = **en anden brugbar** i Subnet #3.
-* **LAN4** = *Subnet #4*:  PC4 ↔ R1‑eth3
-  R1‑eth3 = **første brugbare** i Subnet #4.
-  PC4 = **en anden brugbar** i Subnet #4.
+---
 
-> Find rigtige interfacenavne med `ip -br link` og erstat `eth0..eth3` efter behov.
+## Adresseplan (matrix)
 
-### 1) Router (R1)
+### Subnet-metadata
+
+| Subnet | Prefix | Net-ID        | Broadcast     | Host-range                  |
+| ------ | ------ | ------------- | ------------- | --------------------------- |
+| A      | /25    | 192.168.0.0   | 192.168.0.127 | 192.168.0.1–192.168.0.126   |
+| B      | /25    | 192.168.0.128 | 192.168.0.255 | 192.168.0.129–192.168.0.254 |
+
+### Interface-adresser
+
+| Enhed | Interface | Subnet | IP/CIDR          | Default GW    | Note                    |
+| ----- | --------- | ------ | ---------------- | ------------- | ----------------------- |
+| R1    | eth0      | A      | 192.168.0.1/25   | –             | Mod PC1                 |
+| PC1   | eth0      | A      | 192.168.0.10/25  | 192.168.0.1   | Valgfri host i A        |
+| R1    | eth1      | B      | 192.168.0.129/25 | –             | Mod PLC                 |
+| PLC   | eth?      | B      | 192.168.0.130/25 | 192.168.0.129 | Direkte kabel via Cloud |
+
+Juster host-IP’er ved behov. Bevar `/25`.
+
+---
+
+## Forudsætninger
+
+* GNS3 med Linux-PC, Linux-router og **Cloud**.
+* PLC kan sættes med statisk IP og gateway.
+* Din computers ethernet-port er fri til Cloud.
+
+---
+
+## Trin A — Byg i GNS3
+
+1. Tilføj **PC1**, **R1**, **Cloud**.
+2. Cloud → **Configure** → vælg **din computers fysiske ethernet-port**.
+3. Kabling i GNS3: `PC1 ↔ R1-eth0`, `R1-eth1 ↔ Cloud`.
+4. Sæt fysisk kabel fra porten i din computer til **PLC**.
+5. Find interfacenavne i noderne: `ip -br link`.
+
+---
+
+## Trin B — Konfigurer noder
+
+### R1 (Linux-router)
 
 ```bash
-# Erstat <> med dine konkrete /26‑adresser
-ip addr flush dev eth0; ip addr flush dev eth1; ip addr flush dev eth2; ip addr flush dev eth3
-ip addr replace <R1_ETH0_IP_I_SUBNET1>/26 dev eth0
-ip addr replace <R1_ETH1_IP_I_SUBNET2>/26 dev eth1
-ip addr replace <R1_ETH2_IP_I_SUBNET3>/26 dev eth2
-ip addr replace <R1_ETH3_IP_I_SUBNET4>/26 dev eth3
-ip link set eth0 up; ip link set eth1 up; ip link set eth2 up; ip link set eth3 up
+ip addr flush dev eth0; ip addr flush dev eth1
+ip addr add 192.168.0.1/25 dev eth0
+ip addr add 192.168.0.129/25 dev eth1
+ip link set eth0 up; ip link set eth1 up
 sysctl -w net.ipv4.ip_forward=1
-```
 
-**Tjek**
-
-```bash
+# tjek
 ip -br a
 cat /proc/sys/net/ipv4/ip_forward   # skal være 1
 ```
 
-### 2) PC1
+### PC1
 
 ```bash
 ip addr flush dev eth0
-ip addr replace <PC1_IP_I_SUBNET1>/26 dev eth0
+ip r flush table main
+ip addr add 192.168.0.10/25 dev eth0
 ip link set eth0 up
-ip route replace default via <R1_ETH0_IP_I_SUBNET1>
+ip route replace default via 192.168.0.1
+
+# tjek
+ip -br a; ip r
+ping -c2 192.168.0.1
 ```
 
-### 3) PC2
+### PLC (fysisk)
 
-```bash
-ip addr flush dev eth0
-ip addr replace <PC2_IP_I_SUBNET2>/26 dev eth0
-ip link set eth0 up
-ip route replace default via <R1_ETH1_IP_I_SUBNET2>
-```
-
-### 4) PC3
-
-```bash
-ip addr flush dev eth0
-ip addr replace <PC3_IP_I_SUBNET3>/26 dev eth0
-ip link set eth0 up
-ip route replace default via <R1_ETH2_IP_I_SUBNET3>
-```
-
-### 5) PC4
-
-```bash
-ip addr flush dev eth0
-ip addr replace <PC4_IP_I_SUBNET4>/26 dev eth0
-ip link set eth0 up
-ip route replace default via <R1_ETH3_IP_I_SUBNET4>
-```
-
-### 6) Ende‑til‑ende tests
-
-**Fra PC1**
-
-```bash
-ping -c2 <PC2_IP_I_SUBNET2>
-ping -c2 <PC3_IP_I_SUBNET3>
-ping -c2 <PC4_IP_I_SUBNET4>
-traceroute <PC4_IP_I_SUBNET4>   # ét hop via R1
-```
-
-Valgfrit: gentag fra de andre PC’er.
+* IP: `192.168.0.130/25`
+* Default GW: `192.168.0.129`
+* Link: direkte kabel til den port du valgte i Cloud.
 
 ---
 
-## Hurtig fejlsøgning
+## Verificering
+
+1. På R1:
 
 ```bash
-ip -br link                 # UP på relevante interfaces
-ip -br a                    # korrekte /26‑adresser sat
-ip r                        # hver PC har default via sin R1‑IP
-cat /proc/sys/net/ipv4/ip_forward  # R1: 1
-ip neigh                    # ARP entries opstår ved lokale pings
+ping -c2 192.168.0.130
 ```
 
-**Typiske fejl**
+2. På PC1:
 
-* Brug af net/broadcast som host‑IP → vælg brugbare adresser
-* Forkert gateway på en PC → skal være R1‑IP i samme /26
-* Forwarding ikke slået til på R1
+```bash
+ping -c3 192.168.0.130
+traceroute 192.168.0.130 || tracepath 192.168.0.130   # ét hop via 192.168.0.1
+```
+
+Succes: PC1 når PLC. `traceroute/tracepath` viser ét hop (R1).
 
 ---
 
-## Aflevering
+## Fejlsøgning
 
-* Udfyldt **Del A** for alle fire /26.
-* Skærmbilleder fra alle PC’er: `ip a`, `ip r`, `ping` til mindst to andre PC’er, `traceroute` til én PC i et andet subnet.
-* Kort note: Hvilken kontrol fandt og fjernede en fejl?
+```bash
+ip -br link                      # interfaces UP
+ip -br a                         # korrekte /25
+ip r                             # PC1 default via 192.168.0.1
+ip neigh                         # ARP entries
+tcpdump -ni eth1 icmp or arp     # på R1 mod PLC-siden
+```
 
-> Hvis din Linux‑router kun har 2 interfaces: brug to ekstra NICs eller erstat med VLAN‑subinterfaces (ud over pensum, valgfrit).
+Typiske fejl:
+
+* Cloud bundet til forkert port eller link DOWN.
+* Forkert gateway på PLC.
+* Forkerte interface-navne i noderne.
+
+---
+
+## Hvis PLC’s gateway ikke kan ændres (midlertidig NAT)
+
+```bash
+iptables -t nat -A POSTROUTING -s 192.168.0.0/25 -d 192.168.0.128/25 -o eth1 -j MASQUERADE
+```
+
+Fjern NAT igen når korrekt gateway er sat på PLC.
