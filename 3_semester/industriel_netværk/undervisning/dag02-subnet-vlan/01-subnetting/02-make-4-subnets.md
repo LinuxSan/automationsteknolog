@@ -1,5 +1,5 @@
 
-# 02 — Split 192.168.1.0/24 til 4 subnet (/26) — IP‑range for subnet #2
+# 02 — Split 192.168.1.0/24 til 4 subnet (/26)
 
 ### Formål (forbedret)
 
