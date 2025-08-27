@@ -211,5 +211,60 @@ docker compose down
 * **Ingen forbindelser i log:** Forkert host/port eller forkerte credentials.
 * **CRLF i config (skrevet på Windows):** `sudo apt-get install -y dos2unix && dos2unix mosquitto/config/mosquitto.conf`.
 
+Her er en klar “10)”-sektion til din Linux-README.
+
+## 11) Brugere og passwords (tilføj, ændr, slet)
+
+Kør i mappen med `docker-compose.yml`. Filen er `mosquitto/config/passwordfile`.
+
+> Tip: Mosquitto læser først filen ved start. Genindlæs med `docker compose restart mosquitto`.
+
+### Tilføj ny bruger
+```bash
+docker run --rm -u 1883:1883 \
+  -v "$(pwd)/mosquitto/config:/mosquitto/config" eclipse-mosquitto:2 \
+  mosquitto_passwd -b /mosquitto/config/passwordfile nybruger 'NyStærkKode'
+
+# sikre ejerskab (hvis nødvendigt)
+sudo chown 1883:1883 mosquitto/config/passwordfile
+docker compose restart mosquitto
+````
+
+### Ændr password for eksisterende bruger
+
+```bash
+docker run --rm -u 1883:1883 \
+  -v "$(pwd)/mosquitto/config:/mosquitto/config" eclipse-mosquitto:2 \
+  mosquitto_passwd -b /mosquitto/config/passwordfile eksisterende 'NyStærkKode'
+sudo chown 1883:1883 mosquitto/config/passwordfile
+docker compose restart mosquitto
 ```
+
+### Slet bruger
+
+```bash
+docker run --rm -u 1883:1883 \
+  -v "$(pwd)/mosquitto/config:/mosquitto/config" eclipse-mosquitto:2 \
+  mosquitto_passwd -D /mosquitto/config/passwordfile brugernavn
+sudo chown 1883:1883 mosquitto/config/passwordfile
+docker compose restart mosquitto
 ```
+
+### Opret første bruger (hvis filen ikke findes endnu)
+
+```bash
+docker run --rm -u 1883:1883 \
+  -v "$(pwd)/mosquitto/config:/mosquitto/config" eclipse-mosquitto:2 \
+  mosquitto_passwd -c -b /mosquitto/config/passwordfile user1 'StærkHemmeligKode'
+sudo chown 1883:1883 mosquitto/config/passwordfile
+docker compose restart mosquitto
+```
+
+### Verificér
+
+```bash
+docker exec -it mosquitto sh -c \
+"mosquitto_pub -h 127.0.0.1 -p 1883 -t test/emne -m OK -u user1 -P 'StærkHemmeligKode'"
+```
+
+> Bemærk: Brug `-c` kun til at oprette/erstatte hele passwordfilen. Uden `-c` tilføjer/ændrer du enkeltbrugere.
