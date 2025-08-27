@@ -67,5 +67,3 @@ tcpdump -ni eth1 icmp   # B-siden
 * PC1 når ikke 10.10.10.1: forkert kabel eller `eth0` DOWN.
 * `ip r` på PC’er skal vise én default via R1.
 * ARP mangler: `ip neigh` på R1 skal vise 10.10.10.2 på eth0 og 10.10.20.2 på eth1.
-
-Ønsker du næste trin med to routere og /30-transit, siger du til.
