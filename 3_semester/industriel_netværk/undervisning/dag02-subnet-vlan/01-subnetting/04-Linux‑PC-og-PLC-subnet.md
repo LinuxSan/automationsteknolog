@@ -1,4 +1,4 @@
-# Opgave — GNS3-PC ping’er fysisk PLC på andet /25-subnet
+# Opgave 4 — GNS3-PC ping’er fysisk PLC på andet /25-subnet
 
 ### Formål
 
