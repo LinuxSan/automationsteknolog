@@ -126,3 +126,85 @@ ip neigh        # ARP for PC1 og PC2 ses efter lokale pings
 * Ingen svar PC1→PC2: `ip_forward` er 0 på R1. Tænd den.
 * PC kan nå sin GW men ikke modpart: forkert default-gateway på PC’en.
 * Intet på tcpdump på den ene side: forkert kabel/port eller interface-navn.
+
+## Appendiks — Opgave 2: Kommandoforklaringer
+
+* ```sh
+  sysctl -w net.ipv4.ip_forward=1
+  ```
+
+  Tænder IPv4-routing i kernel. Midlertidigt til næste reboot.
+
+* ```sh
+  ip -4 route
+  ```
+
+  Viser IPv4-rutetabel (connected-net og default).
+
+* ```sh
+  ip -4 addr
+  ```
+
+  Viser kun IPv4-adresser på alle interfaces.
+
+* ```sh
+  ip r
+  ```
+
+  Alias for `ip route`.
+
+* ```sh
+  ping -c<N> <destination>
+  ```
+
+  Sender N ICMP-eko. Reachability-test og latens.
+
+* ```sh
+  traceroute <destination>
+  ```
+
+  Viser rute hop-for-hop med stigende TTL.
+
+* ```sh
+  tracepath <destination>
+  ```
+
+  `traceroute`-alternativ der ofte virker uden sudo.
+
+* ```sh
+  tcpdump -ni eth0 'vlan and icmp'
+  ```
+
+  Sniffer 802.1Q-tagget ICMP på trunk-interface `eth0`. `-n` = ingen DNS, `-i` vælger interface.
+
+* ```sh
+  tcpdump -ni eth0 'vlan 10 and icmp'
+  tcpdump -ni eth0 'vlan 20 and icmp'
+  ```
+
+  Sniffer kun ICMP i hhv. VLAN 10 og VLAN 20 på trunken.
+
+* ```sh
+  ip -br a
+  ```
+
+  “Brief” visning: interface, status og IP’er pr. linje.
+
+* ```sh
+  ip neigh
+  ```
+
+  Neighbor-tabel (ARP/NDP). Bekræfter MAC-opløsning og hvem der er lært.
+
+* ```sh
+  tcpdump -ni eth0 icmp
+  tcpdump -ni eth1 icmp
+  ```
+
+  Sniffer ICMP på hver side i “to kabler”-varianten.
+
+* ```sh
+  <cmd1> ; <cmd2>
+  ```
+
+  Shell-separator: kør `cmd2` efter `cmd1` uanset exit-status. (Brugt som `ip -4 addr; ip r`.)
