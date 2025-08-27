@@ -1,4 +1,4 @@
-# 01 — Split 192.168.1.0/24 til 2 subnet (/25) — net + broadcast
+# 01 — Split 192.168.1.0/24 til 2 subnet (/25)
 
 ## Formål (forbedret)
 - Træne sikker og hurtig opdeling af et /24 i to /25 uden værktøj.
