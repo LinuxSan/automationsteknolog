@@ -1,6 +1,6 @@
 # GNS3 — 2 Linux-PC’er + 1 Linux-router med /25-subnet fra Opgave 1
 
-### Formål (forbedret)
+### Formål
 
 * Omsætte de to **/25** fra Opgave 1 til en fungerende L3-forbindelse i GNS3.
 * Træne korrekt IP-adresseting, default-gateway og routing på Linux.
