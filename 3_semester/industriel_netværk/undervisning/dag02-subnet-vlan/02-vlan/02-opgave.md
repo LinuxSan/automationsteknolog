@@ -127,7 +127,7 @@ ip neigh        # ARP for PC1 og PC2 ses efter lokale pings
 * PC kan nå sin GW men ikke modpart: forkert default-gateway på PC’en.
 * Intet på tcpdump på den ene side: forkert kabel/port eller interface-navn.
 
-## Appendiks — Opgave 2: Kommandoforklaringer
+## Appendiks
 
 * ```sh
   sysctl -w net.ipv4.ip_forward=1
