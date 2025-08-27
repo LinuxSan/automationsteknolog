@@ -116,7 +116,8 @@ ping -c2 10.10.20.1
 * Kabler: PC1→SW e1 (access 10), PC2→SW e2 (access 20).
 * R1 har to NICs: `eth0` til VLAN10-accessport, `eth1` til VLAN20-accessport.
 
-<img width="3456" height="2160" alt="image" src="https://github.com/user-attachments/assets/a40bef0c-2e7f-4565-a698-1996d157b717" />
+<img width="3456" height="2160" alt="image" src="https://github.com/user-attachments/assets/adf1c6e8-d20a-43ae-af54-90908a587cc1" />
+
 
 
 ### Trin 2 — Switch
