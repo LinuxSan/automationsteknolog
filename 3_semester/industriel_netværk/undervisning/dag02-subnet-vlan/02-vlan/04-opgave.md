@@ -93,8 +93,3 @@ tcpdump -ni eth1 icmp      # “PLC”-siden
 * PC når 10.10.20.1 men ikke 10.10.20.50 → forkert Cloud-NIC valgt, værts-NIC uden IP, eller værts-firewall blokerer ICMP.
 * Kryds-ping fejler helt → `net.ipv4.ip_forward=0` på R1.
 * ARP: `ip neigh` på R1 skal vise 10.10.20.50 på eth1 og 10.10.10.2 på eth0.
-
-## GNS3 VM variant
-
-* Tilføj ekstra **bridged** NIC til GNS3 VM i hypervisoren.
-* Vælg den NIC i **Cloud (GNS3 VM)**, sæt IP 10.10.20.50/24 på den VM-NIC i VM’en. Resten uændret.
