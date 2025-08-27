@@ -38,6 +38,9 @@ Du kan:
 
 Note: GNS3 “Ethernet switch” bærer alle VLAN på dot1q-porte. Feltet “VLAN” på dot1q er kun “native VLAN”.
 
+<img width="3456" height="2160" alt="image" src="https://github.com/user-attachments/assets/35a3aec7-1921-41a0-8630-732ba4d05a72" />
+
+
 ---
 
 ## Adresseplan
