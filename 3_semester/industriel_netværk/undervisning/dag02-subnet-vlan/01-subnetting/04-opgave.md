@@ -23,6 +23,9 @@ Efter opgaven kan du:
 
 Cloud bindes til **din computers fysiske ethernet-port**. Porten går direkte i PLC.
 
+
+<img width="3456" height="2160" alt="Screenshot From 2025-08-27 17-42-54" src="https://github.com/user-attachments/assets/d741ad4d-3210-4896-9e14-71855dfca660" />
+
 ---
 
 ## Adresseplan (matrix)
