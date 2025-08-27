@@ -17,8 +17,8 @@ Du kan:
 
 ## Topologi
 
-PC1 — SW — R1
-PC2 — SW — R1
+<img width="1022" height="944" alt="image" src="https://github.com/user-attachments/assets/48f3c985-e328-4e8c-8339-df1b3aabf286" />
+
 
 * PC1 i VLAN10, PC2 i VLAN20.
 * SW→R1 er trunk med VLAN 10 og 20.
