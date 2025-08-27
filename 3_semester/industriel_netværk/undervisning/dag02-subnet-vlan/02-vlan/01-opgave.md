@@ -56,6 +56,8 @@ Her er Opgave 1 omskrevet i samme pædagogiske stil.
   end
   ```
 
+<img width="3456" height="2160" alt="image" src="https://github.com/user-attachments/assets/c7bf651a-9b3c-4941-ae7b-93f05898b25c" />
+
 ### Trin 3 — Router R1 (dørmanden sover)
 
 ```bash
@@ -117,6 +119,9 @@ ping -c2 10.10.20.1
 
 * Kabler: PC1→SW e1 (access 10), PC2→SW e2 (access 20).
 * R1 har to NICs: `eth0` til VLAN10-accessport, `eth1` til VLAN20-accessport.
+
+<img width="3456" height="2160" alt="image" src="https://github.com/user-attachments/assets/a40bef0c-2e7f-4565-a698-1996d157b717" />
+
 
 ### Trin 2 — Switch
 
