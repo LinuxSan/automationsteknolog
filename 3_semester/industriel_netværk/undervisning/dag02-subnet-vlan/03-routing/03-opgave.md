@@ -6,13 +6,8 @@ PC3 i midten kan pinge PC1 og PC2. PC1 og PC2 kan ikke pinge hinanden. Løses me
 
 ## Topologi
 
-```
-PC1 ── R1 ──( /30 )── R2 ──( /30 )── R3 ── PC2
-               │          │
-             LAN-A      LAN-M
-                          │
-                         PC3
-```
+<img width="3456" height="2160" alt="image" src="https://github.com/user-attachments/assets/27b7e2ca-99a1-4f2a-a5ac-ae06f705701a" />
+
 
 ## Adresseplan
 
