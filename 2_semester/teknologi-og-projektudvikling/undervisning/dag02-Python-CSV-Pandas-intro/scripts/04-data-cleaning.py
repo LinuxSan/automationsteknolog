@@ -19,15 +19,6 @@ data_cleaned = data_cleaned.dropna()
 rows_after = len(data_cleaned)
 print(f"Fjernede {rows_before - rows_after} rækker med manglende værdier")
 
-# Metode 2 (alternativ): Udfyld manglende værdier med middelværdier
-# for numeriske kolonner og mest hyppige værdier for kategoriske kolonner
-# data_cleaned_alt = data.copy()
-# for column in data_cleaned_alt.columns:
-#     if data_cleaned_alt[column].dtype in ['int64', 'float64']:
-#         data_cleaned_alt[column] = data_cleaned_alt[column].fillna(data_cleaned_alt[column].mean())
-#     else:
-#         data_cleaned_alt[column] = data_cleaned_alt[column].fillna(data_cleaned_alt[column].mode()[0])
-
 # Fjern dubletter og tæl forskellen
 print("\nFjerner dubletter...")
 rows_before = len(data_cleaned)
@@ -61,3 +52,4 @@ data_cleaned.to_csv('renset.csv', index=False)
 
 print(f"\nFærdig! Det rensede datasæt indeholder {len(data_cleaned)} rækker.")
 print(f"Reduktion: {len(data) - len(data_cleaned)} rækker ({((len(data) - len(data_cleaned)) / len(data) * 100):.2f}%)")
+
