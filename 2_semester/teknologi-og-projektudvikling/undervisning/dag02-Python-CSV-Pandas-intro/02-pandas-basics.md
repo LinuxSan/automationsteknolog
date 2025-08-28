@@ -50,13 +50,13 @@ print(maalinger.describe())    # Statistisk oversigt (mean, std, min, max)
 
 ## 🧪 Øvelser
 
-1. Opret et nyt DataFrame med temperaturmålinger over 7 dage
+1. Opret et nyt DataFrame med temperaturmålinger over 50 målinger
 2. Brug `head()`, `info()` og `describe()` til at analysere det
 3. Tilføj en ekstra kolonne, fx `målepunkt = "sensor A"`
-4. Filtrer rækker hvor værdien er over 50
+4. Filtrer rækker hvor værdien er over 23
 
 ```python
-filtreret = maalinger[maalinger["værdi"] > 50]
+filtreret = maalinger[maalinger["værdi"] > 23]
 print(filtreret)
 ```
 
