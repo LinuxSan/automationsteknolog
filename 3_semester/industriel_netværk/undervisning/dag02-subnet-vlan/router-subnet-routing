@@ -1,0 +1,48 @@
+# Router subnet routing 
+
+1) Sæt IP-adresser
+
+Router
+
+# antag: eth0=PC1-net, eth1=PC2-net
+ip addr add 10.0.1.1/24 dev eth0
+ip addr add 10.0.2.1/24 dev eth1
+ip link set eth0 up
+ip link set eth1 up
+
+PC1
+
+ip addr add 10.0.1.10/24 dev <pc1_if>
+ip link set <pc1_if> up
+ip route add default via 10.0.1.1
+
+PC2
+
+ip addr add 10.0.2.10/24 dev <pc2_if>
+ip link set <pc2_if> up
+ip route add default via 10.0.2.1
+
+2) Tænd routing på routeren
+
+sysctl -w net.ipv4.ip_forward=1
+
+(Valgfrit permanent: echo "net.ipv4.ip_forward=1" >> /etc/sysctl.conf && sysctl -p)
+
+3) Tillad ICMP-forwarding (hvis firewall er aktiv)
+
+# iptables
+iptables -A FORWARD -p icmp -j ACCEPT
+# nftables (alternativt)
+nft add rule inet filter forward ip protocol icmp accept
+
+4) Test
+
+På PC1:
+
+ping 10.0.2.10
+
+På PC2:
+
+ping 10.0.1.10
+
+Ingen NAT nødvendig. Erstat <pc1_if>/<pc2_if> med dine interface-navne.
