@@ -92,5 +92,3 @@ while True:
 * [ ] Jeg har valgt passende GPIO-pins
 
 ---
-
-Vil du have, at jeg opretter dette som en ny `.md`-fil med navnet `02-sensor-maaling.md`?
