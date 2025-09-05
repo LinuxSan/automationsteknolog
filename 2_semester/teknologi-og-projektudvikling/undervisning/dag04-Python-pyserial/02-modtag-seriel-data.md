@@ -1,77 +1,111 @@
 # 🧾 02 – Modtag seriel data i Python
 
-I denne guide lærer du at modtage struktureret data fra ESP32 i realtid via seriel kommunikation. Du bruger `pyserial` til at læse data og konverterer hver linje til målinger, som du senere kan gemme eller analysere.
+I denne guide lærer du trin for trin at modtage simple beskeder fra ESP32 via seriel kommunikation. Vi holder det simpelt: ESP32 sender tekst, og Python modtager og printer det.
 
 ---
 
 ## 🎯 Mål for modulet
 
-* Læse ESP32-output med `pyserial`
-* Splitte CSV-lignende data i Python
-* Konvertere tekstlinjer til tal og timestamp
+* Forstå seriel kommunikation mellem ESP32 og PC
+* Modtage og printe data i Python
+* Bruge `pyserial` til at læse fra COM-port
 
 ---
 
-## 📤 Forudsætning: ESP32 skal sende struktureret data
+## 📤 Trin 1: Sørg for at ESP32 sender data
 
-Fra MicroPython på ESP32 skal du have noget der ligner dette:
+På din ESP32 (i Thonny eller VS Code), kør et simpelt script der printer beskeder:
 
+```python
+# ESP32 script (MicroPython)
+while True:
+    print("Hej fra ESP32!")
 ```
-1725024971,812
-1725024972,834
-```
 
-Hver linje består af: `timestamp,værdi`
+> Dette sender "Hej fra ESP32!" igen og igen via USB.
 
 ---
 
-## 📥 Læs og parse data i Python
+## 📥 Trin 2: Installer pyserial (hvis ikke gjort)
+
+Hvis du ikke har gjort det i trin 1, installer pyserial:
+
+```bash
+pip install pyserial
+```
+
+---
+
+## 📥 Trin 3: Find din COM-port
+
+* **Windows:** Åbn Enhedshåndtering → Porte (COM & LPT) → Noter COM-port (fx COM3)
+* **macOS/Linux:** Kør `ls /dev/ttyUSB*` eller `ls /dev/tty.*` i terminal → Noter port (fx /dev/ttyUSB0)
+
+---
+
+## 📥 Trin 4: Lav Python-script til at modtage
+
+Opret en ny Python-fil i VS Code:
 
 ```python
 import serial
 
-ser = serial.Serial('COM3', 115200)  # Ret porten til din ESP32
+# Erstat 'COM3' med din port
+ser = serial.Serial('COM3', 115200)
 
 while True:
     linje = ser.readline()
-    tekst = linje.decode().strip()
-    print("Rå linje:", tekst)
-
-    try:
-        ts_str, val_str = tekst.split(",")
-        ts = int(ts_str)
-        val = int(val_str)
-        print(f"Tid: {ts}, Værdi: {val}")
-    except:
-        print("Ugyldig linje")
+    tekst = linje.decode().strip()  # decode() laver bytes til tekst, strip() fjerner ekstra mellemrum/linjeskift
+    print("Modtaget:", tekst)
 ```
+
+> Dette læser en linje ad gangen og printer den.
+
+---
+
+## 📥 Trin 5: Kør scriptet
+
+1. Start ESP32-scriptet først (så det sender data).
+2. Kør Python-scriptet i VS Code.
+3. Du skal se "Modtaget: Hej fra ESP32!" i terminalen.
 
 ---
 
 ## 🧠 Tip
 
-* `strip()` fjerner linjeskift
-* `split(",")` opdeler CSV-format
-* `try/except` sikrer at fejl ikke stopper loopet
+* Hvis du ser fejl, tjek portnavnet og baudrate (115200).
+* Brug `Ctrl+C` for at stoppe scriptet.
 
 ---
 
 ## 🧪 Øvelser
 
-1. Kør ESP32 med script der sender CSV-data
-2. Kør Python-scriptet og modtag linjerne
-3. Konverter `timestamp` og `værdi` til variabler
-4. Udvid print med: `print(val > 1000)` hvis du vil lave betingelser
+1. Ændr ESP32-scriptet til at sende "Temperatur: 25°C".
+2. Modtag det i Python og print det.
+3. Prøv at sende tal i stedet for tekst.
 
 ---
 
 ## ✅ Tjekliste
 
-* [ ] Jeg har læst seriel data i Python
-* [ ] Jeg har splittet hver linje og udtrukket tal
-* [ ] Jeg har håndteret ukendte linjer med `try/except`
-* [ ] Jeg forstår hvordan ESP32 og Python taler sammen via COM-port
+* [ ] Jeg har fået ESP32 til at sende simple beskeder
+* [ ] Jeg har fundet den rigtige COM-port
+* [ ] Jeg har kørt Python-scriptet og set beskederne
+* [ ] Jeg forstår hvordan data sendes via USB
 
 ---
 
-> Du kan nu læse og forstå dine egne ESP32-målinger i Python!
+## 🔧 DIY: Lav dit eget serielle projekt
+
+**Opgave:** Lav et ESP32-script der sender "DIY: Min besked!" hver 2. sekund. Modtag det i Python og print det med et timestamp.
+
+**Trin:**
+1. På ESP32: Tilføj `import time` og `time.sleep(2)` i loopet.
+2. I Python: Tilføj `import time` og print `time.time()` sammen med teksten.
+3. Test det og se outputtet.
+
+> Prøv selv – det er nemmere end det ser ud!
+
+---
+
+> Du har nu lært det grundlæggende i seriel kommunikation – klar til mere avancerede ting!
