@@ -32,6 +32,8 @@ Perfekt – her er et forslag til, hvad **`02-sensor-maaling.md`** skal indehold
 
 ### 🧪 Eksempel 1 – Læsning fra LDR (analog)
 
+![alt text](image-1.png)
+
 ```python
 from machine import ADC, Pin
 from time import sleep
@@ -62,6 +64,8 @@ while True:
 ---
 
 ### 🧪 Eksempel 3 – Læsning fra DHT22 (digital)
+
+![alt text](image.png)
 
 ```python
 import dht
