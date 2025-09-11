@@ -1,4 +1,4 @@
-# 🌡️📈 ESP32 → PC: Log **temperatur** og **luftfugtighed** til CSV (Python + Pandas)
+# 🌡️📈 05 - ESP32 → PC: Log **temperatur** og **luftfugtighed** til CSV (Python + Pandas)
 
 Denne repo viser, hvordan du:
 1) kører et **MicroPython**-program på **ESP32** (via Thonny), som sender `temperatur,luftfugtighed` (fx `22.1,44.2`) over seriellen, og  
