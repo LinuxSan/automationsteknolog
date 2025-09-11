@@ -49,11 +49,16 @@ ls /dev/ttyUSB*   # Linux
 ```python
 import serial
 
-ser = serial.Serial('COM3', 115200)  # Ret portnavn til dit system
+# Opretter serial connection gennem port 'COM3' ved en baudrate 115200
+ser = serial.Serial('COM3', 115200)  
 
-while True:
-    linje = ser.readline()
-    print(linje.decode().strip())
+# Main loop
+while True: 
+
+    # ser er et objekt af serial. Serial indeholder funktionen (member) readline som læser den inkommende serielle string. Serial indeholder også decode og strip.
+    # decode('utf-8') er en bestemt måde at repræsentere tegn på hvor strip fjerner alle whitespaces i en string. 
+    linje = ser.readline().decode('utf-8').strip() 
+    print(linje)
 ```
 
 > Åbn først Thonny og kør ESP32-scriptet, så det sender data.
