@@ -1,5 +1,3 @@
-Her er din opgave sat pænt op, rettet og strammet – klar til undervisning. Jeg har rettet småfejl (bl.a. overskrifter, emojis, og en bemærkning der sagde “10 beskeder”, selvom koden kører kontinuerligt).
-
 # 💾 03 – Gem serielle data med Pandas
 
 I denne øvelse lærer du at læse data fra en ESP32 via seriel port og gemme dem i en CSV-fil med **Pandas**. Eksemplet antager, at ESP32 sender **temperatur** som tal (fx `23.7`).
