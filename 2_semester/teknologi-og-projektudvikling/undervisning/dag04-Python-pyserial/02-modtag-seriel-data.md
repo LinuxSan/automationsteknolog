@@ -53,7 +53,10 @@ import serial
 # Erstat 'COM3' med din port og indstil den rigtige baudrate.
 ser = serial.Serial('COM3', 115200)
 
+# Main loop
 while True:
+    # Denne linje er det samme som forrige opgave men her har vi anvendt parameteren error=replace hvilket betyder at,
+    # istedet for at crash programmet hvis der kommer en byte den ikke kan oversætte så vil den bare fortsætte med den mærkelige tegn.
     linje = ser.readline().decode('utf-8', error=replace).strip()
     print("Modtaget:", linje)
 ```
