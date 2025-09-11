@@ -1,4 +1,4 @@
-# 📡 04 – Live-visualisering af ESP32-data
+# 📡 06 – Live-visualisering af ESP32-data
 
 Denne guide viser dig, hvordan du kan vise ESP32-målinger direkte i en graf i realtid, mens Python modtager data via `pyserial`. Det giver et hurtigt overblik og gør det lettere at spotte fejl og trends under målingen.
 
