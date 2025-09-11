@@ -1,8 +1,4 @@
-Her er en pæn, kort **opgavebeskrivelse** (README-stil) til GitHub – samme koncept som temperatur→CSV, men nu i **JSON Lines** med **pandas** og `with open`.
-
----
-
-# 🌡️➡️🧾 Log temperatur som JSON Lines (ESP32 → Python + Pandas)
+# 🌡️➡️🧾 06 - Log temperatur som JSON Lines (ESP32 → Python + Pandas)
 
 I denne øvelse sender ESP32 **JSON**-objekter over seriel (fx `{"temperature": 22.1}`), og din PC logger dem løbende i en **JSON Lines**-fil (`.jsonl`) med **pandas**.
 
