@@ -151,6 +151,3 @@ print(df.head())
 * [ ] `humidity.jsonl` vokser løbende
 * [ ] Jeg kan indlæse filen med `pd.read_json(..., lines=True)`
 * [ ] Jeg kan forklare fordelen ved JSON Lines til streaming/append
-
-```
-```
