@@ -22,27 +22,47 @@ Brug det samme ESP32-script som før, der sender beskeder som "Hej fra ESP32!".
 
 Opret en ny Python-fil:
 
-```python
-import serial
-import pandas as pd
-import time
+# Importér seriel (pyserial) til COM-port, time til tidsstempler og pandas til CSV-skrivning
+import serial, time, pandas as pd
+# Path (fra pathlib) bruges som fil-sti-objekt; p.exists() kan tjekke om filen findes
+from pathlib import Path
 
-ser = serial.Serial('COM3', 115200)  # Ret porten
+# Åbn seriel port 'COM3' med 115200 baud; timeout=1s gør readline ikke-blokerende (returnerer b'' ved stilhed)
+ser = serial.Serial('COM3', 115200, timeout=1)
 
-data_liste = []  # Liste til data
+# Opret et sti-objekt til CSV-filen. 'p' er altså blot "håndtaget" til filen data.csv
+p = Path('data.csv')
 
-for i in range(10):  # Modtag 10 linjer
-    linje = ser.readline()
-    tekst = linje.decode().strip()
-    print("Modtaget:", tekst)
-    # Tilføj til liste med timestamp
-    data_liste.append({"tid": time.time(), "besked": tekst})
+# Uendelig løkke — stop programmet med Ctrl+C i terminalen
+while True:
+    # Læs én linje bytes fra seriel, dekod som UTF-8. errors='replace' erstatter ugyldige bytes med � i stedet for at crashe.
+    line = ser.readline().decode('utf-8', errors='replace').strip()
 
-# Lav DataFrame og gem til CSV
-df = pd.DataFrame(data_liste)
-df.to_csv("data.csv", index=False)
-print("Data gemt til data.csv")
-```
+    # Kun hvis der kom indhold (tom streng betyder typisk timeout uden data)
+    if line:
+        try:
+            # Fortolk linjen som temperatur (tal). float() håndterer både "23", "23.5" m.m.
+            temperature = float(line)
+        except ValueError:
+            # Hvis linjen ikke er et tal (fx headers/diagnose), spring den over
+            continue
+
+        # Opret en mini-DataFrame med én række (to kolonner: 'tid' og 'temperature') ...
+        # ... og skriv den til CSV:
+        #   - p: selve stien (Path-objektet til 'data.csv')
+        #   - mode='a': "append" — opret filen hvis den ikke findes, ellers tilføj i bunden (overskriver ikke)
+        #   - index=False: skriv ikke DataFrame-indekset som ekstra kolonne i CSV
+        #   - header=not p.exists(): skriv kolonnenavne KUN første gang (når filen endnu ikke findes)
+        pd.DataFrame([{'tid': time.time(), 'temperature': temperature}]).to_csv(
+            p,
+            mode='a',
+            index=False,
+            header=not p.exists()
+        )
+
+        # Vis temperaturen i konsollen, så man kan se hvad der blev logget
+        print(f"Temp: {temperature}")
+
 
 > Dette modtager 10 beskeder og gemmer dem i CSV med Pandas.
 
