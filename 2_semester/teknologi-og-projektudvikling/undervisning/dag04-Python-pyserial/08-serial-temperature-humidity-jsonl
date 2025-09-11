@@ -1,4 +1,4 @@
-# 🌡️💧➡️🧾 Log **temperature** og **humidity** som JSON Lines (ESP32 → Python + Pandas)
+# 🌡️💧➡️🧾 08 - Log **temperature** og **humidity** som JSON Lines (ESP32 → Python + Pandas)
 
 ESP32 sender JSON-objekter som `{"temperature": 22.1, "humidity": 44.2}` over seriel.  
 PC’en logger dem løbende til en **JSON Lines**-fil (`.jsonl`) med **pandas**.
