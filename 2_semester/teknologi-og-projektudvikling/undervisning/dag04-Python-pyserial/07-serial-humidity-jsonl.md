@@ -1,7 +1,4 @@
-Her er **samme opgave**, men nu for **luftfugtighed (humidity)** i **JSON Lines** med **pandas** – klar til GitHub.
-
-```markdown
-# 💧➡️🧾 Log **humidity** som JSON Lines (ESP32 → Python + Pandas)
+# 💧➡️🧾 07 - Log **humidity** som JSON Lines (ESP32 → Python + Pandas)
 
 ESP32 sender JSON-objekter som `{"humidity": 44.2}` over seriel. PC’en logger løbende til en **JSON Lines**-fil (`.jsonl`) med **pandas**.
 
