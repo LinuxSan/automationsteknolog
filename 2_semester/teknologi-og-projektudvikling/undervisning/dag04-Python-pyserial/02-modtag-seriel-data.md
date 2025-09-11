@@ -50,13 +50,12 @@ Opret en ny Python-fil i VS Code:
 ```python
 import serial
 
-# Erstat 'COM3' med din port
+# Erstat 'COM3' med din port og indstil den rigtige baudrate.
 ser = serial.Serial('COM3', 115200)
 
 while True:
-    linje = ser.readline()
-    tekst = linje.decode().strip()  # decode() laver bytes til tekst, strip() fjerner ekstra mellemrum/linjeskift
-    print("Modtaget:", tekst)
+    linje = ser.readline().decode('utf-8', error=replace).strip()
+    print("Modtaget:", linje)
 ```
 
 > Dette læser en linje ad gangen og printer den.
