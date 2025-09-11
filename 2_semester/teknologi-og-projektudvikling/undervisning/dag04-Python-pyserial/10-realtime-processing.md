@@ -1,4 +1,4 @@
-# 📡 06 – Simuleret realtidsbehandling i Python
+# 📡 10 – Simuleret realtidsbehandling i Python
 
 Denne guide lærer dig at simulere realtidsmålinger med Python – helt uden brug af ESP32 eller anden hardware. Det er særligt nyttigt, når du vil teste eller udvikle dine scripts, men ikke har fysisk adgang til sensorer, udviklingsboards eller seriel data. Ved hjælp af Python-modulerne `random`, `time`, `pandas` og `matplotlib` kan du generere en datastrøm, analysere den løbende og visualisere resultaterne grafisk – næsten som hvis du havde reelle målinger fra en fysisk sensor.
 
