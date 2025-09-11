@@ -25,7 +25,8 @@ Eksempel på fil (`measurements.jsonl`):
 - Thonny installeret (Interpreter: *MicroPython (ESP32)*)  
 - Python 3.9+ på PC  
 - Pakker:
-  ```bash
+
+```bash
   pip install pyserial pandas
 ````
 
