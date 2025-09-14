@@ -150,8 +150,10 @@ plt.show()
 Farvekodning er særligt nyttigt når du arbejder med CSV-data fra overvågningssystemer.
 
 ```python
+import pandas as pd
+import matplotlib.pyplot as plt
 # Indlæs CSV-data
-data = pd.read_csv("sensordata.csv")
+data = pd.read_csv("measurements.csv")
 
 # Definer alarmniveauer
 temp_alarm = 25  # Temperatur alarm ved 25°C
@@ -167,8 +169,8 @@ def get_temp_color(temp_value):
         return 'blue'
 
 # Anvend farvekodning på CSV-data
-colors = [get_temp_color(temp) for temp in data['temperatur'] if not pd.isna(temp)]
-valid_temps = data['temperatur'].dropna()
+colors = [get_temp_color(temp) for temp in data['temperature'] if not pd.isna(temp)]
+valid_temps = data['temperature'].dropna()
 valid_indices = valid_temps.index
 
 # Visualiser med betinget farve
@@ -184,8 +186,8 @@ plt.tight_layout()
 plt.show()
 
 # Statistik over alarmer
-alarm_count = sum(1 for temp in data['temperatur'] if temp > temp_alarm)
-print(f"Antal temperatur-alarmer i CSV-data: {alarm_count}")
+alarm_count = sum(1 for temp in data['temperature'] if temp > temp_alarm)
+print(f"Antal temperature-alarmer i CSV-data: {alarm_count}")
 ```
 
 ---
