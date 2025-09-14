@@ -197,57 +197,39 @@ print(f"Antal temperature-alarmer i CSV-data: {alarm_count}")
 Når din CSV-fil indeholder flere sensormålinger, kan subplots give et godt overblik.
 
 ```python
+import pandas as pd
+import matplotlib.pyplot as plt
 # Indlæs CSV med flere sensortyper
-data = pd.read_csv("sensordata.csv")
+data = pd.read_csv("measurements.csv")
 
 # Konverter timestamp hvis nødvendigt
 if 'timestamp' in data.columns:
     data['timestamp'] = pd.to_datetime(data['timestamp'])
 
 # Opret subplot-figur baseret på CSV-kolonner
-fig, axs = plt.subplots(2, 2, figsize=(15, 10))
+fig, axs = plt.subplots(1, 2, figsize=(15, 10))
 fig.suptitle('Sensor-data fra CSV-fil', fontsize=16)
 
 # Temperatur (øverst venstre)
-if 'temperatur' in data.columns:
-    axs[0, 0].plot(data['temperatur'], color='red', linewidth=2)
-    axs[0, 0].set_title('Temperatur')
-    axs[0, 0].set_ylabel('°C')
-    axs[0, 0].grid(True, alpha=0.3)
+if 'temperature' in data.columns:
+    axs[0].plot(data['temperature'], color='red', linewidth=2)
+    axs[0].set_title('Temperature')
+    axs[0].set_ylabel('°C')
+    axs[0].grid(True, alpha=0.3)
 
 # Fugtighed (øverst højre)  
-if 'fugtighed' in data.columns:
-    axs[0, 1].plot(data['fugtighed'], color='blue', linewidth=2)
-    axs[0, 1].set_title('Relativ fugtighed')
-    axs[0, 1].set_ylabel('%')
-    axs[0, 1].grid(True, alpha=0.3)
-
-# Tryk (nederst venstre)
-if 'tryk' in data.columns:
-    axs[1, 0].plot(data['tryk'], color='green', linewidth=2)
-    axs[1, 0].set_title('Lufttryk')
-    axs[1, 0].set_ylabel('hPa')
-    axs[1, 0].set_xlabel('Måling nummer')
-    axs[1, 0].grid(True, alpha=0.3)
-
-# CO2 (nederst højre)
-if 'co2_niveau' in data.columns:
-    axs[1, 1].plot(data['co2_niveau'], color='purple', linewidth=2)
-    axs[1, 1].set_title('CO2-niveau')
-    axs[1, 1].set_ylabel('ppm')
-    axs[1, 1].set_xlabel('Måling nummer')
-    axs[1, 1].grid(True, alpha=0.3)
-    
-    # Tilføj alarm-linje for CO2
-    axs[1, 1].axhline(y=1000, color='red', linestyle='--', alpha=0.7, label='Alarm (1000 ppm)')
-    axs[1, 1].legend()
+if 'humidity' in data.columns:
+    axs[1].plot(data['humidity'], color='blue', linewidth=2)
+    axs[1].set_title('Relative Humidity')
+    axs[1].set_ylabel('%')
+    axs[1].grid(True, alpha=0.3)
 
 plt.tight_layout()
 plt.show()
 
 # Print statistikker fra CSV-data
 print("\n=== Statistikker fra CSV-fil ===")
-for column in ['temperatur', 'fugtighed', 'tryk', 'co2_niveau']:
+for column in ['temperature', 'humidity']:
     if column in data.columns:
         print(f"{column.capitalize()}:")
         print(f"  Gennemsnit: {data[column].mean():.2f}")
@@ -261,12 +243,14 @@ for column in ['temperatur', 'fugtighed', 'tryk', 'co2_niveau']:
 ## 🔍 Avanceret CSV-analyse og filtrering
 
 ```python
+import pandas as pd
+import matplotlib.pyplot as plt
 # Indlæs CSV og lav avancerede filtreringer
-data = pd.read_csv("sensordata.csv")
+data = pd.read_csv("measurements.csv")
 
 # Filtrér data baseret på flere betingelser fra CSV
 # Eksempel: Find målinger hvor temperatur > 23°C OG fugtighed < 50%
-filtered_conditions = data[(data['temperatur'] > 23) & (data['fugtighed'] < 50)]
+filtered_conditions = data[(data['temperature'] > 23) & (data['humidity'] < 50)]
 
 print(f"Antal målinger der opfylder begge betingelser: {len(filtered_conditions)}")
 
@@ -276,8 +260,8 @@ if len(filtered_conditions) > 0:
     
     # Plot alle datapunkter
     plt.subplot(2, 1, 1)
-    plt.plot(data['temperatur'], alpha=0.6, label='Alle temperatur målinger')
-    plt.plot(filtered_conditions.index, filtered_conditions['temperatur'], 
+    plt.plot(data['temperature'], alpha=0.6, label='Alle temperatur målinger')
+    plt.plot(filtered_conditions.index, filtered_conditions['temperature'], 
              'ro', markersize=6, label='Høj temp + lav fugt')
     plt.ylabel('Temperatur (°C)')
     plt.title('Temperatur fra CSV - fremhævede betingelser')
@@ -285,8 +269,8 @@ if len(filtered_conditions) > 0:
     plt.grid(True, alpha=0.3)
     
     plt.subplot(2, 1, 2)
-    plt.plot(data['fugtighed'], alpha=0.6, label='Alle fugtigheds målinger')
-    plt.plot(filtered_conditions.index, filtered_conditions['fugtighed'], 
+    plt.plot(data['humidity'], alpha=0.6, label='Alle fugtigheds målinger')
+    plt.plot(filtered_conditions.index, filtered_conditions['humidity'], 
              'ro', markersize=6, label='Høj temp + lav fugt')
     plt.ylabel('Fugtighed (%)')
     plt.xlabel('Måling nummer fra CSV')
