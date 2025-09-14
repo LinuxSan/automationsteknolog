@@ -23,10 +23,9 @@ Alle eksempler i dette modul tager udgangspunkt i CSV-filer med sensordata. Her 
 ```python
 import pandas as pd
 import matplotlib.pyplot as plt
-import numpy as np
 
 # Indlæs data fra CSV-fil
-data = pd.read_csv("sensordata.csv")
+data = pd.read_csv("measurements.csv")
 print(data.head())  # Vis første 5 rækker
 print(data.info())  # Vis datatyper og missing values
 ```
