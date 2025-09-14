@@ -49,9 +49,9 @@ værdi = data["værdi"].max()
 # Tilføj en pil og tekst ved maksimum
 plt.annotate("Maksimum",
              xy=(tidspunkt, værdi),
-             xytext=(tidspunkt + 1, værdi + 1),
+             xytext=(4, 5),
              arrowprops=dict(arrowstyle="->", color="black"),
-             fontsize=10)
+             fontsize=9)
 
 # Tilføj en vandret grænselinje
 plt.axhline(y=7, color="red", linestyle="--", label="Tærskelværdi")
