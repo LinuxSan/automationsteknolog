@@ -36,35 +36,56 @@ Det åbner automatisk en browser med dashboardet. Hvis ikke, kan du selv åbne d
 
 ## 💻 Eksempel – dashboard.py
 
-Herunder ses et simpelt eksempel på et dashboard, hvor brugeren kan uploade en CSV-fil, vælge en kolonne, indstille en grænseværdi og få vist et filtreret plot.
+Herunder ses et simpelt eksempel på et dashboard, hvor brugeren kan uploade en CSV-fil (measurements.csv), vælge en kolonne, indstille en grænseværdi og få vist et filtreret plot.
+For at køre dette script skal du i terminal gå til .py fil og kopier measurements.csv til denne mappe. Skriv herefter streamlit run .py (det du nu har kaldt denne).
 
 ```python
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
+import numpy as np
+import os
 
 st.title("🔎 Live datavisualisering")
 
-uploaded_file = st.file_uploader("Vælg en CSV-fil", type="csv")
+# Forsøg at læse filen, eller generer dummy-data
+try:
+    data = pd.read_csv("measurements.csv")
+except FileNotFoundError:
+    st.warning("Kunne ikke finde measurements.csv - bruger eksempeldata i stedet")
+    # Opret dummy data
+    dates = pd.date_range('2025-09-01', periods=100, freq='H')
+    data = pd.DataFrame({
+        'timestamp': dates,
+        'temperature': np.random.normal(22, 3, 100),
+        'humidity': np.random.normal(60, 10, 100),
+        'pressure': np.random.normal(1013, 5, 100)
+    })
 
-if uploaded_file:
-    data = pd.read_csv(uploaded_file)
+# Resten af koden er uændret
+st.subheader("📊 Oversigt")
+st.write(data.describe())
 
-    st.subheader("📊 Oversigt")
-    st.write(data.describe())
+# Vælg en sensor-kolonne
+sensor_valg = st.selectbox("Vælg sensor", data.columns)
 
-    sensor_valg = st.selectbox("Vælg sensor-kolonne", data.columns)
+# Slider til at vælge grænse
+max_val = int(data[sensor_valg].max() * 1.2) if sensor_valg in data else 1000
+grænse = st.slider("Maks tilladt værdi", 0, max_val, int(max_val * 0.8))
 
-    grænse = st.slider("Maks tilladt værdi", 0, 1023, 800)
+# Filtrer data
+filtreret = data[data[sensor_valg] < grænse]
 
-    filtreret = data[data[sensor_valg] < grænse]
-
-    fig, ax = plt.subplots()
-    filtreret[sensor_valg].plot(ax=ax)
-    ax.set_title(f"{sensor_valg} – filtreret visning")
-    ax.set_ylabel("Værdi")
-    st.pyplot(fig)
+# Plot de filtrerede data
+fig, ax = plt.subplots()
+filtreret[sensor_valg].plot(ax=ax)
+ax.set_title(f"{sensor_valg} – filtreret visning")
+ax.set_ylabel("Værdi")
+st.pyplot(fig)
 ```
+
+<img width="2585" height="1970" alt="image" src="https://github.com/user-attachments/assets/3de4e9e9-5cd1-47b7-86de-dc37b7981663" />
+
 
 Dette script demonstrerer, hvordan et simpelt Python-program hurtigt kan blive til en dynamisk, brugerstyret datavisualisering.
 
