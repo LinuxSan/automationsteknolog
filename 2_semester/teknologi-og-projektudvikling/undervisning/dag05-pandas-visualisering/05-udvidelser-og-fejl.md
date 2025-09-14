@@ -95,8 +95,10 @@ plt.show()
 Manglende værdier i CSV-filer vises som `NaN` når de indlæses med pandas.
 
 ```python
+import pandas as pd
+import matplotlib.pyplot as plt
 # Indlæs CSV med manglende værdier
-data = pd.read_csv("sensordata.csv")
+data = pd.read_csv("measurements.csv")
 
 # Check for manglende værdier
 print("Manglende værdier pr. kolonne:")
@@ -104,7 +106,7 @@ print(data.isnull().sum())
 
 # Strategi 1: Erstat NaN med gennemsnitsværdi
 data_mean_filled = data.copy()
-for column in ['temperatur', 'fugtighed', 'tryk']:
+for column in ['temperature', 'humidity']:
     if data_mean_filled[column].isnull().sum() > 0:
         mean_val = data_mean_filled[column].mean()
         data_mean_filled[column].fillna(mean_val, inplace=True)
@@ -112,26 +114,26 @@ for column in ['temperatur', 'fugtighed', 'tryk']:
 
 # Strategi 2: Interpolér mellem værdier
 data_interpolated = data.copy()
-for column in ['temperatur', 'fugtighed', 'tryk']:
+for column in ['temperature', 'humidity']:
     data_interpolated[column] = data_interpolated[column].interpolate(method="linear")
 
 # Visualiser de forskellige strategier
 fig, axs = plt.subplots(3, 1, figsize=(12, 10))
 
 # Original data med NaN
-axs[0].plot(data['temperatur'], 'o-', markersize=3, label='Original (med NaN)')
+axs[0].plot(data['temperature'], 'o-', markersize=3, label='Original (med NaN)')
 axs[0].set_title("Original CSV-data med manglende værdier")
-axs[0].set_ylabel("Temperatur (°C)")
+axs[0].set_ylabel("Temperature (°C)")
 axs[0].legend()
 
 # Med gennemsnit
-axs[1].plot(data_mean_filled['temperatur'], 'o-', markersize=3, label='NaN erstattet med gennemsnit', color='orange')
+axs[1].plot(data_mean_filled['temperature'], 'o-', markersize=3, label='NaN erstattet med gennemsnit', color='orange')
 axs[1].set_title("NaN erstattet med gennemsnitsværdi")
-axs[1].set_ylabel("Temperatur (°C)")
+axs[1].set_ylabel("Temperature (°C)")
 axs[1].legend()
 
 # Med interpolation
-axs[2].plot(data_interpolated['temperatur'], 'o-', markersize=3, label='NaN interpoleret', color='green')
+axs[2].plot(data_interpolated['temperature'], 'o-', markersize=3, label='NaN interpoleret', color='green')
 axs[2].set_title("NaN erstattet med lineær interpolation")
 axs[2].set_ylabel("Temperatur (°C)")
 axs[2].set_xlabel("Måling nummer")
