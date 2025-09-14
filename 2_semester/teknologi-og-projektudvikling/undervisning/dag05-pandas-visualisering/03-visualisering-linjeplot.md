@@ -17,11 +17,12 @@ I denne guide lærer du at bruge Matplotlib til at visualisere målinger som lin
 ```python
 import pandas as pd
 import matplotlib.pyplot as plt
+from math import pow
 
 # Simuleret datasæt
 data = pd.DataFrame({
     "tid": pd.date_range(start="2023-01-01", periods=100, freq="s"),
-    "værdi": pd.Series(range(100)).apply(lambda x: x + 5 * (x % 10))
+    "værdi": pd.Series(range(100)).apply(lambda x: 1 - 2.71**(-x/10))
 })
 
 plt.plot(data["tid"], data["værdi"], color="royalblue", label="Sensorværdi")
