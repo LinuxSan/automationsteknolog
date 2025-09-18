@@ -1,37 +1,55 @@
-# Dag 4: Rest Kommando
+# Dag 4: Rest og http
 
-## Læringsmål
+# Opgave: Opret Vejrstation i Node-RED med Weatherstack API
 
-Efter denne dag vil du kunne:
-- Opsætte og konfigurere relevante komponenter for Rest Kommando
-- Forstå og anvende de grundlæggende principper for Rest Kommando
-- Integrere Rest Kommando med eksisterende IoT-systemer
+## Beskrivelse
 
-## Moduler
+Formålet med denne opgave er at bygge et simpelt, men funktionelt, vejr-dashboard i Node-RED. Flowet skal hente aktuelle vejrdata fra **Weatherstack API** for en selvvalgt by og visualisere dem ved hjælp af `node-red-dashboard`.
 
-1. [01-cloud-integration](./01-cloud-integration/README.md) - Trin 1: REST API Grundbegreber for IoT
-2. [01-rest-grundbegreber](./01-rest-grundbegreber/README.md) - Rest Grundbegreber
-3. [02-data-storage](./02-data-storage/README.md) - Trin 2: IoT Data Storage i Skyen
-4. [02-http-endpoints](./02-http-endpoints/README.md) - Http Endpoints
-5. [03-actuator-control](./03-actuator-control/README.md) - Actuator Control
-6. [03-data-visualization](./03-data-visualization/README.md) - Trin 3: Avanceret Data Visualisering
-7. [04-predictive-analytics](./04-predictive-analytics/README.md) - Trin 4: Predictive Analytics for IoT Data
-8. [04-web-interface](./04-web-interface/README.md) - Web Interface
-9. [05-security](./05-security/README.md) - Security
-10. [05-system-integration](./05-system-integration/README.md) - Trin 5: System Integration & Automatisering
-
-
-## Dagens projekter
-
-I denne dag vil du arbejde med praktiske øvelser relateret til Rest Kommando med KeyStudio Smart Home Kit.
-
-## Forberedelse til næste gang
-
-Se næste dags læsemateriale og sørg for at have løst dagens øvelser.
+Dette projekt giver praktisk erfaring med at kalde eksterne REST API'er, behandle JSON-data og skabe en simpel brugergrænseflade.
 
 ---
 
-## Den røde tråd
+## Krav 📋
 
-Dette modul bygger videre på tidligere dages arbejde med Node-RED, MQTT og IoT-kommunikation, og forbereder dig til de mere avancerede emner i de kommende dage.
+1.  **Opsætning af Weatherstack**
+    * Opret en gratis konto på [weatherstack.com](https://weatherstack.com/).
+    * Find din personlige **API Access Key**. Denne skal bruges i dit Node-RED flow.
 
+2.  **Node-RED Flow**
+    * **Datahentning:** Opret et flow, der periodisk (f.eks. hvert 15. minut) kalder Weatherstack API'et for en by efter eget valg (f.eks. Aarhus).
+        * Brug en `inject`-node til at starte flowet.
+        * Brug en `http request`-node til at kalde API'et. URL'en vil se cirka sådan her ud: `http://api.weatherstack.com/current?access_key=DIN_API_NØGLE&query=Aarhus`
+    * **Databehandling:** API'et returnerer en del data i JSON-format.
+        * Sørg for, at output fra `http request`-noden er parset som et "JSON object".
+        * Brug `change`- eller `function`-noder til at udtrække de relevante værdier fra `msg.payload`. Du skal som minimum have fat i:
+            * Temperatur (`temperature`)
+            * Luftfugtighed (`humidity`)
+            * Vindhastighed (`wind_speed`)
+            * Vejrbeskrivelse (`weather_descriptions`)
+
+3.  **Visualisering på Dashboard**
+    * Installer `node-red-dashboard`, hvis du ikke allerede har den.
+    * Opret en ny fane (tab) i dashboardet kaldet "Vejrstation".
+    * Visualiser de udtrukne data ved hjælp af passende dashboard-noder:
+        * **Gauge:** Vis **temperatur** og **luftfugtighed**.
+        * **Text:** Vis **vejrbeskrivelsen** (f.eks. "Sunny") og **vindhastighed**.
+        * **(Valgfrit) Chart:** Gem temperaturværdierne over tid og vis dem på en graf.
+
+---
+
+## Acceptancekriterier ✅
+
+- [ ] Flowet kan succesfuldt hente vejrdata fra Weatherstack API'et uden fejl.
+- [ ] Data for temperatur, luftfugtighed og vindhastighed bliver korrekt udtrukket fra JSON-svaret.
+- [ ] Node-RED Dashboard viser de aktuelle vejrdata i realtid (eller med den indstillede forsinkelse).
+- [ ] Dashboardet er overskueligt og let at aflæse.
+- [ ] API-nøglen er ikke hårdkodet på en måde, så den er synlig i eksporteret kode (brug f.eks. credentials eller en flow-variabel).
+
+---
+
+## Ressourcer 📚
+
+* **Weatherstack API Dokumentation:** [https://weatherstack.com/documentation](https://weatherstack.com/documentation)
+* **Node-RED Dashboard (GitHub):** [https://github.com/node-red/node-red-dashboard](https://github.com/node-red/node-red-dashboard)
+* **Node-RED Guide til HTTP Requests:** [https://cookbook.nodered.org/http/simple-get-request](https://cookbook.nodered.org/http/simple-get-request)
