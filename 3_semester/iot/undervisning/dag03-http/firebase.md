@@ -12,6 +12,8 @@ Du skal bygge et flow, der kan både **skrive (PUT)** og **læse (GET)** data ti
 
 -----
 
+**Hint:** Se denne video for at løse opgaven [Firebase](https://studio.youtube.com/video/55Z5XNs45Nc/edit)
+
 ### Forberedelse: Opsætning af Firebase 🔥
 
 Inden du starter i Node-RED, skal du have din Firebase-database klar.
