@@ -10,6 +10,8 @@ Dette projekt giver praktisk erfaring med at kalde eksterne REST API'er, behandl
 
 ---
 
+**Hint:** Se denne video for at løse opgaven [youtube](https://www.youtube.com/watch?v=HUtxwjhkCe4)
+
 ## Krav 📋
 
 1.  **Opsætning af Weatherstack**
