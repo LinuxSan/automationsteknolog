@@ -1,143 +1,41 @@
-# 🏡 Dag 07 – Mini-projekt: Sensorbaseret måling (ESP32 ↔ Python)
-
-I dette mini-projekt skal du samle de teknikker, du har lært i de forrige moduler, i ét sammenhængende forløb. Du skal opsamle målinger fra et ESP32-baseret sensormodul, gemme og analysere data i Python samt visualisere og validere værdier med sanity checks og plausibilitetstests.
-
-Projektet bruger tre specifikke sensorer:
-- DHT22 (temperatur og luftfugtighed)
-- LDR (lyssensor)
-- MQ2 (gassensor)
-
-Sensorerne tilsluttes ESP32, og data sendes til computeren over seriel port.
+Det forstår jeg. Beklager jeg har ramt ved siden af dine ønsker. Her er en version, der matcher **præcis** din skabelon—bare for **realtime plotting**.
 
 ---
 
-## 🎯 Mål for projektet
+🐍 Realtime Plotting – Guides og Opgaver – Oversigt
+Herunder finder du en anbefalet struktur over guides og opgaver i begynder-realtime plotting. Forløbet dækker live-visualisering af sensordata via seriel USB i Python med fokus på `FuncAnimation`, rullende vindue og enkel robusthed. Hver fil repræsenterer en konkret lektion eller øvelse, der bygger ovenpå den forrige.
 
-- Læse data fra DHT22, LDR og MQ2 med ESP32 og MicroPython
-- Sende data i fast format over seriel port (fx: `25.4,48.1,700`)
-- Tidsstemple og gemme data i Pandas på PC'en via VS Code
-- Validere data med sanity check og plausibilitetstest
-- Visualisere sensordata og markere fejl
-- (Bonus) Byg videre med watchdog eller live-graf i Streamlit
+📘 Guides (teori og kodeeksempler)
+**01-setup-realtime-plot.md** Introduktion og opsætning.
 
----
+* Python + venv, VS Code, pakker: `matplotlib`, `pyserial`
+* test af Matplotlib-plot og figur/akse
+* valg af seriel port (Windows/macOS/Linux)
 
-## 📦 Hardware og software
+**02-funcanimation-plot-temperature.md**.
 
-- ESP32 med MicroPython installeret (brug Thonny til upload)
-- Sensorer: DHT22, LDR og MQ2 (gassensor)
-- VS Code på PC med Python + Pandas + Matplotlib
-- Seriel forbindelse (USB)
+* Live plot temperatur fra ESP32 med `FuncAnimation(fig, update, init_func, interval)` på PC
 
----
+**03-funcanimation-plot-humidity.md**.
 
-## 📁 Mappestruktur (forslag)
+* Live plot humidity fra ESP32 med `FuncAnimation(fig, update, init_func, interval)` på PC
 
-```
-sensorprojekt/
-├── esp32/
-│   └── main.py             # MicroPython-script til ESP32
-├── python/
-│   ├── main_logger.py      # Logger der læser data og gemmer CSV
-│   ├── analyse.py          # Sanity check og plausibilitet
-│   └── visualisering.py    # Plots og evt. Streamlit
-└── data/
-    └── målinger.csv
-```
+**04-funcanimation-plot-ldr.md**.
 
----
+* Live plot lysfølsom modstand fra ESP32 med `FuncAnimation(fig, update, init_func, interval)` på PC
 
-## 📡 Trin 1 – ESP32 kode (MicroPython i Thonny)
+**05-funcanimation-plot-gas.md**.
 
-Eksempel på script (tilpas til dine pins):
+* Live plot gas (mq2) fra ESP32 med `FuncAnimation(fig, update, init_func, interval)` på PC
 
-```python
-from machine import Pin, ADC
-from dht import DHT22
-import time
+**06-funcanimation-plot-distance.md**.
 
-sensor = DHT22(Pin(14))           # DHT22
-ldr = ADC(Pin(34))                # LDR
-ldr.atten(ADC.ATTN_11DB)
-gas = ADC(Pin(35))                # MQ2
-gas.atten(ADC.ATTN_11DB)
+* Live plot distance (bar plot) fra ESP32 med `FuncAnimation(fig, update, init_func, interval)` på PC
 
-while True:
-    try:
-        sensor.measure()
-        temp = sensor.temperature()
-        hum = sensor.humidity()
-        lys = ldr.read()
-        gas_val = gas.read()
-        print(f"{temp},{hum},{lys},{gas_val}")
-        time.sleep(1)
-    except:
-        print("Fejl i måling")
-        time.sleep(1)
-```
+**07-funcanimation-multiple-plots.md**.
 
----
+* Live plot flere sensorer i et plot og add legend fra ESP32 med `FuncAnimation(fig, update, init_func, interval)` på PC
 
-## 💻 Trin 2 – Python logger (VS Code)
+**08-funcanimation-multiple-plots.md**.
 
-Script der læser data over seriel port og gemmer:
-
-```python
-import pandas as pd
-import serial
-import time
-
-ser = serial.Serial('COM3', 115200, timeout=1)
-data = []
-
-while len(data) < 100:
-    linje = ser.readline().decode().strip()
-    if linje.count(',') == 3:
-        try:
-            temp, hum, lys, gas = map(float, linje.split(","))
-            data.append({
-                "tid": pd.Timestamp.now(),
-                "temp": temp,
-                "fugt": hum,
-                "lys": lys,
-                "gas": gas
-            })
-        except:
-            continue
-
-ser.close()
-pd.DataFrame(data).to_csv("data/målinger.csv", index=False)
-```
-
----
-
-## 🔍 Trin 3 – Sanity check og plausibilitet
-
-Brug funktioner fra tidligere opgaver til at filtrere:
-- `0 < temp < 40`
-- `20 < fugt < 90`
-- `0 < lys < 4096`
-- `0 < gas < 4096`
-- ændring fra sidste måling må ikke overstige defineret tærskel
-
----
-
-## 📈 Trin 4 – Visualisering
-
-Lav to grafer:
-- Rå vs. filtrerede data (sanity + plausibilitet)
-- Fejltælling over tid eller pr. sensor
-
----
-
-## ✅ Evaluering og aflevering
-
-- [ ] ESP32-script dokumenteret og funktionelt
-- [ ] Python logger opretter og gemmer korrekt datasæt
-- [ ] Der er sanity check og plausibilitetstest
-- [ ] Der er en eller flere meningsfulde visualiseringer
-- [ ] Mappestruktur og README.md er oprettet
-
----
-
-> Data er kun brugbare, hvis de giver mening. Dette projekt lærer dig at forbinde sensorer, analysere signaler og sikre datas kvalitet med både teknik og sund fornuft.
+* Live plot flere sensorer i subplot og add legend fra ESP32 med `FuncAnimation(fig, update, init_func, interval)` på PC
