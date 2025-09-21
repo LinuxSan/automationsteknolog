@@ -1,4 +1,4 @@
-# 🐍 Realtime Plotting – Guides og Opgaver – Oversigt
+## 🐍 Realtime Plotting – Guides og Opgaver – Oversigt
 Herunder finder du en anbefalet struktur over guides og opgaver i begynder-realtime plotting. Forløbet dækker live-visualisering af sensordata via seriel USB i Python med fokus på `FuncAnimation`, rullende vindue og enkel robusthed. Hver fil repræsenterer en konkret lektion eller øvelse, der bygger ovenpå den forrige.
 
 📘 Guides (teori og kodeeksempler)
