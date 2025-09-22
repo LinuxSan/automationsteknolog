@@ -1,7 +1,3 @@
-Her er en **super simpel** udgave af `01-setup-realtime-plot.md` klar til copy-paste:
-
----
-
 # 01 – Setup til realtime-plot (Introduktion og opsætning)
 
 Målet: få et Python-miljø op at køre, installere pakkerne **matplotlib** og **pyserial**, teste en basic figur – og finde din serielle port.
@@ -63,7 +59,5 @@ Typisk navngivning:
 * **macOS:** `/dev/tty.usbserial-XXXX` eller `/dev/tty.usbmodemXXXX`
 
 > Note: Hvis ingen port vises, så tjek USB-kablet/driveren og at ESP32 er tilsluttet.
-
----
 
 Det var det. Næste skridt er at lave et lille script, der **læser en linje fra porten** og senere smider den på en graf.
