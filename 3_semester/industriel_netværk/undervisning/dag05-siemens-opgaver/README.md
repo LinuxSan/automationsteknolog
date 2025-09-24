@@ -1,16 +1,13 @@
-📡 Dag 05 – PLC ↔ Python: S7comm, Open User Communication og Siemens Web Server (Overview)
-
+# 📡 Dag 05 – PLC ↔ Python: S7comm, Open User Communication og Siemens Web Server (Overview)   
 Velkommen til en kompakt, outcome‑drevet gennemflyvning af tre mainstream måder at få en Siemens PLC (S7‑1200/1500) til at tale med eksterne systemer.
 
-```Fokus i dag: forstå forskelle, vælge rigtigt spor, og dokumentere et minimalt POC‑setup uden at drukne i detaljer.```
-
-🎯 Læringsmål   
+## 🎯 Læringsmål   
 I lære at konfigurer følgende protokoller S7comm, OUC (TCP) og Siemens Web Server (Web API)
 
-🧭 Dagens indhold (overview)   
+## 🧭 Dagens indhold (overview)   
 Lav opgaverne her på github
 
-💾 Ressourcer (repo‑interne)   
+## 💾 Ressourcer (repo‑interne)   
 - 01-S7communication.md
 - 02-Open-User-Communication.md
 - 03-web-server
