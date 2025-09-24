@@ -21,12 +21,13 @@ Du roterer mellem følgende stationer (45-60 min pr. station):
 
 | Station   | Aktivitet                                                         |
 |-----------|-------------------------------------------------------------------|
-| 1         | **Profibus (fysisk):** Forbind to PLC’er eller PLC og IO, test og dokumentér dataudveksling + lav bevidst fejl og fejlfind. |
-| 2         | **IO-Link (fysisk):** Opsæt IO-Link master/sensor, aflæs/konfigurer data, dokumentér din opsætning.            |
-| 3         | **Modbus TCP/RTU (simu/fysisk):** Sæt Modbus TCP/RTU op i Node-RED/GNS3 eller med PLC, send/læs data, prøv at skabe og løse en fejl.   |
-| 4         | **Dokumentation/Refleksion:** Saml op på det du har lavet, lav netværksdiagram, skriv kort refleksion (hvad lærte du, hvad var svært?).|
+| 1         | **Profibus (fysisk):** Få en S7-1200 til at kommunikere med ET200 modul. Aktivér input og se at output bliver aktiveret. Test og dokumentér dataudveksling + lav bevidst fejl og fejlfind. |
+| 2         | **IO-Link (fysisk):** Opsæt kommunikation mellem fysisk IO-Link AL1590 og fysisk S7-1200 (med switch imellem). Aflæs/konfigurer data, dokumentér din opsætning. |
+| 3         | **Modbus TCP (simu/fysisk):** Denne opgave består i 2 del-opgaver: "2 S7-1200 til at kommunikere" og "få 2 S7-1500 til at kommunikere. 
 
-*(Din underviser forklarer rotation og tidsplan i starten af dagen)*
+Der er 2 ekstra opgaver til de hurtige:
+- Ekstra: Fysisk Rockwell i kælder til at kommunikere Modbus TCP med simuleret S7-1500. - Ekstra: Simuleret UR/Aubo til at kommunikere Modbus TCP med simuleret S7-1500. Send/læs data, prøv at skabe og løse en fejl. |
+| 4         | **Dokumentation/Refleksion:** Saml op på det du har lavet, lav netværksdiagram, skriv kort refleksion (hvad lærte du, hvad var svært?).|
 
 ---
 
