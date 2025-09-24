@@ -5,11 +5,14 @@ Velkommen til en kompakt, outcome‑drevet gennemflyvning af tre mainstream måd
 ```Fokus i dag: forstå forskelle, vælge rigtigt spor, og dokumentere et minimalt POC‑setup uden at drukne i detaljer.```
 
 🎯 Læringsmål
+I lære at konfigurer følgende protokoller S7comm, OUC (TCP) og Siemens Web Server (Web API)
 
-Skelne mellem S7comm, OUC (TCP) og Siemens Web Server (Web API) – hvornår bruger vi hvad, og hvorfor.
+🧭 Dagens indhold (overview)
+Lav opgaverne her på github
 
-Skitsere arkitektur og dataflow for hvert spor (1 slide pr. spor).
-
-Identificere risici/sikkerhed og baseline best practices for drift (adgang, segmentering, protokolvalg).
-
-Udarbejde en kort POC‑plan for valgt spor (scope, test, acceptance criteria).
+💾 Ressourcer (repo‑interne)
+- 01-S7communication.md
+- 02-Open-User-Communication.md
+- 03-web-server
+  - 01-webserver-configuration.md
+  - 02-Websocket.md
