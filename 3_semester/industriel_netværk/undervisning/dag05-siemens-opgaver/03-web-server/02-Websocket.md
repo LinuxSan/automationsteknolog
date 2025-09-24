@@ -1,85 +1,51 @@
-# Opsætning af Webserver
+# PLC 1 ↔ Python WebSocket – trin‑for‑trin guide
 
-<a name="subsec:webserver_simulated_physical_plc"></a>
-
-**Mål:** Målet med denne opgave er at opsætte og konfigurere en webserver på en fysisk SIMATIC S7-1200 PLC og en simuleret S7-1500 PLC ved hjælp af Siemens PLCSIM Advanced. Opgaven giver praktisk erfaring med webserverfunktionalitet på en PLC og dens anvendelse til overvågning og kontrol af industrielle processer.
-
-**Opgavebeskrivelse:**
-
-1. **Konfiguration af PLC A (S7-1200 som Webserver):**
-
-   * Opret et nyt projekt i TIA Portal og tilføj en fysisk S7-1200 PLC.
-   * Tildel en IP-adresse til PLC'en, fx `192.168.0.1`, og konfigurer de nødvendige netværksparametre.
-   * Aktiver webserveren i PLC-indstillingerne under `Properties`.
-   * Opret en simpel webside ved hjælp af TIA Portal, der viser vigtige procesdata som sensordata og maskinstatus.
-
-2. **Konfiguration af PLC B (S7-1500 som Simuleret Webserver):**
-
-   * Tilføj en S7-1500 PLC i TIA Portal og opsæt en simulering med PLCSIM Advanced.
-   * Tildel en IP-adresse til den simulerede PLC, fx `192.168.0.2`.
-   * Aktivér webserveren på S7-1500 under `Properties`, og opret brugerdefinerede websider for at vise og styre procesdata.
-   * Start simuleringen og verificer, at webserveren på den simulerede PLC er tilgængelig via en webbrowser ved at bruge IP-adressen.
-
-3. **Test og Verifikation:**
-
-   * Brug en webbrowser til at tilgå PLC'ernes webservere ved hjælp af deres IP-adresser.
-   * Test, at procesdata opdateres i realtid, og at kontrolfunktioner på websiden fungerer korrekt.
-
-4. **Dokumentation:**
-
-   * Dokumentér alle konfigurationsindstillinger med skærmbilleder og opsætninger af websiderne.
-   * Udarbejd en kort teknisk rapport med skærmbilleder af webserver-konfigurationerne og testresultater.
-
-**Krav:**
-
-* Grundlæggende forståelse af webservere og deres anvendelse i industriel kommunikation.
-* Erfaring med TIA Portal og PLCSIM Advanced.
+> **Scope:** Dette er en meget enkel opsætning, hvor **PLC 1** hoster en HTML‑klient i PLC’ens webserver (browser‑UI), og **Python‑serveren** modtager alt via WebSocket.
 
 ---
 
-# WebSocket-Kommunikation via Webserver
+## Arkitektur (kort)
 
-<a name="subsec:websocket_communication_plc"></a>
+* **PLC 1**: Kører en statisk HTML‑side med JavaScript, der opretter WebSocket‑forbindelse.
+* **Python‑server**: Lytter på `ws://<server-ip>:8080/` og logger alle modtagne beskeder (valgfri echo).
 
-**Mål:** Denne opgave fokuserer på at opsætte en WebSocket-kommunikation mellem to SIMATIC S7-1500 PLC'er ved hjælp af en webserver.
+Brug egen IP adresse på jeres pc.
 
-**Opgavebeskrivelse:**
-
-1. **Konfiguration af WebSocket-forbindelse:**
-
-   * Aktiver webserveren på begge PLC'er og implementér en WebSocket-klient i HTML:
-
-```html
-<script type="text/javascript">
-var ws = new WebSocket('ws://PLC_SERVER_ADRESSE');
-ws.onopen = function() { /* Håndter forbindelse */ };
-ws.onmessage = function(evt) { /* Håndter besked */ };
-ws.onclose = function() { /* Håndter lukning */ };
-</script>
+```
+[PLC 1 HTML-klient]  --ws-->  [Python WS-server]
 ```
 
-2. **Simulering og Test:**
+---
 
-   * Simulér begge PLC'er og test WebSocket-kommunikationen.
+## Forudsætninger
 
-3. **Dokumentation:**
-
-   * Dokumentér opsætningen, kodeeksempler og testresultater for WebSocket-forbindelsen.
-
-**Krav:**
-
-* Grundlæggende forståelse af WebSockets og JavaScript.
-* Erfaring med TIA Portal og PLCSIM Advanced.
+* Netværk: PLC 1 og Python‑server er på samme net (eller der er routing/NAT imellem).
+* Windows/macOS/Linux til Python‑serveren.
+* **Python 3.10+** og pip.
 
 ---
 
-## Manglende elementer for at få eksemplet til at virke (MVP)
+## Repo‑struktur (foreslået)
 
-> Den oprindelige snippet er kun et **script** (klient). For at køre end-to-end mangler **HTML-inputfelter/knapper** og en **server** at forbinde til. PLC’ens indbyggede webserver kan hoste brugerdefinerede HTML-sider (klient), men er **ikke** en generel WebSocket-server.
+```
+.
+├─ client/
+│  └─ index.html # dette er, hvor PLC'en henter sin statiske website
+├─ server/
+│  └─ plc2_ws_server.py
+└─ README.md   ← denne fil
+```
 
-### 1) Fuld HTML-side (med inputfelter)
+---
 
-Gem som `index.html` og host den som *user-defined web page* på PLC’ens webserver **eller** åbn den lokalt i en browser.
+## Trin 1 — PLC 1: HTML‑klient
+
+Tænk ikke så meget over html fordi i er ikke website developer!
+
+1. Opret mappen `client/` og læg nedenstående fil som `index.html`.
+2. Læg filen på PLC 1’s webserver (hvordan afhænger af PLC‑model). Alternativt kan du teste lokalt ved at åbne filen i en browser.
+
+> **Bemærk:** Denne klient er identisk i ånd med det, du allerede har – felter for `Protocol`, `Host`, `Port`, `Path` samt `Connect/Send`.
 
 ```html
 <!doctype html>
@@ -109,7 +75,7 @@ Gem som `index.html` og host den som *user-defined web page* på PLC’ens webse
       </div>
       <div>
         <label for="host">Host/IP</label>
-        <input id="host" value="192.168.0.100" />
+        <input id="host" value="127.0.0.1" />
       </div>
       <div>
         <label for="port">Port</label>
@@ -168,138 +134,171 @@ Gem som `index.html` og host den som *user-defined web page* på PLC’ens webse
 </html>
 ```
 
-### 2) Minimal WebSocket-server til test/bridge
+---
 
-Kør på en PC/edge-enhed i samme subnet. Denne server echos tilbage (ACK) og kan agere midtpunkt mellem PLC A & B.
+## Trin 2 — Python: minimal WebSocket‑server
 
-`server.js`
+1. Opret mappen `server/` og gem nedenstående som `plc2_ws_server.py`.
+2. Installer dependency:
 
-```js
-// npm init -y && npm i ws
-const WebSocket = require('ws');
-const wss = new WebSocket.Server({ port: 8080 });
+   * **Windows (PowerShell):**
 
-wss.on('connection', (socket, req) => {
-  console.log('Client connected:', req.socket.remoteAddress);
-  socket.send('Welcome – WS online');
+     ```powershell
+     python -m pip install websockets
+     ```
+   * **Linux/macOS:**
 
-  socket.on('message', (msg) => {
-    const text = msg.toString();
-    console.log('RX:', text);
-    socket.send('ACK: ' + text);
-  });
+     ```bash
+     pip install websockets
+     ```
+3. Start serveren:
 
-  socket.on('close', () => console.log('Client disconnected'));
-});
+   ```bash
+   python server/plc2_ws_server.py --host 0.0.0.0 --port 8080 --path /
+   ```
 
-console.log('WebSocket server listening on ws://0.0.0.0:8080');
-```
+> **Tip:** Til echo‑test: `python server/plc2_ws_server.py --echo`
 
-**Kørsel:**
+**`server/plc2_ws_server.py`:**
 
-```bash
-node server.js
-# Forbind fra index.html: ws://<server-ip>:8080/
+```python
+#!/usr/bin/env python3
+# Minimal WS-server (websockets ≥ 12)
+# Modtager tekst/binary og logger. Valgfri echo: --echo eller ECHO=1
+
+import os
+import argparse
+import asyncio
+import logging
+import websockets
+
+def parse_args():
+    p = argparse.ArgumentParser(description="Minimal WS server for PLC2")
+    p.add_argument("--host", default="0.0.0.0")
+    p.add_argument("--port", type=int, default=8080)
+    p.add_argument("--path", default="/")
+    p.add_argument("--echo", action="store_true", help="Echo received data back to client")
+    p.add_argument("--ping", type=float, default=15.0, help="Ping interval seconds (0=off)")
+    return p.parse_args()
+
+async def handler(ws):  # websockets ≥12: kun ét argument
+    peer = ws.remote_address
+    path = getattr(ws, "path", "/") or "/"
+    logging.info(f"[CONNECT] {peer} path={path}")
+
+    if path != EXPECTED_PATH:
+        logging.warning(f"[DENY] {peer} wrong path={path} (expected {EXPECTED_PATH})")
+        await ws.close(code=1008, reason="Invalid path")
+        return
+
+    try:
+        async for msg in ws:
+            if isinstance(msg, bytes):
+                logging.info(f"[RX] {peer} <{len(msg)} bytes binary>")
+                if ECHO:
+                    await ws.send(msg)
+                    logging.info(f"[TX/ECHO] -> {peer} <{len(msg)} bytes>")
+            else:
+                logging.info(f"[RX] {peer} {msg}")
+                if ECHO:
+                    await ws.send(msg)
+                    logging.info(f"[TX/ECHO] -> {peer} {msg}")
+    except websockets.ConnectionClosed as e:
+        logging.info(f"[CLOSE] {peer} code={e.code} reason={e.reason}")
+    except Exception as e:
+        logging.exception(f"[ERROR] {peer}: {e}")
+    finally:
+        logging.info(f"[DISCONNECT] {peer}")
+
+async def main():
+    global EXPECTED_PATH, ECHO
+    args = parse_args()
+    EXPECTED_PATH = args.path if args.path.startswith("/") else f"/{args.path}"
+    ECHO = args.echo or (os.getenv("ECHO") == "1")
+
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
+
+    ping_interval = None if args.ping <= 0 else args.ping
+
+    async with websockets.serve(
+        handler,
+        args.host,
+        args.port,
+        ping_interval=ping_interval,
+        ping_timeout=(None if ping_interval is None else ping_interval * 2),
+        max_size=None,
+        max_queue=32,
+    ):
+        logging.info(f"WS server online: ws://{args.host}:{args.port}{EXPECTED_PATH}  echo={ECHO}")
+        await asyncio.Future()  # run forever
+
+if __name__ == "__main__":
+    asyncio.run(main())
 ```
 
 ---
 
-# WebSocket-Kommunikation via Webserver (S7‑1500‑kompatibel)
+## Trin 3 - PLC 1: Enable webserver
+1. Lav et projekt
+2. Indsæt en PLC S7-1500
+3. Gå ind i egenskaber på PLC'en
+4. Find menuen 'Web Server' -> 'General' -> kun flueben i 'Activate web server on this module'. Fjern flueben fra 'Permit access only with HTTPS.
+5. Find menuen 'User-defined pages. Vælge under HTML directory den mappe hvor du vil placer din html fil. Laves i næste trin!
+6. Tryk 'Generate blocks'
+7. Find menuen 'User management' under 'Web server' og lav en admin user som har adgang til alt. Lav en super let kode som 'SuperSecret123'
+8. Gå til main og indsæt instruktionen '??' og skriv 'www'
+9. I venstre side "CTRL_DB" indsæt tallet 333 (findes under web server menuen).
+10. Lav en DB. Lav en variabel 'return_val' med data typen 'word' og indsæt den på 'RET_VAL'. Det er en form for status bit.
+11. Download som 'Hardware og software (only changes)' og tilgå browser på http://<PLC-IP>
 
-**Mål:** Justeret til S7‑1500’s webserver-model hvor læs/skriv til PLC-tags sker via **AWP** (Automation Web Programming), mens WebSocket bruges som **ekstern** event-kanal.
+## Trin 4 — Forbind PLC 1 til Python‑serveren
 
-## Fuld HTML med AWP (deploy som *User-defined page*)
+1. Åbn `Find menuen User-defined pages` i PLC 1’s browser.
+2. Udfyld felterne:
 
-```html
-<!doctype html>
-<html lang="da">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>PLC WebSocket + AWP (S7‑1500)</title>
-  <style>
-    body{font-family:system-ui,Arial,sans-serif;max-width:900px;margin:24px auto;padding:0 12px}
-    fieldset{margin:12px 0;padding:12px;border:1px solid #ddd;border-radius:8px}
-    label{display:block;margin:6px 0 2px}
-    input,button{padding:8px;font-size:14px}
-    #log{height:180px;overflow:auto;background:#111;color:#0f0;padding:12px;border-radius:8px}
-  </style>
-</head>
-<body>
-  <!-- AWP_In_Variable Name='Setpoint' Use='"DB1".Setpoint' -->
-  <!-- AWP_In_Variable Name='Message'  Use='"DB1".Message'  -->
+   * **Protocol:** `ws`
+   * **Host/IP:** IP‑adressen på maskinen, der kører Python‑serveren
+   * **Port:** `8080`
+   * **Path:** `/`
+3. Klik **Connect** og derefter **Send**.
 
-  <h1>WebSocket + AWP (S7‑1500)</h1>
+**Forventet resultat:**
 
-  <fieldset>
-    <legend>Aktuelle værdier</legend>
-    <p>Setpoint: <strong>:=Setpoint:</strong></p>
-    <p>Message:  <strong>:=Message:</strong></p>
-  </fieldset>
-
-  <fieldset>
-    <legend>Skriv til PLC (AWP POST)</legend>
-    <form id="awpForm" method="post">
-      <label for="sp">Setpoint</label>
-      <input id="sp" name='Setpoint' type="number" step="1"/>
-
-      <label for="msg" style="margin-top:8px">Message</label>
-      <input id="msg" name='Message' type="text"/>
-
-      <div style="margin-top:8px">
-        <button type="submit">Skriv</button>
-      </div>
-    </form>
-  </fieldset>
-
-  <fieldset>
-    <legend>WebSocket (ekstern)</legend>
-    <input id="wsurl" value="ws://192.168.0.100:8080/" style="width:100%"/>
-    <div style="margin-top:8px">
-      <button id="connect">Connect</button>
-      <button id="disconnect" disabled>Disconnect</button>
-    </div>
-    <pre id="log"></pre>
-  </fieldset>
-
-  <script>
-    let ws;
-    const $ = (id)=>document.getElementById(id);
-    const log = (m)=>{ const el=$('log'); el.textContent += m + "\n"; el.scrollTop = el.scrollHeight; };
-
-    $('connect').addEventListener('click', ()=>{
-      ws = new WebSocket($('wsurl').value);
-      ws.onopen    = ()=>{ log('OPEN'); $('disconnect').disabled=false; };
-      ws.onclose   = ()=>{ log('CLOSED'); $('disconnect').disabled=true; };
-      ws.onerror   = (e)=> log('ERR ' + (e?.message || ''));
-      ws.onmessage = (evt)=>{
-        log('RX ' + evt.data);
-        // Forvent fx JSON: { "setpoint": 42, "message": "Hello" }
-        try{
-          const d = JSON.parse(evt.data);
-          if(typeof d.setpoint !== 'undefined') $('sp').value = d.setpoint;
-          if(typeof d.message  !== 'undefined') $('msg').value = d.message;
-          document.getElementById('awpForm').submit();
-        }catch{}
-      };
-    });
-
-    $('disconnect').addEventListener('click', ()=>{ if(ws) ws.close(); });
-  </script>
-</body>
-</html>
-```
-
-**Noter:**
-
-* **Read** i AWP: `:=Alias:` erstattes server‑side af webserveren med aktuelle værdier.
-* **Write** i AWP: `<form method="post">` sender felter med navne, der matcher AWP‑aliaser.
-* PLC‑webserveren er **ikke** en WS‑server; brug ekstern endpoint (fx Node.js) til WS‑events.
+* Klienten viser `OPEN` og `TX: <din tekst>`.
+* Python‑serverens terminal viser linjer som `\[RX] ('192.168.x.y', <port>) Hello from PLC client`.
 
 ---
 
-## Krav (S7‑kompatibilitet)
+## Trin 4 — Verificér dataflow (acceptkriterier)
 
-* Webserver aktiveret og *User‑defined pages* deployet i TIA.
-* Korrekte runtime‑rettigheder for skriveadgang.
-* Ekstern WS‑endpoint i samme subnet for realtids‑events/telemetri.
+* Klienten kan forbinde uden fejl (status `OPEN`).
+* Når der sendes en besked, logges den på serveren.
+* (Valgfrit) Med `--echo` svarer serveren tilbage, og klientens log viser `RX: ...`.
+
+---
+
+## Fejlfinding (quick wins)
+
+* **Kan ikke forbinde:**
+
+  * Firewall på serveren: Tillad indgående på port 8080.
+  * IP/port/path forkert: Tjek at serveren kører og lytter på `ws://<ip>:8080/`.
+* **TypeError: handler() missing 'path':**
+
+  * Brug koden i denne README (kompatibel med websockets ≥12), eller pin `websockets<12` hvis du bruger gammel handler‑signatur.
+* **Mixed content (HTTPS → WS):**
+
+  * Hvis klient‑HTML’en servés over **HTTPS**, skal du bruge `wss://` (TLS). Ellers blokkerer browseren.
+* **Port i brug:**
+
+  * Skift port, fx `--port 9001` på serveren og tilsvarende i klienten.
+
+---
+
+## Videre (valgfrit, når basis fungerer)
+
+* **Service:** Kør Python‑serveren som systemservice (systemd/Task Scheduler).
+* **Sikkerhed:** Terminer TLS foran serveren (nginx/Traefik) og skift til `wss://`.
+* **Protokol:** Skift fra rå tekst til JSON‑kontrakt `{id, from, to, ts, type, data}` for robusthed.
+
+---
