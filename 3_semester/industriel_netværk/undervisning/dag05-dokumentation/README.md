@@ -1,7 +1,7 @@
-# 📄 Dag 05 – Opgave- & Dokumentationsdag
+# 📄 Dag 05 – Siemens opgaver
 
 Velkommen til dag 5!  
-I dag handler det om at samle op på dine øvelser, dokumentere dit arbejde og styrke dine kompetencer i rapportering og netværksdiagrammer.
+I dag handler det om at arbejde med Siemens kommunikations protokoller som S7comm, Open User Communication, Web Server 
 
 ---
 
