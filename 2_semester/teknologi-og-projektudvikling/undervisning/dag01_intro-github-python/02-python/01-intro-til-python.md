@@ -1,6 +1,3 @@
-Jazeker, her er indholdet formateret som en Markdown-fil (`.md`). Du kan kopiere og indsætte teksten direkte.
-
-````markdown
 # 🐍 01 – Python for Automation: Data fra ESP32
 
 Denne guide introducerer de grundlæggende Python-begreber, du skal bruge for at modtage og behandle data fra hardware som f.eks. en ESP32. Du lærer at skrive simple programmer på en PC, der kan aflæse og reagere på sensordata.
