@@ -1,4 +1,4 @@
-## 🧩 Opgave: Indlæs data i pandas
+## 🧩 Opgave 1: Indlæs data i pandas
 
 ### 🔹 Formål
 
