@@ -69,6 +69,18 @@ Skriv kort herunder (maks 4 linjer):
 
 ---
 
+### 6️⃣ Udfyld tabel:
+
+| Kolonnenavn | Datatype         | Enhed      | Beskrivelse                         |
+| ----------- | ---------------- | ---------- | ----------------------------------- |
+| timestamp   |                  |            |                                     |
+| temperature |                  |            |                                     |
+| humidity    |                  |            |                                     |
+| gas         |                  |            |                                     |
+| lux         |                  |            |                                     |
+| distance    |                  |            |                                     |
+
+
 ### 💡 Ekstra til refleksion (valgfrit)
 
 * Hvilke kolonner ser ud til at være målinger fra sensorer?
