@@ -1,64 +1,143 @@
-# Dag 08 – Python Databehandling
+# 🧠 Dataforståelse og databehandling med Python (Pandas)
 
-> Teknologi & Projektudvikling · 2. semester · 5 ECTS
+## 🎯 Formål med dagen
+Formålet med denne øvelsesdag er at lære at arbejde med **data i Python** — fra rå sensordata til et renset og valideret datasæt, klar til analyse.
 
-## 🔍 Formål
+Du vil:
+- Indlæse og undersøge rå data (CSV-format)
+- Forstå dataens struktur og kvalitet
+- Rense data for fejl og mangler
+- Validere at dataen nu er korrekt
+- Dokumentere hele processen i en kort rapport
 
-At omsætte rå måledata fra et **ESP32‑baseret sensor‑board** (gassensor, **DHT22** temperatur / luftfugtighed samt **LDR** lysstyrke) – eller fra PLC‑kilde – til et **renset**, **struktureret** og **dokumenteret** datasæt, klar til analyse & rapportering.
+---
 
-## 🎯 Læringsmål
+## 🧩 Overblik over opgaverne
 
-Efter dagen kan du
+### 1️⃣ Data Collection
+**Formål:** Forstå hvor dataen kommer fra og hvordan den indsamles.  
+Du arbejder med et færdigt datasæt, men lærer hvad “indsamling” betyder i praksis (ESP32, sensorer, CSV-logning).
 
-1. Importere rå CSV‑filer til `pandas.DataFrame`.
-2. Udføre sanity‑checks: datatyper, NaN‑rækker og grænseværdier.
-3. Identificere + fjerne outliers via IQR‑ eller z‑score‑metode.
-4. Glatte data med rullende middelværdi
-   $\tilde{x}_i = \frac{1}{k}\sum_{j=i-\lfloor k/2 \rfloor}^{i+\lfloor k/2 \rfloor} x_j$
-5. Gemme det rensede datasæt som `clean_data.csv`.
-6. Visualisere tidsserier (gas‑ppm, °C, %RH, lux) i **matplotlib** med akse‑labels & grid.
-7. Dokumentere pipeline samt push til GitHub.
+---
 
-## 🧰 Forudsætninger
+### 2️⃣ Data Source & Structure
+**Formål:** Få overblik over dataens struktur.  
+Du skal indlæse filen `raw_data.csv`, se kolonner, datatyper og beskrive hvad hver kolonne repræsenterer.  
+→ Afslut med at udfylde en tabel over datastrukturen.
 
-| Fra dag | Viden/artefakt               | Anvendelse i dag 08                         |
-| ------: | ---------------------------- | ------------------------------------------- |
-|      03 | ESP32 datalogger‑firmware    | Logger gassensor + DHT22 + LDR til UART/CSV |
-|      04 | `pyserial` datalogger‑script | Produceret `raw_data.csv`                   |
-|      05 | Matplotlib‑plots             | Visning af sensor‑ og referencekurver       |
-|      06 | Sanity‑check script          | Genbruges & udvides                         |
+---
 
-## 💪 Øvelser
+### 3️⃣ Data Inspection
+**Formål:** Undersøg dataen for fejl og uregelmæssigheder — uden at ændre noget.  
+Du lærer at finde:
+- Manglende værdier (NaN)
+- Forkerte datatyper
+- Urealistiske værdier
+- Duplikater  
+→ Du dokumenterer observationerne i en tabel.
 
-> Hver øvelse ligger i sin egen undermappe (`øvelser/01-…` → `05-…`) og indeholder start‑kode, rå data og en peer‑review‑tjekliste.
+---
 
-1. **01‑Robust‑Smoothing** – Undersøg effekten af rullende *median* kontra *middel* på **gassensor‑ og temperatursignaler** og vurder hvilken glatning der bedst bevarer hurtige ændringer i koncentration/temperatur.
-2. **02‑Uniform‑Resampling** – Resampler et uregelmæssigt tidsstempel‑datasæt (gas, °C, %RH, lux) til præcise 1 s‑intervaller og kvantificér interpolationsfejlen for hver sensor.
-3. **03‑Multisensor‑Merge** – Slå målinger fra gas‑, DHT22‑ og LDR‑kanalerne sammen med et reference‑datasæt og beregn absolut samt relativ afvigelse pr. tidsprøve.
-4. **04‑Auto‑Report** – Generér automatisk en kort Markdown‑rapport med nøgle­statistik (mean, std, outlier‑count), et før/efter‑plot for hver sensor og en tabel over bortfiltrerede outliers.
-5. **05‑Parameter‑Tuning** – Lav et lille eksperiment hvor du varierer vindues­størrelsen $k$ i glatnings­algoritmen og plotter **MSE for hver af de tre sensorer** som funktion af $k$ for at finde et kompromis mellem støj­reduktion og signal‑latenstid.
+### 4️⃣ Data Cleaning
+**Formål:** Rense datasættet, så det bliver brugbart.  
+Du fjerner duplikater, håndterer manglende værdier, konverterer datatyper og fjerner outliers.  
+→ Du dokumenterer hvad du har gjort, og hvor mange ændringer der er foretaget.
 
-## 📦 Aflevering
+---
 
-* Push følgende til repoet:
+### 5️⃣ Data Validation
+**Formål:** Kontrollér, at din cleaning faktisk har virket.  
+Du tester igen for NaN, duplikater og datatyper, og sammenligner med før.  
+→ Du udfylder et valideringsskema og beskriver dataens kvalitet.
 
-  ```
-  dag08/
-  ├── clean_data.csv
-  ├── analysis.py / .ipynb
-  ├── øvelser/
-  │   ├── 01-Robust-Smoothing/
-  │   ├── 02-Uniform-Resampling/
-  │   ├── 03-Multisensor-Merge/
-  │   ├── 04-Auto-Report/
-  │   └── 05-Parameter-Tuning/
-  └── README.md   ← (denne fil)
-  ```
-* Husk meningsfulde commits og Pull‑Request‑review.
+---
 
-## ✅ Checkliste
+### 6️⃣ Data Reporting
+**Formål:** Sammenfat alt dit arbejde i en mini-rapport.  
+Du beskriver:
+- Hvad datasættet indeholder  
+- Hvilke problemer du fandt  
+- Hvilke metoder du brugte til cleaning  
+- Hvad resultatet blev efter validering  
 
-* [ ] Ingen NaN‑ eller outlier‑alarmer i `clean_data.csv`
-* [ ] Plot for **alle tre sensorer** med titel, akse‑etiketter & enhed
-* [ ] README opdateret med metoder & resultater
-* [ ] Kode kører uden warnings på undervisnings‑PC
+→ Afslut med et “før/efter”-skema og en kort konklusion.
+
+---
+
+## 💾 Random Data Generator
+
+Før du går i gang med øvelserne, skal du have en rå datafil.
+
+Kør følgende script for at **generere `raw_data.csv`** med tilfældige sensorværdier og enkelte fejl (NaN og duplikerede rækker):
+
+**Fil:** `generate_raw_data.py`
+
+```python
+import pandas as pd
+import numpy as np
+
+# --- Grunddata ---
+num_rows = 1000
+np.random.seed(42)
+
+data = {
+    "timestamp": pd.date_range(start="2023-01-01", periods=num_rows, freq="H"),
+    "temperature": np.random.uniform(low=-20, high=40, size=num_rows),
+    "humidity": np.random.uniform(low=0, high=100, size=num_rows),
+    "gas": np.random.uniform(low=0, high=1000, size=num_rows),
+    "lux": np.random.uniform(low=0, high=10000, size=num_rows),
+    "distance": np.random.uniform(low=0, high=100, size=num_rows)
+}
+
+df = pd.DataFrame(data)
+
+# Tilføj NaN-værdier
+for col in ["temperature", "humidity", "gas", "lux", "distance"]:
+    n_missing = int(num_rows * 0.02)
+    missing_idx = np.random.choice(df.index, n_missing, replace=False)
+    df.loc[missing_idx, col] = np.nan
+
+# Tilføj hele NaN-rækker
+full_nan_rows = np.random.choice(df.index, 5, replace=False)
+df.loc[full_nan_rows, ["temperature", "humidity", "gas", "lux", "distance"]] = np.nan
+
+# Gem CSV
+df.to_csv("raw_data.csv", index=False)
+print("raw_data.csv genereret med tilfældige sensordata.")
+````
+
+Efter du har kørt scriptet, ligger der en fil kaldet `raw_data.csv` i din mappe.
+Den bruges i **alle efterfølgende øvelser**.
+
+---
+
+## 📦 Struktur (anbefalet mappeopbygning)
+
+```
+│
+├── generate_raw_data.py        # Script til at generere data
+├── raw_data.csv                # Rå sensordata (bliver oprettet af scriptet)
+│
+├── 01_Data_Source_and_Structure.md
+├── 02_Data_Inspection.md
+├── 03_Data_Cleaning.md
+├── 04_Data_Validation.md
+├── 05_Data_Reporting.md
+│
+└── README.md                   # Denne fil
+```
+
+---
+
+## 🧭 Efter dagens forløb skal du kunne
+
+✅ Læse og forstå CSV-data i pandas
+✅ Undersøge og dokumentere datastruktur og kvalitet
+✅ Rense og validere et datasæt
+✅ Rapportere din proces på en enkel og systematisk måde
+
+---
+
+**Udviklet til:** undervisning i dataforståelse og databehandling med Python (Pandas)
+**Målgruppe:** Automationsteknolog / Maskinmester 2. semester
+**Udviklet af:** Anders Sandø Østergaard – Aarhus Maskinmesterskole
