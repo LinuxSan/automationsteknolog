@@ -1,87 +1,160 @@
-<!-- File: dag09-snap7/02-plc-read.md -->
+## 1) Opgave 1 – Gør PLC og TIA klar (med billeder)
 
-# 02 – PLC‑Connect & Read BOOL/INT/REAL
+**Mål:** Du skal gøre PLC’en klar til at blive læst med Python/snap7.
 
-### 1. Opgave 1 – Læs en **BOOL** fra et DB (DBX)
+### Trin A – Lav et Data Block (DB) med faste adresser
+1. Opret et DB, fx **`snap7-data [DB1]`**.  
+2. Opret 4 felter (se billede). De skal ligge på **præcise adresser**:
+   - `bool` → **Bool** → **Offset 0.0**  → adresse: `DBX0.0`
+   - `int`  → **Int**  → **Offset 2.0**  → adresse: `DBW2`
+   - `real` → **Real** → **Offset 4.0**  → adresse: `DBD4`
+   - `word` → **Word** → **Offset 8.0**  → adresse: `DBW8`  
+3. Gem.
 
-> Forudsætninger i TIA Portal:
+*Figur 1 – DB med bool/int/real/word*  
+![DB-layout i TIA Portal](fig1.png)
+
+---
+
+### Trin B – Giv CPU’en en IP-adresse
+1. Gå til CPU → **General → Ethernet addresses**.  
+2. Vælg **Set IP address in the project**.  
+3. Sæt fx IP **192.168.1.100** og maske **255.255.255.0**.  
+4. Download (hardware).  
+
+*Figur 2 – IP-adresse*  
+![Ethernet/IP-indstillinger](fig2.png)
+
+---
+
+### Trin C – Tillad PUT/GET (ellers kan snap7 ikke læse)
+1. CPU → **Protection & Security → Connection mechanisms**.  
+2. Sæt flueben ved **Permit access with PUT/GET communication from remote partner**.  
+3. Download (software).  
+
+*Figur 3 – PUT/GET*  
+![Permit access with PUT/GET](fig3.png)
+
+---
+
+### Trin D – Slå “Optimized block access” fra på DB’et
+1. Åbn **DB1** → **Properties → Attributes**.  
+2. **Fjern** flueben ved **Optimized block access**.  
+3. Gem og download DB’et.  
+
+*Figur 4 – Optimized block access fra*  
+![DB Attributes – Optimized block access](fig4.png)
+
+---
+
+### Trin E – (Valgfrit) Brug PLCSIM Advanced
+Hvis du simulerer:
+1. Start **S7-PLCSIM Advanced**.  
+2. Vælg **TCP/IP Single Adapter**.  
+3. Opret instans, fx navn **snap7**, IP **192.168.1.100**.  
+4. Start instansen (grøn lampe).  
+
+*Figur 5 – PLCSIM Advanced*  
+![PLCSIM Advanced](fig5.png)
+
+---
+
+### Notér til Python
+- **IP:** fx `192.168.1.100`  
+- **Rack/Slot:** S7-1200 = `0/1`, S7-1500 = `0/0`  
+- **DB-nummer:** fx `1`  
+- **Adresser:** `DBX0.0`, `DBW2`, `DBD4`, `DBW8`
+
+> **Quick-check:** Du kan *ping’e* IP’en, TIA kan gå *Online*, PUT/GET er slået til, og DB’et er **ikke** optimeret. Nu er du klar.
+
+---
+
+# Læs i Python (helt simpelt)
+
+> Installer pakken én gang i et terminalvindue:
 >
-> * CPU tillader **PUT/GET** (”Permit access with PUT/GET…”).
-> * Det pågældende **DB er uden “Optimized block access”**, så byte-/bit-adresser matcher.
+> ```bash
+> pip install python-snap7
+> ```
+
+---
+
+## 2) Opgave 2 – Læs en **BOOL** (DBX)
+
+**Hvad skal du kende fra TIA:**  
+IP, RACK, SLOT, DB-nummer, og hvor i DB’et din BOOL ligger (her: `DBX0.0`).
 
 ```python
-# save as opg1_read_bool.py
-# pip install python-snap7
+# gem som: opg2_read_bool.py
 
 import snap7
 from snap7.util import get_bool
 
-# ── UDFYLD DISSE ───────────────────────────────────────────────
-PLC_IP     = "192.168.0.1"  # PLC'ens IP
-RACK       = 0              # S7-1200/1500 = rack 0
-SLOT       = 1              # S7-1200: slot 1  |  S7-1500: slot 0
-DB_NUMBER  = 1              # DB-nummer i TIA Portal
-BOOL_BYTE  = 0              # DBX<BYTE>.<BIT>  -> byte-del (0..n)
-BOOL_BIT   = 1              # DBX<byte>.<BIT>  -> bit-del  (0..7)
-# ───────────────────────────────────────────────────────────────
+ip = "192.168.1.100"  # PLC'ens IP-adresse
+rack = 0              # i undervisning altid 0
+slot = 1              # S7-1200: 1  |  S7-1500: 0  (ret hvis du har 1500)
+db_number = 1         # dit DB-nummer
+byte_offset = 0       # DBX<byte>.<bit>  -> her: byte = 0
+bit_index = 0         # DBX<byte>.<bit>  -> her: bit  = 0
 
-# Opret klient og forbind
+# 1) Lav forbindelse til PLC
 client = snap7.client.Client()
-client.connect(PLC_IP, RACK, SLOT)
+client.connect(ip, rack, slot)
 
-# Læs netop den ene byte, som rummer vores bit
-raw = client.db_read(DB_NUMBER, BOOL_BYTE, 1)
+# 2) Læs 1 byte fra DB'et (den byte der indeholder vores bit)
+data = client.db_read(db_number, byte_offset, 1)
 
-# Pak bit'en ud fra den læste bytebuffer (offset 0 i bufferen)
-my_bool = get_bool(raw, 0, BOOL_BIT)
+# 3) Hent bit-værdien ud af den byte vi lige læste
+my_bool = get_bool(data, 0, bit_index)
 
-print(f"BOOL @ DB{DB_NUMBER}.DBX{BOOL_BYTE}.{BOOL_BIT} = {my_bool}")
+# 4) Vis resultatet
+print("my_bool:", my_bool)
 
-# Oprydning
+# 5) Luk forbindelsen
 client.disconnect()
-client.destroy()
-```
+````
 
-Kør i terminalen:
+**Hvad gør koden (trin for trin)?**
+
+1. Importerer snap7 og en hjælperfunktion til at læse en bit.
+2. Sætter de oplysninger du kender (ip, rack, slot, DB, byte, bit).
+3. Forbinder til PLC.
+4. Læser **1 byte** fra DB’et.
+5. Plukker **den ene bit** ud af byten.
+6. Printer værdien.
+7. Afbryder forbindelsen.
+
+Kør:
 
 ```bash
-python opg1_read_bool.py
+python opg2_read_bool.py
 ```
 
-**Hvorfor er det så kort?**
-Vi læser kun den **ene byte**, der indeholder bit’en, og bruger `get_bool` til at plukke den specifikke **bit** ud. Det minimerer både trafik og risikoen for at overskrive/fejllæse andre data.
+---
 
-**Fejlfinding på 30 sekunder**
+## 3) Opgave 3 – Læs en **INT** (DBW)
 
-* Tjek IP, rack/slot (1200: 0/1, 1500: 0/0).
-* Tjek at DB **ikke** er “optimized”.
-* Tjek at CPU **tillader PUT/GET**.
-
-Når denne virker, er mønsteret identisk for INT/REAL/WORD i de næste opgaver—du læser bare 2 eller 4 bytes og bruger den rigtige `get_*`-funktion.
-
-
-## 2. Opgave 2 – Læs en **INT** (DBW)
-
-> **Forudsætning:** DB’et er **uden** “Optimized block access”, og CPU tillader **PUT/GET**.
+**Adresse i TIA:** `DBW2` ⇒ start-byte er **2** og vi skal bruge **2 bytes**.
 
 ```python
-# save as opg2_read_int.py
+# gem som: opg3_read_int.py
+
 import snap7
 from snap7.util import get_int
 
-IP   = "192.168.0.1"  # PLC IP
-RACK = 0              # S7-1200/1500 = rack 0
-SLOT = 1              # S7-1200 = slot 1, S7-1500 = slot 0
-DB   = 1              # DB-nummer i TIA Portal
+ip = "192.168.1.100"
+rack = 0
+slot = 1            # S7-1500? skift til 0
+db_number = 1
 
-INT_START_BYTE = 2    # DBW2  -> starter ved byte 2
-BYTES_TO_READ  = 2    # INT er 2 bytes
+start_byte = 2      # DBW2 starter ved byte 2
+length = 2          # en INT fylder 2 bytes
 
 client = snap7.client.Client()
-client.connect(IP, RACK, SLOT)
+client.connect(ip, rack, slot)
 
-data    = client.db_read(DB, INT_START_BYTE, BYTES_TO_READ)
-my_int  = get_int(data, 0)  # offset 0 i den buffer vi lige læste
+data = client.db_read(db_number, start_byte, length)
+my_int = get_int(data, 0)   # 0 = start i vores lille buffer
 
 print("my_int:", my_int)
 
@@ -91,31 +164,34 @@ client.disconnect()
 Kør:
 
 ```bash
-python opg2_read_int.py
+python opg3_read_int.py
 ```
 
 ---
 
-## 3. Opgave 3 – Læs en **REAL** (DBD)
+## 4) Opgave 4 – Læs en **REAL** (DBD)
+
+**Adresse i TIA:** `DBD4` ⇒ start-byte er **4** og vi skal bruge **4 bytes**.
 
 ```python
-# save as opg3_read_real.py
+# gem som: opg4_read_real.py
+
 import snap7
 from snap7.util import get_real
 
-IP   = "192.168.0.1"
-RACK = 0
-SLOT = 1
-DB   = 1
+ip = "192.168.1.100"
+rack = 0
+slot = 1            # S7-1500? skift til 0
+db_number = 1
 
-REAL_START_BYTE = 4   # DBD4 -> starter ved byte 4
-BYTES_TO_READ   = 4   # REAL er 4 bytes (float32)
+start_byte = 4      # DBD4 starter ved byte 4
+length = 4          # en REAL fylder 4 bytes (float)
 
 client = snap7.client.Client()
-client.connect(IP, RACK, SLOT)
+client.connect(ip, rack, slot)
 
-data     = client.db_read(DB, REAL_START_BYTE, BYTES_TO_READ)
-my_real  = get_real(data, 0)
+data = client.db_read(db_number, start_byte, length)
+my_real = get_real(data, 0)
 
 print("my_real:", my_real)
 
@@ -125,31 +201,34 @@ client.disconnect()
 Kør:
 
 ```bash
-python opg3_read_real.py
+python opg4_read_real.py
 ```
 
 ---
 
-## 4. Opgave 4 – Læs en **WORD** (DBW)
+## 5) Opgave 5 – Læs en **WORD** (DBW)
+
+**Adresse i TIA:** `DBW8` ⇒ start-byte er **8** og vi skal bruge **2 bytes**.
 
 ```python
-# save as opg4_read_word.py
+# gem som: opg5_read_word.py
+
 import snap7
 from snap7.util import get_word
 
-IP   = "192.168.0.1"
-RACK = 0
-SLOT = 1
-DB   = 1
+ip = "192.168.1.100"
+rack = 0
+slot = 1            # S7-1500? skift til 0
+db_number = 1
 
-WORD_START_BYTE = 8   # DBW8 -> starter ved byte 8
-BYTES_TO_READ   = 2   # WORD er 2 bytes (uint16)
+start_byte = 8      # DBW8 starter ved byte 8
+length = 2          # en WORD fylder 2 bytes (uint16)
 
 client = snap7.client.Client()
-client.connect(IP, RACK, SLOT)
+client.connect(ip, rack, slot)
 
-data     = client.db_read(DB, WORD_START_BYTE, BYTES_TO_READ)
-my_word  = get_word(data, 0)
+data = client.db_read(db_number, start_byte, length)
+my_word = get_word(data, 0)
 
 print("my_word:", my_word)
 
@@ -159,17 +238,16 @@ client.disconnect()
 Kør:
 
 ```bash
-python opg4_read_word.py
+python opg5_read_word.py
 ```
 
 ---
 
-#### Små noter (samme for alle opgaver)
+## Fejlfinding (meget kort)
 
-* **Adresser:**
+* **Kan ikke forbinde:** Tjek IP. Prøv at *ping’e* IP’en.
+* **Fejl ved læsning:** Tjek at **PUT/GET** er slået til.
+* **Forkerte tal:** Tjek at DB’et **ikke** er “Optimized block access”, og at adresserne er præcis som i Opgave 1.
+* **Rack/Slot forkert:** S7-1200 = `0/1`. S7-1500 = `0/0`.
 
-  * BOOL: `DBX<byte>.<bit>`
-  * INT/WORD: `DBW<byte>` (2 bytes)
-  * REAL/DINT: `DBD<byte>` (4 bytes)
-* Brug samme **IP, rack og slot** som i TIA Portal.
-* Hvis læsning fejler: tjek at DB **ikke** er “optimized” og at PLC’en tillader **PUT/GET**.
+> Når du har læst disse fire typer, kan du genbruge samme idé til andre adresser: ændr bare start-byte, længde og `get_*`-funktionen.
