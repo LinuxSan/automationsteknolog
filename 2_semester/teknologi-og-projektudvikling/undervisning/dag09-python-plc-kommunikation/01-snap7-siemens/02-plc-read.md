@@ -23,7 +23,7 @@
 4. Download (hardware).  
 
 *Figur 2 – IP-adresse*  
-<img width="1565" height="1215" alt="fig2" src="https://github.com/user-attachments/assets/9dd4a635-39e6-49d1-b67c-cba988b562b1" />
+<img width="156" height="121" alt="fig2" src="https://github.com/user-attachments/assets/9dd4a635-39e6-49d1-b67c-cba988b562b1" />
 
 ---
 
