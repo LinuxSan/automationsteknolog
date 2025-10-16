@@ -7,11 +7,10 @@
 **Installér:**
 ```bash
 pip install python-snap7 pandas matplotlib
-````
-
-````
+```
 
 ```python
+
 # gem som: opg14a_funcanimation_log_each_row.py
 # kør: python opg14a_funcanimation_log_each_row.py
 
@@ -133,6 +132,7 @@ try:
 except:
     pass
 print("Færdig.")
+
 ````
 
 ### Hvad sker der – trin for trin
