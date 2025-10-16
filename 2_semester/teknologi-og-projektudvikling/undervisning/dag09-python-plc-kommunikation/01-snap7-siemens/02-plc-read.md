@@ -23,7 +23,7 @@
 4. Download (hardware).  
 
 *Figur 2 – IP-adresse*  
-<img width="831" height="660" alt="fig2" src="https://github.com/user-attachments/assets/9dd4a635-39e6-49d1-b67c-cba988b562b1" />
+<img width="531" height="660" alt="fig2" src="https://github.com/user-attachments/assets/9dd4a635-39e6-49d1-b67c-cba988b562b1" />
 
 ---
 
@@ -55,7 +55,7 @@ Hvis du simulerer:
 4. Start instansen (grøn lampe).  
 
 *Figur 5 – PLCSIM Advanced*  
-<img width="815" height="660" alt="fig5" src="https://github.com/user-attachments/assets/bdf320d6-bc4a-4458-b904-38e310f0634c" />
+<img width="315" height="660" alt="fig5" src="https://github.com/user-attachments/assets/bdf320d6-bc4a-4458-b904-38e310f0634c" />
 
 ---
 
