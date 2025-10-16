@@ -95,14 +95,14 @@ rack = 0              # i undervisning altid 0
 slot = 1              # S7-1200: 1  |  S7-1500: 0  (ret hvis du har 1500)
 db_number = 1         # dit DB-nummer
 byte_offset = 0       # DBX<byte>.<bit>  -> her: byte = 0
-bit_index = 0         # DBX<byte>.<bit>  -> her: bit  = 0
+bit_index = 1         # DBX<byte>.<bit>  -> her: bit  = 0
 
 # 1) Lav forbindelse til PLC
 client = snap7.client.Client()
 client.connect(ip, rack, slot)
 
-# 2) Læs 1 byte fra DB'et (den byte der indeholder vores bit)
-data = client.db_read(db_number, byte_offset, 1)
+# 2) Læs 10 byte fra DB'et men vi skal kun bruge den byte der indeholder vores bit
+data = client.db_read(db_number, byte_offset, 10)
 
 # 3) Hent bit-værdien ud af den byte vi lige læste
 my_bool = get_bool(data, 0, bit_index)
@@ -147,14 +147,14 @@ rack = 0
 slot = 1            # S7-1500? skift til 0
 db_number = 1
 
-start_byte = 2      # DBW2 starter ved byte 2
-length = 4          # en INT fylder 2 bytes
+start_byte = 0      # DBW2 starter ved byte 2
+length = 10         # en INT fylder 2 bytes men hele DB fylder 10 bytes
 
 client = snap7.client.Client()
 client.connect(ip, rack, slot)
 
 data = client.db_read(db_number, start_byte, length)
-my_int = get_int(data, 0)   # 0 = start i vores lille buffer
+my_int = get_int(data, 2)   # 0 = start i vores lille buffer
 
 print("my_int:", my_int)
 
@@ -184,14 +184,14 @@ rack = 0
 slot = 1            # S7-1500? skift til 0
 db_number = 1
 
-start_byte = 4      # DBD4 starter ved byte 4
-length = 6          # en REAL fylder 4 bytes (float)
+start_byte = 0      # DBD4 starter ved byte 4
+length = 10          # en REAL fylder 4 bytes (float)
 
 client = snap7.client.Client()
 client.connect(ip, rack, slot)
 
 data = client.db_read(db_number, start_byte, length)
-my_real = get_real(data, 0)
+my_real = get_real(data, 4)
 
 print("my_real:", my_real)
 
@@ -221,14 +221,14 @@ rack = 0
 slot = 1            # S7-1500? skift til 0
 db_number = 1
 
-start_byte = 8      # DBW8 starter ved byte 8
+start_byte = 0      # DBW8 starter ved byte 8
 length = 10          # en WORD fylder 2 bytes (uint16)
 
 client = snap7.client.Client()
 client.connect(ip, rack, slot)
 
 data = client.db_read(db_number, start_byte, length)
-my_word = get_word(data, 0)
+my_word = get_word(data, 8)
 
 print("my_word:", my_word)
 
