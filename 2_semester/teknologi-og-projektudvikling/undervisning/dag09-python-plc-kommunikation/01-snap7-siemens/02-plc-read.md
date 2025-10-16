@@ -95,20 +95,21 @@ rack = 0              # i undervisning altid 0
 slot = 1              # S7-1200: 1  |  S7-1500: 0  (ret hvis du har 1500)
 db_number = 1         # dit DB-nummer
 byte_offset = 0       # DBX<byte>.<bit>  -> her: byte = 0
-bit_index = 1         # DBX<byte>.<bit>  -> her: bit  = 0
+bit_index = 0         # DBX<byte>.<bit>  -> her: bit  = 0
+size = 10
 
 # 1) Lav forbindelse til PLC
 client = snap7.client.Client()
 client.connect(ip, rack, slot)
 
 # 2) Læs 10 byte fra DB'et men vi skal kun bruge den byte der indeholder vores bit
-data = client.db_read(db_number, byte_offset, 10)
+data = client.db_read(db_number, byte_offset, size)
 
 # 3) Hent bit-værdien ud af den byte vi lige læste
 my_bool = get_bool(data, 0, bit_index)
 
 # 4) Vis resultatet
-print("my_bool:", my_bool)
+print("my_bool: ", my_bool)
 
 # 5) Luk forbindelsen
 client.disconnect()
@@ -140,23 +141,23 @@ python opg2_read_bool.py
 # gem som: opg3_read_int.py
 
 import snap7
-from snap7.util import get_int
+from snap7.util import get_bool, get_int
 
-ip = "192.168.1.100"
-rack = 0
-slot = 1            # S7-1500? skift til 0
-db_number = 1
-
-start_byte = 0      # DBW2 starter ved byte 2
-length = 10         # en INT fylder 2 bytes men hele DB fylder 10 bytes
+ip = "192.168.1.100"  # PLC'ens IP-adresse
+rack = 0              # i undervisning altid 0
+slot = 1              # S7-1200: 1  |  S7-1500: 0  (ret hvis du har 1500)
+db_number = 1         # dit DB-nummer
+byte_offset = 0       # DBX<byte>.<bit>  -> her: byte = 0
+bit_index = 2         # DBX<byte>.<bit>  -> her: bit  = 0
+size = 10
 
 client = snap7.client.Client()
 client.connect(ip, rack, slot)
 
-data = client.db_read(db_number, start_byte, length)
-my_int = get_int(data, 2)   # 0 = start i vores lille buffer
+data = client.db_read(db_number, byte_offset, size)
+my_int = get_int(data, bit_index)   # 0 = start i vores lille buffer
 
-print("my_int:", my_int)
+print("my_int: ", my_int)
 
 client.disconnect()
 ```
@@ -177,23 +178,23 @@ python opg3_read_int.py
 # gem som: opg4_read_real.py
 
 import snap7
-from snap7.util import get_real
+from snap7.util import get_bool, get_int, get_real
 
-ip = "192.168.1.100"
-rack = 0
-slot = 1            # S7-1500? skift til 0
-db_number = 1
-
-start_byte = 0      # DBD4 starter ved byte 4
-length = 10          # en REAL fylder 4 bytes (float)
+ip = "192.168.1.100"  # PLC'ens IP-adresse
+rack = 0              # i undervisning altid 0
+slot = 1              # S7-1200: 1  |  S7-1500: 0  (ret hvis du har 1500)
+db_number = 1         # dit DB-nummer
+byte_offset = 0       # DBX<byte>.<bit>  -> her: byte = 0
+bit_index = 4         # DBX<byte>.<bit>  -> her: bit  = 0
+size = 10
 
 client = snap7.client.Client()
 client.connect(ip, rack, slot)
 
-data = client.db_read(db_number, start_byte, length)
-my_real = get_real(data, 4)
+data = client.db_read(db_number, byte_offset, size)
+my_real = get_real(data, bit_index)
 
-print("my_real:", my_real)
+print("my_real: ", my_real)
 
 client.disconnect()
 ```
@@ -216,21 +217,22 @@ python opg4_read_real.py
 import snap7
 from snap7.util import get_word
 
-ip = "192.168.1.100"
-rack = 0
-slot = 1            # S7-1500? skift til 0
-db_number = 1
-
-start_byte = 0      # DBW8 starter ved byte 8
-length = 10          # en WORD fylder 2 bytes (uint16)
+ip = "192.168.1.100"  # PLC'ens IP-adresse
+rack = 0              # i undervisning altid 0
+slot = 1              # S7-1200: 1  |  S7-1500: 0  (ret hvis du har 1500)
+db_number = 1         # dit DB-nummer
+byte_offset = 0       # DBX<byte>.<bit>  -> her: byte = 0
+bit_index = 8         # DBX<byte>.<bit>  -> her: bit  = 0
+size = 10
 
 client = snap7.client.Client()
 client.connect(ip, rack, slot)
 
-data = client.db_read(db_number, start_byte, length)
-my_word = get_word(data, 8)
+data = client.db_read(db_number, byte_offset, size)
+my_word = get_word(data, bit_index)
 
-print("my_word:", my_word)
+print("my_word: ", my_word)
+print("my_word: ", hex(my_word))
 
 client.disconnect()
 ```
