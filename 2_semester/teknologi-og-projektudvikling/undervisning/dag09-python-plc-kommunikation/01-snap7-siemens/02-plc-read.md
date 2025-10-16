@@ -12,7 +12,7 @@
 3. Gem.
 
 *Figur 1 – DB med bool/int/real/word*  
-<img width="3035" height="1655" alt="fig1" src="https://github.com/user-attachments/assets/375832c4-3bc4-4a0a-9f92-0add878f7577" />
+<img width="831" height="660" alt="fig1" src="https://github.com/user-attachments/assets/375832c4-3bc4-4a0a-9f92-0add878f7577" />
 
 ---
 
@@ -33,7 +33,7 @@
 3. Download (software).  
 
 *Figur 3 – PUT/GET*  
-<img width="1560" height="1222" alt="fig3" src="https://github.com/user-attachments/assets/d151c557-56b8-4db4-a3a7-c5eb0f14bcb9" />
+<img width="831" height="660" alt="fig3" src="https://github.com/user-attachments/assets/d151c557-56b8-4db4-a3a7-c5eb0f14bcb9" />
 
 ---
 
@@ -43,7 +43,7 @@
 3. Gem og download DB’et.  
 
 *Figur 4 – Optimized block access fra*  
-<img width="1562" height="1220" alt="fig4" src="https://github.com/user-attachments/assets/6389100d-5ce6-496a-9da6-e1df8264b7b9" />
+<img width="831" height="660" alt="fig4" src="https://github.com/user-attachments/assets/6389100d-5ce6-496a-9da6-e1df8264b7b9" />
 
 ---
 
@@ -55,7 +55,7 @@ Hvis du simulerer:
 4. Start instansen (grøn lampe).  
 
 *Figur 5 – PLCSIM Advanced*  
-<img width="815" height="1690" alt="fig5" src="https://github.com/user-attachments/assets/bdf320d6-bc4a-4458-b904-38e310f0634c" />
+<img width="815" height="660" alt="fig5" src="https://github.com/user-attachments/assets/bdf320d6-bc4a-4458-b904-38e310f0634c" />
 
 ---
 
