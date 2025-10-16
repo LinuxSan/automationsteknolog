@@ -148,7 +148,7 @@ slot = 1            # S7-1500? skift til 0
 db_number = 1
 
 start_byte = 2      # DBW2 starter ved byte 2
-length = 2          # en INT fylder 2 bytes
+length = 4          # en INT fylder 2 bytes
 
 client = snap7.client.Client()
 client.connect(ip, rack, slot)
@@ -185,7 +185,7 @@ slot = 1            # S7-1500? skift til 0
 db_number = 1
 
 start_byte = 4      # DBD4 starter ved byte 4
-length = 4          # en REAL fylder 4 bytes (float)
+length = 6          # en REAL fylder 4 bytes (float)
 
 client = snap7.client.Client()
 client.connect(ip, rack, slot)
@@ -222,7 +222,7 @@ slot = 1            # S7-1500? skift til 0
 db_number = 1
 
 start_byte = 8      # DBW8 starter ved byte 8
-length = 2          # en WORD fylder 2 bytes (uint16)
+length = 10          # en WORD fylder 2 bytes (uint16)
 
 client = snap7.client.Client()
 client.connect(ip, rack, slot)
