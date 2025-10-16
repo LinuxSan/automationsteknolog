@@ -1,53 +1,58 @@
-# 01 – Install & “Hello PLC” for Rockwell (CompactLogix/ControlLogix/Micro800)
+# 01 – Install & “Hello PLC” for Rockwell  
+*(CompactLogix, ControlLogix og Logix Echo)*
 
-> **Mål:** Få din PC og PLC til at snakke sammen via **EtherNet/IP (CIP)** med Python.  
-> Vi bruger **pycomm3** (nem og stabil). Ingen OPC, ingen tunge drivere.
-
----
-
-## 0) Hvad du skal bruge
-
-- **En Rockwell PLC**  
-  - CompactLogix 53xx/54xx/55xx eller ControlLogix (1756).  
-  - Micro800 (820/850/870) virker også — brug samme opskrift.
-- **IP-adresse** på PLC’en (fx `192.168.1.50`).  
-- **En controller-tag** du kan læse/skriv (vi laver dem i Trin A).
-
-> Porten der bruges er **44818/TCP** (EtherNet/IP). Hvis du har Windows-firewall, så sørg for at Python må snakke ud.
+> **Formål:** Få Python til at læse/skriv **direkte på tags** i Rockwell Logix-PLC’er via **EtherNet/IP (CIP)**.  
+> Vi bruger **pycomm3**. Det er enkelt og kræver ikke OPC.
 
 ---
 
-## A) PLC: forbered i Studio 5000 / CCW (step-by-step)
+## 0) Hvad skal du have klar?
 
-1) **Sæt IP på PLC**  
-   - CompactLogix/ControlLogix: IP sættes på CPU’ens Ethernet-port eller på et ENxT-modul.  
-   - Micro800 (CCW): sæt IP i controllerens kommunikationsindstillinger.
+- **En PLC**:  
+  - **CompactLogix** (53xx/54xx/55xx) **eller** **ControlLogix** (1756).  
+  - **Logix Echo** (virtuel ControlLogix) kan også bruges – behandles som ControlLogix.
+- **IP-adresse** til det Ethernet-interface, du vil forbinde til:
+  - CompactLogix: CPU’ens indbyggede Ethernet.
+  - ControlLogix: **ENxT Ethernet-modul** (f.eks. 1756-EN2T/EN3T).
+  - Logix Echo: dit **virtuelle ENxT-moduls IP**.
+- **3 simple controller-tags** i projektet (Controller Scope):  
+  - `MyBool`  : **BOOL**, External Access = **Read/Write**  
+  - `MyInt`   : **INT** (16-bit), External Access = **Read/Write**  
+  - `MyReal`  : **REAL** (float), External Access = **Read/Write**
 
-2) **Lav 3 enkle controller-tags** (Controller Scope)  
-   - `MyBool`  : **BOOL**, External Access = **Read/Write**  
-   - `MyInt`   : **INT** (16-bit), External Access = **Read/Write**  
-   - `MyReal`  : **REAL** (float), External Access = **Read/Write**  
-   *(External Access er vigtig — ellers kan man ikke skrive udefra.)*
-
-3) **Download** til PLC og sæt i **Run**.
-
-4) **Find slot-nummer (kun ControlLogix i chassis)**  
-   - CPU’en står i et **slot** (typisk **0**). Du skal bruge slot i forbindelsesstien senere.  
-   - CompactLogix/Micro800 bruger bare IP (ingen slot).
-
-> Mini-tjek: Kan du **ping’e** PLC-IP’en fra din PC?
+> Porten er **TCP 44818**. Sørg for at din firewall ikke blokerer.
 
 ---
 
-## B) PC: Python og pakker (step-by-step)
+## A) PLC – klargøring i Studio 5000 / Logix Echo (trin for trin)
 
-1) Installer Python 3.10+ (Windows/Mac/Linux).  
-2) (Valgfrit) Lav et projekt-miljø:
+### CompactLogix
+1. **Sæt IP** på CPU’ens Ethernet (f.eks. `192.168.1.50`).  
+2. Opret tags (`MyBool`, `MyInt`, `MyReal`) som **Controller Tags** med **External Access = Read/Write**.  
+3. **Download** og sæt controller i **Run**.
 
-```bash   
-   python -m venv .venv
-   .venv\Scripts\activate   # Windows
-   # source .venv/bin/activate  # Mac/Linux
+### ControlLogix (1756-chassis)
+1. Sæt IP på **ENxT-modulet** (f.eks. `192.168.1.60`).  
+2. Find **CPU’ens slot-nummer** i chassiset (typisk **slot 0**, men kig i projektet).  
+3. Opret tags som ovenfor → **Download** → **Run**.
+
+### Logix Echo (virtuel)
+1. Opret et virtuelt chassis i **FactoryTalk Logix Echo**.  
+2. Tilføj et **virtuelt ENxT-modul** og giv det en **IP** (f.eks. `192.168.1.70`).  
+3. Tilføj en **virtuel controller** (L8x). Notér **CPU-slot**.  
+4. Opret tags i Studio 5000 mod Echo-controlleren → **Download** → **Run**.  
+   *For Python er Echo = ControlLogix: du forbinder til ENxT-IP og angiver CPU-slot.*
+
+---
+
+## B) PC – Python og pycomm3
+
+1. Installer Python 3.10+  
+2. (Valgfrit) Lav et projekt-miljø:
+```bash
+python -m venv .venv
+.venv\Scripts\activate        # Windows
+# source .venv/bin/activate   # Mac/Linux
 ````
 
 3. Installer pakken:
@@ -58,26 +63,28 @@ pip install pycomm3
 
 ---
 
-## C) Første læsning – “Hello PLC” (meget simpelt)
+## C) “Hello Read” – læs tre tags (meget simpelt)
 
-> **CompactLogix/Micro800:** brug bare `"PLC_IP"`
-> **ControlLogix:** brug `"PLC_IP/slot"` (fx `"192.168.1.50/0"` hvis CPU står i slot 0)
+> **CompactLogix:** brug **kun IP** (ingen slot).
+> **ControlLogix / Echo:** brug **"IP/slot"** (f.eks. `"192.168.1.60/0"`).
 
 ```python
 # gem som: hello_read.py
 from pycomm3 import LogixDriver
 
-PLC = "192.168.1.50"   # CompactLogix/Micro800
-# PLC = "192.168.1.50/0"  # ControlLogix: /<slot>
+# VÆLG ÉN af linjerne herunder:
+PLC = "192.168.1.50"      # CompactLogix (kun IP)
+# PLC = "192.168.1.60/0"  # ControlLogix (ENxT-IP / CPU-slot)
+# PLC = "192.168.1.70/0"  # Logix Echo (ENxT-IP / CPU-slot)
 
 with LogixDriver(PLC) as plc:
-    val_bool = plc.read("MyBool").value
-    val_int  = plc.read("MyInt").value
-    val_real = plc.read("MyReal").value
+    b = plc.read("MyBool").value
+    i = plc.read("MyInt").value
+    r = plc.read("MyReal").value
 
-print("MyBool:", val_bool)
-print("MyInt :", val_int)
-print("MyReal:", val_real)
+print("MyBool:", b)
+print("MyInt :", i)
+print("MyReal:", r)
 ```
 
 Kør:
@@ -86,100 +93,61 @@ Kør:
 python hello_read.py
 ```
 
-**Hvis det fejler:**
-
-* IP rigtig?
-* For ControlLogix: er **slot** korrekt?
-* Er tag-navnene præcis de samme (store/små bogstaver er ok, men stavning skal matche)?
-* Er “External Access” sat til **Read/Write** på tagget?
-
 ---
 
-## D) Første skrivning – toggle og tal
+## D) “Hello Write” – skriv og læs igen
 
 ```python
 # gem som: hello_write.py
 from pycomm3 import LogixDriver
 
-PLC = "192.168.1.50"   # eller "192.168.1.50/0" for ControlLogix
+PLC = "192.168.1.50"      # eller "192.168.1.60/0" (CLX) / "192.168.1.70/0" (Echo)
 
 with LogixDriver(PLC) as plc:
-    # 1) Toggle MyBool
-    current = plc.read("MyBool").value
-    plc.write("MyBool", not current)
+    # toggle bool
+    cur = plc.read("MyBool").value
+    plc.write("MyBool", not cur)
 
-    # 2) Skriv en INT og en REAL
-    plc.write("MyInt", 1234)       # INT (−32768..32767)
-    plc.write("MyReal", 3.14)      # REAL (float)
+    # skriv tal
+    plc.write("MyInt", 1234)     # INT  (-32768..32767)
+    plc.write("MyReal", 3.14)    # REAL (float)
 
-print("Skrevet: MyBool toggled, MyInt=1234, MyReal=3.14")
-```
+    # læs tilbage
+    b = plc.read("MyBool").value
+    i = plc.read("MyInt").value
+    r = plc.read("MyReal").value
 
-Kør:
-
-```bash
-python hello_write.py
-```
-
-> Du behøver ikke læse/skrive bytes/bit manuelt som med S7.
-> I Logix skriver/læser du **direkte på tag-navne**.
-
----
-
-## E) “Smoke test” – ét script der læser, skriver og læser igen
-
-```python
-# gem som: smoke_test.py
-from pycomm3 import LogixDriver
-
-PLC = "192.168.1.50"   # Compact/Micro
-# PLC = "192.168.1.50/0"  # ControlLogix
-
-with LogixDriver(PLC) as plc:
-    # Læs før
-    b0 = plc.read("MyBool").value
-    i0 = plc.read("MyInt").value
-    r0 = plc.read("MyReal").value
-    print("FØR  ->", b0, i0, r0)
-
-    # Skriv nye værdier
-    plc.write("MyBool", not b0)
-    plc.write("MyInt",  i0 + 1)
-    plc.write("MyReal", r0 + 0.1)
-
-    # Læs efter
-    b1 = plc.read("MyBool").value
-    i1 = plc.read("MyInt").value
-    r1 = plc.read("MyReal").value
-    print("EFTER ->", b1, i1, r1)
+print("Efter skriv -> MyBool:", b, " MyInt:", i, " MyReal:", r)
 ```
 
 ---
 
-## F) Hurtig fejlfinding
+## E) Hurtig fejlfinding
 
-* **Timeout / kan ikke forbinde**
+* **Kan ikke forbinde / timeout**
 
-  * Tjek at du kan **ping’e** IP’en.
-  * Windows-firewall: tillad Python på **udgående**; port **44818/TCP**.
-  * Forkert slot på ControlLogix? Prøv `.../0`.
+  * Tjek at du kan `ping`e IP’en fra PC’en.
+  * Firewall: tillad Python udgående på **TCP 44818**.
+  * **ControlLogix/Echo:** er CPU-**slot** korrekt i stien `"IP/slot"`?
 * **Tag ikke fundet**
 
-  * Stavning og scope: er det **Controller Tags** (ikke kun Program Tags)?
-  * Hvis det **er** et Program Tag: brug `Program:<ProgramNavn>.TagNavn` (fx `Program:MainProgram.MyInt`).
+  * Stavning 1:1 med Studio 5000.
+  * Ligger tagget i **Controller Tags**? (Program Tags kræver stien `Program:<Navn>.Tag`).
 * **Kan ikke skrive**
 
-  * Tjek at taggenes **External Access = Read/Write**.
-  * Nogle strukturer/alias’er kan være Read-only — test med simple base-typer først (BOOL/INT/REAL/DINT).
-* **Micro800**
+  * **External Access** skal være **Read/Write**.
+  * Test først med simple base-typer (BOOL/INT/REAL).
+* **Echo specifikt**
 
-  * Brug kun IP (ingen slot). Navngivning af tags skal matche det, du har i CCW.
+  * Brug **ENxT-modulets IP** + **CPU-slot** (samme som ControlLogix).
+  * Hvis IP’en er på et isoleret virtuelt net, så sørg for, at din PC også kan nå det net (vNIC/adapter).
 
 ---
 
-## G) Hvad er næste skridt?
+## F) Næste skridt
 
-* **02 – Read & plot:** Læs flere tags og vis dem i et simpelt print eller Matplotlib.
-* **03 – Write-øvelser:** Knapper i Python der toggler/skriversættet.
-* **04 – Logging:** Py + `pandas` til CSV (som I gjorde til S7).
-* **Bonus:** Vis `FuncAnimation` live-plot af et REAL-tag og samtidig CSV-log (samme mønster som S7-opgaven).
+* Live-plot (`FuncAnimation`) af et REAL-tag + CSV-log (samme opskrift som S7-forløbet).
+* Kontinuerlig “main” der læser flere tags.
+* Små write-øvelser (knap i Python der toggler et BOOL-tag).
+
+> **Note:** I Logix læser/skriver du **direkte på tag-navne**. Du skal ikke håndtere bytes/bit som på S7 – det er derfor `pycomm3` er dejligt begyndervenlig her.
