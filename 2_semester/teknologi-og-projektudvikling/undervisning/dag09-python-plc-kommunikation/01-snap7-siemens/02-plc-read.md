@@ -12,7 +12,7 @@
 3. Gem.
 
 *Figur 1 – DB med bool/int/real/word*  
-![DB-layout i TIA Portal](fig1.png)
+<img width="3035" height="1655" alt="fig1" src="https://github.com/user-attachments/assets/375832c4-3bc4-4a0a-9f92-0add878f7577" />
 
 ---
 
@@ -23,7 +23,7 @@
 4. Download (hardware).  
 
 *Figur 2 – IP-adresse*  
-![Ethernet/IP-indstillinger](fig2.png)
+<img width="1565" height="1215" alt="fig2" src="https://github.com/user-attachments/assets/9dd4a635-39e6-49d1-b67c-cba988b562b1" />
 
 ---
 
@@ -33,7 +33,7 @@
 3. Download (software).  
 
 *Figur 3 – PUT/GET*  
-![Permit access with PUT/GET](fig3.png)
+<img width="1560" height="1222" alt="fig3" src="https://github.com/user-attachments/assets/d151c557-56b8-4db4-a3a7-c5eb0f14bcb9" />
 
 ---
 
@@ -43,7 +43,7 @@
 3. Gem og download DB’et.  
 
 *Figur 4 – Optimized block access fra*  
-![DB Attributes – Optimized block access](fig4.png)
+<img width="1562" height="1220" alt="fig4" src="https://github.com/user-attachments/assets/6389100d-5ce6-496a-9da6-e1df8264b7b9" />
 
 ---
 
@@ -55,7 +55,7 @@ Hvis du simulerer:
 4. Start instansen (grøn lampe).  
 
 *Figur 5 – PLCSIM Advanced*  
-![PLCSIM Advanced](fig5.png)
+<img width="815" height="1690" alt="fig5" src="https://github.com/user-attachments/assets/bdf320d6-bc4a-4458-b904-38e310f0634c" />
 
 ---
 
