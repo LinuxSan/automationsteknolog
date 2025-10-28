@@ -1,42 +1,45 @@
 # 🛡️ Dag 08 – Fejlfinding & Netværkssikkerhed
 
 Velkommen til dag 8 af Industrielt Netværk!
-
-> I dag får du trænet fejlfinding på industrielle netværk – og lærer, hvordan man beskytter OT-udstyr mod angreb og fejl. Vi arbejder især i GNS3, men bruger også dokumentation og cases.
+I dag arbejder vi med fejlfinding og beskyttelse af OT-netværk i GNS3, inkl. firewall, VLAN, NAT og adgangskontrol.
 
 ---
 
-## 🎯 Læringsmål for dagen
+## 🎯 Læringsmål
 
-- Forstå grundprincipper i OT-netværkssikkerhed (fx firewall, segmentering, ACL)
-- Udføre fejlfinding på netværk (ping, traceroute, fysisk/logisk analyse)
-- Identificere og håndtere almindelige fejlsituationer (IP-konflikt, forkert VLAN, gateway-problemer)
+- Forstå OT-netværkssikkerhed: firewall, segmentering, ACL
+- Udføre fejlfinding: ping, traceroute, fysisk/logisk analyse
+- Identificere og løse netværksfejl (IP-konflikt, VLAN, gateway)
 - Dokumentere fejl og løsninger systematisk
 
 ---
 
-## 📚 Dagens indhold
+## 📚 Indhold
 
 - **Mini-forelæsning:**  
-  - Netværkssikkerhed: Hvorfor er OT mere sårbart end IT?
+  - OT vs. IT-sikkerhed, trusler og beskyttelse
   - Firewalls, access control, fysisk adskillelse
-  - Fejlfinding: Metoder og værktøjer i praksis (ping, traceroute, netværksdiagrammer)
-- **Cases og hands-on i GNS3:**  
-  - Lav bevidste fejl (forkert subnet, dobbelte IP’er, defekt kabel, fejl i VLAN)
-  - Konfigurér og test firewall/regler og adgangskontrol
-  - Dokumentér fejl og løsning
+  - Fejlfinding: ping, traceroute, netværksdiagrammer
+- **Hands-on i GNS3:**  
+  - Opret Linux-router med flere netværk
+  - Konfigurér firewall med nftables
+  - Test og dokumentér fejl (forkert subnet, IP-konflikt, VLAN-fejl)
+  - RDP-adgang og sikkerhed (se RDP.md)
+  - NAT og VLAN-router-on-a-stick (se router-nftv.md)
 
 ---
 
 ## 🛠️ Opgaver
 
-| #   | Titel                       | Type      | Aflevering           |
-|-----|-----------------------------|-----------|----------------------|
-| 1   | Fejlfinding i GNS3          | Individuel/gruppe | `.md` + screenshots/diagrammer |
-| 2   | Firewall & ACL konfiguration| Individuel/gruppe | `.md` + config/skærmbilleder  |
-| 3   | Dokumentér fejl og løsning  | Individuel | `.md` (skema)        |
+| #   | Titel                       | Type      |
+|-----|-----------------------------|-----------|
+| 1   | Fejlfinding i GNS3          | Individuel/gruppe |
+| 2   | Firewall & ACL konfiguration| Individuel/gruppe |
+| 3   | Dokumentér fejl og løsning  | Individuel |
 
-Dokumentér alt i en undermappe med dit navn (eller gruppe) under `dag08-fejlfinding-sikkerhed`.
+> Opgavebeskrivelser og eksempler findes i `gns3-opgaver.md`.  
+> RDP-opsætning og sikkerhed: se `RDP.md`.  
+> Avanceret router/firewall: se `router-nftv.md`.
 
 ---
 
@@ -45,17 +48,10 @@ Dokumentér alt i en undermappe med dit navn (eller gruppe) under `dag08-fejlfin
 - [OT-netværkssikkerhed: Intro (pdf, dansk)](https://www.industriensnetvaerk.dk/wp-content/uploads/2021/01/Industrielt-netvaerk-og-sikkerhed.pdf)
 - [GNS3: Simulering af firewalls](https://gns3.com/tech/firewall-simulation)
 - [Ping & Traceroute – Hurtig guide](https://www.cloudflare.com/learning/network-layer/what-is-ping/)
-
----
-
-## 📝 Afleveringsguide
-
-1. Opret mappe: `dag08-ditnavn` eller `dag08-gruppeX`
-2. Løs alle opgaver, dokumentér fejl og løsninger med tekst og screenshots
-3. Lav evt. en oversigt (tabel/skema) over fejltyper og hvordan de blev fundet/løst
-4. Push til GitHub senest før næste undervisningsgang
-
-> Husk: Jo bedre du dokumenterer dine fejl og løsninger, desto nemmere er det for andre (og dig selv!) at forstå netværket.
+- Eksempler og guides:  
+  - `gns3-opgaver.md` – opgaver og konfiguration  
+  - `RDP.md` – remote desktop og sikkerhed  
+  - `router-nftv.md` – avanceret router/firewall
 
 ---
 
