@@ -6,7 +6,7 @@ Dette dokument indeholder en række opgaver, der guider dig gennem opsætning af
 
 **Mål:**
 Få to virtuelle netværk til at kunne pinge hinanden via en Linux-router.
-![alt text](image.png)
+![alt text](img/image.png)
 **Trin:**
 1. Opret et GNS3-projekt med to LAN-segmenter og en Linux-router imellem.
 2. Tilføj to linux-pc'er
@@ -83,7 +83,7 @@ Få to virtuelle netværk til at kunne pinge hinanden via en Linux-router.
         ```
 
     eller ved at bruge wireshark til at fange ICMP pakkerne på routerens interfaces. I wireshark kan du se at de bliver routet korrekt mellem de to netværk.
-    ![alt text](image-1.png)
+    ![alt text](img/image-1.png)
 
 ---
 
@@ -190,7 +190,7 @@ Tillad kun trafik fra netværk `192.168.1.0/24` til netværk `192.168.2.0/24`. B
        ping -c4 192.168.1.10
        ```
 5. Test med wireshark på routerens interfaces for at se, at trafikken bliver blokeret korrekt i den ene retning.
-![alt text](image-3.png)
+![alt text](img/image-3.png)
 *Bemærk de to markeringer i wireshark. No 3 viser ping fra PC2 til PC1. Router afviser pakken. No 7 viser ping fra PC1 til PC2. Router accepterer pakken.*
 
 ---
@@ -327,7 +327,7 @@ Målet er nu at vende tilladelser og blokeringer, dvs. tillad kun trafik fra net
        ```bash
        ping -c4 192.168.2.10
        ```
-   ![alt text](image-4.png)
+   ![alt text](img/image-4.png)
    *Bemærk at der er trafik i begge retninger.*
 ## Opgave 4: NAT for internetdeling
 
@@ -353,9 +353,9 @@ Routeren skal håndtere to VLANs på ét interface. Router skal tillade trafik f
 
 **Trin:**
 1. Indsæt en switch mellem routeren og de to linux-pc'er.
-![alt text](image-5.png)
+![alt text](img/image-5.png)
 2. Dobbelt klick på switch og opret VLAN-subinterfaces som vist på billede:
-![alt text](image-6.png)
+![alt text](img/image-6.png)
    - VLAN 10 -> PC1
    - VLAN 20 -> PC2
 3. Giv PC'erne IP-adresser:
@@ -436,7 +436,7 @@ Routeren skal håndtere to VLANs på ét interface. Router skal tillade trafik f
       - ping fra PC2 til PC1 (virker ikke) `ping -c2 192.168.10.10`. 
       - Brug wireshark til at bekræfte trafikken.
 
-   ![alt text](image-7.png)
+   ![alt text](img/image-7.png)
 
 ---
 
@@ -447,9 +447,9 @@ Routeren skal håndtere to VLANs på ét interface. Router skal tillade trafik f
 
 **Trin:**
 1. Indsæt en switch mellem routeren og de to linux-pc'er.
-![alt text](image-5.png)
+![alt text](img/image-5.png)
 2. Dobbelt klick på switch og opret VLAN-subinterfaces som vist på billede:
-![alt text](image-6.png)
+![alt text](img/image-6.png)
    - VLAN 10 -> PC1
    - VLAN 20 -> PC2
 3. Giv PC'erne IP-adresser:
@@ -536,7 +536,7 @@ Routeren skal håndtere to VLANs på ét interface. Router skal tillade trafik f
       - ping fra PC2 til PC1 (virker) `ping -c2 192.168.10.10`. 
       - Brug wireshark til at bekræfte trafikken.
 
-   ![alt text](image-8.png)
+   ![alt text](img/image-8.png)
 ---
 
 ## Opgave 6: Specifik host adgang mellem VLANs
@@ -545,9 +545,9 @@ Routeren skal tillade al trafik fra VLAN 10 til VLAN 20. Fra VLAN 20 til VLAN 10
 
 **Trin:**
 1. Indsæt en switch mellem routeren og de to linux-pc'er.
-![alt text](image-5.png)
+![alt text](img/image-5.png)
 2. Dobbelt klick på switch og opret VLAN-subinterfaces som vist på billede:
-![alt text](image-6.png)
+![alt text](img/image-6.png)
    - VLAN 10 -> PC1
    - VLAN 20 -> PC2
    - VLAN 20 -> PC3 (den specielle host)
@@ -652,7 +652,7 @@ Routeren skal tillade al trafik fra VLAN 10 til VLAN 20. Fra VLAN 20 til VLAN 10
    - ping fra PC1 til PC3 `ping -c2 192.168.20.50` (virker)
    - ping fra PC2 til PC1 `ping -c2 192.168.10.10` (virker ikke)
 9. Verificer med wireshark på routerens interfaces at trafikken bliver håndteret korrekt.
-   ![alt text](image-9.png)
+   ![alt text](img/image-9.png)
    *Bemærk at ping fra PC2 til PC1 bliver droppet af firewall-reglerne, mens ping fra PC3 til PC1 bliver accepteret.*
 
 ---
@@ -663,9 +663,9 @@ Routeren skal tillade trafik mellem `192.168.10.20` i VLAN 10 og `192.168.20.50`
 
 **Trin:**
 1. Indsæt en switch mellem routeren og de 4 linux-pc'er.
-![alt text](image-10.png)
+![alt text](img/image-10.png)
 2. Dobbelt klick på switch og opret VLAN-subinterfaces som vist på billede:
-![alt text](image-11.png)
+![alt text](img/image-11.png)
    - VLAN 10 -> PC1 `192.168.10.10`
    - VLAN 10 -> PC2 `192.168.10.20` (den specielle host)
    - VLAN 20 -> PC3 `192.168.20.50` (den specielle host)
@@ -783,7 +783,7 @@ Routeren skal tillade trafik mellem `192.168.10.20` i VLAN 10 og `192.168.20.50`
    - ping fra PC2 til PC3 `ping -c2 192.168.20.50` (virker)
    - ping fra PC2 til PC4 `ping -c2 192.168.20.20` (virker ikke)
 9. Verificer med wireshark på routerens interfaces at trafikken bliver håndteret korrekt.
-   ![alt text](image-9.png)
+   ![alt text](img/image-9.png)
    *Bemærk at ping fra PC2 til PC1 bliver droppet af firewall-reglerne, mens ping fra PC3 til PC1 bliver accepteret.*
 
 ---
