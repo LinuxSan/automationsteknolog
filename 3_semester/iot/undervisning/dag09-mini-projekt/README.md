@@ -1,10 +1,10 @@
-# Mini-Projekt: Digital Twin af et Hus med IoT
+# 🏠 Mini-Projekt: Digital Twin af et Hus med IoT
 
-## Formål
+## 🎯 Formål
 
 Design og implementér en **simpel digital tvilling** af et hus ved hjælp af IoT-principper. Projektet er **ren simulering** (ingen fysisk hardware). I simulerer sensorer og aktuatorer, indsamler data og visualiserer husets tilstand i realtid.
 
-## Projektkrav
+## ✅ Projektkrav
 
 1. **Hus-simulering**
 
@@ -32,7 +32,7 @@ Design og implementér en **simpel digital tvilling** af et hus ved hjælp af Io
 
    * Har I andre idéer til et **digital twin mini-projekt** end et hus, **må I gerne vælge dem efter samråd med underviser**. Sørg for, at kravene ovenfor kan demonstreres tilsvarende.
 
-## Leverance (én ting)
+## 🎥 Leverance (én ting)
 
 * **Video på maks. 5 minutter**, der demonstrerer:
 
@@ -41,14 +41,14 @@ Design og implementér en **simpel digital tvilling** af et hus ved hjælp af Io
   * interaktiv styring af aktuatorer,
   * at data opdateres løbende.
 
-## Vurdering (feedback-fokus)
+## 🔍 Vurdering (feedback-fokus)
 
 * **Tydelig demo:** Det er let at se model, sensorer og aktuatorer.
 * **Stabil simulering:** Værdier opdateres jævnt og plausibelt.
 * **Styring virker:** UI-ændringer påvirker aktuatorer med det samme.
 * **Overblik:** Enkel, læsbar brugerflade.
 
-## Praktiske noter (valgfrie hints)
+## 🧭 Praktiske noter (valgfrie hints)
 
 * Brug evt. “accelereret tid” for at vise variation hurtigt.
 * Hold det simpelt: fokus er på en klar, forståelig demonstration.
