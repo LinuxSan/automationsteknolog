@@ -328,17 +328,23 @@ Fra **Host1** (Alpine):
 ping -c4 192.168.110.1
 ```
 
+<img width="1917" height="1029" alt="image" src="https://github.com/user-attachments/assets/faa61391-1a87-41f0-9b11-d69c3bae611a" />
+
 Fra **Host2**:
 
 ```bash
 ping -c4 192.168.120.1
 ```
 
+<img width="1917" height="1028" alt="image" src="https://github.com/user-attachments/assets/47879e49-dec3-41cc-a11e-0688b1b155ae" />
+
 Fra **Host3**:
 
 ```bash
 ping -c4 192.168.130.1
 ```
+
+<img width="1915" height="1027" alt="image" src="https://github.com/user-attachments/assets/dda3b888-9781-4198-95a1-edaa880bce3b" />
 
 Alle tre tests skal lykkes. Hvis ikke: tjek IP-adresser, gateway og om `eth0` er `UP`.
 
