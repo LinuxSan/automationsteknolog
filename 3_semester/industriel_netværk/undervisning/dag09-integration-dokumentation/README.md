@@ -359,6 +359,9 @@ ping 192.168.120.10
 ping 192.168.130.10
 ```
 
+<img width="1916" height="1028" alt="image" src="https://github.com/user-attachments/assets/425dba6e-5014-4aff-9ac7-9b66c1dd4dae" />
+
+
 Fra **Host2 (VLAN 120)**:
 
 ```bash
