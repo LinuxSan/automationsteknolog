@@ -185,13 +185,13 @@ Det gør, at kerne (kernel) må videresende pakker mellem interfaces — fx fra 
 Denne metode aktiverer routing med det samme, men ændringen forsvinder ved genstart:
 
 ```bash
-sudo sysctl -w net.ipv4.ip_forward=1
+sysctl -w net.ipv4.ip_forward=1
 ```
 
 Eller den mere “rå” variant:
 
 ```bash
-echo 1 | sudo tee /proc/sys/net/ipv4/ip_forward
+echo 1 | tee /proc/sys/net/ipv4/ip_forward
 ```
 
 Begge udfører præcis samme handling — de ændrer værdien i kernelens runtime-parametre.
@@ -203,8 +203,8 @@ Begge udfører præcis samme handling — de ændrer værdien i kernelens runtim
 Vil du have routing slået til ved hver opstart, skal du gemme indstillingen i `/etc/sysctl.d/`:
 
 ```bash
-echo "net.ipv4.ip_forward=1" | sudo tee /etc/sysctl.d/99-router.conf
-sudo sysctl --system
+echo "net.ipv4.ip_forward=1" | tee /etc/sysctl.d/99-router.conf
+sysctl --system
 ```
 
 **Forklaring:**
@@ -232,14 +232,14 @@ Et output på `net.ipv4.ip_forward = 1` betyder, at forwarding er aktiv.
 Vil du også tillade videresendelse af IPv6-trafik:
 
 ```bash
-sudo sysctl -w net.ipv6.conf.all.forwarding=1
+sysctl -w net.ipv6.conf.all.forwarding=1
 ```
 
 Og permanent:
 
 ```bash
-echo "net.ipv6.conf.all.forwarding=1" | sudo tee -a /etc/sysctl.d/99-router.conf
-sudo sysctl --system
+echo "net.ipv6.conf.all.forwarding=1" | tee -a /etc/sysctl.d/99-router.conf
+sysctl --system
 ```
 
 ---
@@ -266,19 +266,19 @@ Strukturen kan senere udvides med flere regler og NAT.
 
 ```bash
 # Opret tabel og chains
-sudo nft add table inet filter
-sudo nft add chain inet filter input   { type filter hook input   priority 0; policy drop; }
-sudo nft add chain inet filter forward { type filter hook forward priority 0; policy drop; }
-sudo nft add chain inet filter output  { type filter hook output  priority 0; policy accept; }
+nft add table inet filter
+nft add chain inet filter input   { type filter hook input   priority 0; policy drop; }
+nft add chain inet filter forward { type filter hook forward priority 0; policy drop; }
+nft add chain inet filter output  { type filter hook output  priority 0; policy accept; }
 
 # Tillad trafik fra lokalnettet
-sudo nft add rule inet filter input ip saddr 192.168.1.0/24 accept
+nft add rule inet filter input ip saddr 192.168.1.0/24 accept
 
 # Tillad etablerede forbindelser (returnerende trafik)
-sudo nft add rule inet filter input ct state established,related accept
+nft add rule inet filter input ct state established,related accept
 
 # Drop og log alt andet
-sudo nft add rule inet filter input log prefix "DROP_INPUT: " counter drop
+nft add rule inet filter input log prefix "DROP_INPUT: " counter drop
 ```
 **Bemærk:** Output-kæden kører med policy accept, da firewallen normalt gerne må lave udgående forbindelser selv.
 ```
@@ -316,14 +316,14 @@ Dette svarer til princippet *“allow known, drop the rest”*, som er standard 
 Vis hele konfigurationen:
 
 ```bash
-sudo nft list ruleset
+nft list ruleset
 ```
 
 Gem den som standardopsætning:
 
 ```bash
-sudo sh -c 'nft list ruleset > /etc/nftables.conf'
-sudo systemctl enable --now nftables
+sh -c 'nft list ruleset > /etc/nftables.conf'
+systemctl enable --now nftables
 ```
 
 Så vil reglerne automatisk blive indlæst ved næste opstart.
@@ -351,11 +351,11 @@ Dette eksempel viser, hvordan du lader et internt netværk (LAN) få adgang til 
 
 ```bash
 # Opret NAT-tabel og postrouting-chain
-sudo nft add table ip nat
-sudo nft add chain ip nat postrouting { type nat hook postrouting priority 100; policy accept; }
+nft add table ip nat
+nft add chain ip nat postrouting { type nat hook postrouting priority 100; policy accept; }
 
 # Aktiver NAT (masquerade) på udgående interface (f.eks. eth1)
-sudo nft add rule ip nat postrouting oif "eth1" masquerade
+nft add rule ip nat postrouting oif "eth1" masquerade
 ```
 
 **Forklaring:**
@@ -378,7 +378,7 @@ Hvis du har faste IP-adresser, eller du skal forbinde to interne netværk, kan d
 
 ```bash
 # Ændr kildens adresse fra 192.168.10.0/24 til 10.0.0.1, når den går ud af eth1
-sudo nft add rule ip nat postrouting ip saddr 192.168.10.0/24 oif "eth1" snat to 10.0.0.1
+nft add rule ip nat postrouting ip saddr 192.168.10.0/24 oif "eth1" snat to 10.0.0.1
 ```
 
 **Forklaring:**
@@ -390,8 +390,8 @@ sudo nft add rule ip nat postrouting ip saddr 192.168.10.0/24 oif "eth1" snat to
 
 ```bash
 # Trafik til offentlig IP 203.0.113.5 oversættes til DMZ-server 192.168.20.10
-sudo nft add chain ip nat prerouting { type nat hook prerouting priority -100; policy accept; }
-sudo nft add rule ip nat prerouting iif "eth1" ip daddr 203.0.113.5 dnat to 192.168.20.10
+nft add chain ip nat prerouting { type nat hook prerouting priority -100; policy accept; }
+nft add rule ip nat prerouting iif "eth1" ip daddr 203.0.113.5 dnat to 192.168.20.10
 ```
 
 **Forklaring:**
@@ -409,8 +409,8 @@ Når to netværk har samme IP-område (f.eks. to 192.168.1.0/24-subnets), kan du
 
 ```bash
 # Oversæt hele subnet 192.168.1.0/24 til 10.10.1.0/24
-sudo nft add rule ip nat postrouting ip saddr 192.168.1.0/24 snat to 10.10.1.0/24
-sudo nft add rule ip nat prerouting  ip daddr 10.10.1.0/24 dnat to 192.168.1.0/24
+nft add rule ip nat postrouting ip saddr 192.168.1.0/24 snat to 10.10.1.0/24
+nft add rule ip nat prerouting  ip daddr 10.10.1.0/24 dnat to 192.168.1.0/24
 ```
 **Note:** Når du skriver `snat to 10.10.1.0/24` og `dnat to 192.168.1.0/24`, bruges netmap-funktionen, som giver 1:1-mapping adresse for adresse. På ældre kerner kræves eksplicit 'netmap'-syntaks; tjek `nft list ruleset` for den faktiske ekspansion.
 ```
@@ -424,14 +424,14 @@ Dette gør, at to ellers identiske netværk kan kommunikere uden adressekonflikt
 Vis dine NAT-regler:
 
 ```bash
-sudo nft list table ip nat
+nft list table ip nat
 ```
 
 Gem dem permanent:
 
 ```bash
-sudo sh -c 'nft list ruleset > /etc/nftables.conf'
-sudo systemctl enable --now nftables
+sh -c 'nft list ruleset > /etc/nftables.conf'
+systemctl enable --now nftables
 ```
 
 ---
@@ -658,23 +658,23 @@ Antag at du har ét fysisk interface, `eth0`, og du vil opdele det i tre VLANs:
 
 ```bash
 # Sørg for at 8021q-modulet er aktivt
-sudo modprobe 8021q
+modprobe 8021q
 
 # Opret VLAN-interfaces
-sudo ip link add link eth0 name eth0.10 type vlan id 10
-sudo ip link add link eth0 name eth0.20 type vlan id 20
-sudo ip link add link eth0 name eth0.30 type vlan id 30
+ip link add link eth0 name eth0.10 type vlan id 10
+ip link add link eth0 name eth0.20 type vlan id 20
+ip link add link eth0 name eth0.30 type vlan id 30
 
 # Tildel IP-adresser
-sudo ip addr add 192.168.10.1/24 dev eth0.10
-sudo ip addr add 192.168.20.1/24 dev eth0.20
-sudo ip addr add 10.0.0.1/24      dev eth0.30
+ip addr add 192.168.10.1/24 dev eth0.10
+ip addr add 192.168.20.1/24 dev eth0.20
+ip addr add 10.0.0.1/24      dev eth0.30
 
 # Aktiver interfaces
-sudo ip link set eth0 up
-sudo ip link set eth0.10 up
-sudo ip link set eth0.20 up
-sudo ip link set eth0.30 up
+ip link set eth0 up
+ip link set eth0.10 up
+ip link set eth0.20 up
+ip link set eth0.30 up
 ```
 
 ---
@@ -755,10 +755,10 @@ I dette eksempel tillader vi kun trafik fra et bestemt subnet til én host i et 
 
 ```bash
 # Tillad kun trafik fra 192.168.1.0/26 til serveren 192.168.2.10
-sudo nft add rule inet filter forward ip saddr 192.168.1.0/26 ip daddr 192.168.2.10 accept
+nft add rule inet filter forward ip saddr 192.168.1.0/26 ip daddr 192.168.2.10 accept
 
 # Drop alt andet transit-trafik
-sudo nft add rule inet filter forward counter drop
+nft add rule inet filter forward counter drop
 ```
 
 **Forklaring:**
@@ -823,7 +823,7 @@ De gør det muligt at bygge mere præcise og effektive sikkerhedsregler — ofte
 Tillad kun **SSH (TCP port 22)** fra en bestemt IP-adresse:
 
 ```bash
-sudo nft add rule inet filter input ip saddr 192.168.1.100 tcp dport 22 accept
+nft add rule inet filter input ip saddr 192.168.1.100 tcp dport 22 accept
 ```
 
 **Forklaring:**
@@ -841,7 +841,7 @@ sudo nft add rule inet filter input ip saddr 192.168.1.100 tcp dport 22 accept
 Bloker **UDP-trafik til port 53 (DNS)** fra hele subnettet 192.168.1.0/24:
 
 ```bash
-sudo nft add rule inet filter input ip saddr 192.168.1.0/24 udp dport 53 drop
+nft add rule inet filter input ip saddr 192.168.1.0/24 udp dport 53 drop
 ```
 
 **Forklaring:**
@@ -856,7 +856,7 @@ sudo nft add rule inet filter input ip saddr 192.168.1.0/24 udp dport 53 drop
 Log og drop al indgående trafik, der ikke matcher tilladte regler:
 
 ```bash
-sudo nft add rule inet filter input log prefix "DROP_INPUT: " counter drop
+nft add rule inet filter input log prefix "DROP_INPUT: " counter drop
 ```
 
 **Forklaring:**
@@ -875,13 +875,13 @@ Det gør konfigurationen både kortere og hurtigere at evaluere.
 Tillad SSH fra flere godkendte IP-adresser:
 
 ```bash
-sudo nft add rule inet filter input ip saddr {192.168.1.10, 192.168.1.11, 10.0.0.5} tcp dport 22 accept
+nft add rule inet filter input ip saddr {192.168.1.10, 192.168.1.11, 10.0.0.5} tcp dport 22 accept
 ```
 
 Eller tillad bestemte porte:
 
 ```bash
-sudo nft add rule inet filter input tcp dport {22, 443, 3389} accept
+nft add rule inet filter input tcp dport {22, 443, 3389} accept
 ```
 
 **Fordele ved sets:**
@@ -897,8 +897,8 @@ Linux kernen holder styr på aktive forbindelser via *conntrack*.
 Du kan bruge det til at tillade kun “etablerede” svarpakker:
 
 ```bash
-sudo nft add rule inet filter forward ct state established,related accept
-sudo nft add rule inet filter forward ct state invalid drop
+nft add rule inet filter forward ct state established,related accept
+nft add rule inet filter forward ct state invalid drop
 ```
 
 **Forklaring:**
@@ -922,7 +922,7 @@ sudo nft add rule inet filter forward ct state invalid drop
 **Eksempel på velkommenteret regel:**
 
 ```bash
-sudo nft add rule inet filter forward iif "wg0" oif "eth0.20" tcp dport 3389 counter comment "VPN -> DMZ (RDP)" accept
+nft add rule inet filter forward iif "wg0" oif "eth0.20" tcp dport 3389 counter comment "VPN -> DMZ (RDP)" accept
 ```
 
 ---
@@ -942,9 +942,9 @@ Nedenfor ser du de vigtigste — med korte forklaringer til hver.
 ### 🧱 Starte og stoppe `nftables`-tjenesten
 
 ```bash
-sudo systemctl start nftables
-sudo systemctl stop nftables
-sudo systemctl restart nftables
+systemctl start nftables
+systemctl stop nftables
+systemctl restart nftables
 ```
 
 * `start` indlæser reglerne fra `/etc/nftables.conf` og aktiverer firewall’en.
@@ -958,20 +958,20 @@ sudo systemctl restart nftables
 Gem hele det aktive regelsæt til konfigurationsfilen:
 
 ```bash
-sudo sh -c 'nft list ruleset > /etc/nftables.conf'
+sh -c 'nft list ruleset > /etc/nftables.conf'
 ```
 
 Når systemet starter, indlæses denne fil automatisk af tjenesten:
 
 ```bash
-sudo systemctl enable --now nftables
+systemctl enable --now nftables
 ```
 
 **Bemærk:**
 Du kan altid indlæse en ny konfiguration manuelt:
 
 ```bash
-sudo nft -f /etc/nftables.conf
+nft -f /etc/nftables.conf
 ```
 
 for at gøre det permanent brug .
@@ -983,20 +983,20 @@ for at gøre det permanent brug .
 **Se hele regelsættet:**
 
 ```bash
-sudo nft list ruleset
+nft list ruleset
 ```
 
 **Se regler i en bestemt tabel eller chain:**
 
 ```bash
-sudo nft list table inet filter
-sudo nft list chain inet filter forward
+nft list table inet filter
+nft list chain inet filter forward
 ```
 
 **Overvåg ændringer i realtid:**
 
 ```bash
-sudo nft monitor
+nft monitor
 ```
 
 Viser pakker, der matcher regler, og ændringer i `nft`-konfigurationen, mens systemet kører.
@@ -1008,7 +1008,7 @@ Viser pakker, der matcher regler, og ændringer i `nft`-konfigurationen, mens sy
 **Tjek syntaksen for en konfigurationsfil, uden at loade den:**
 
 ```bash
-sudo nft -c -f /etc/nftables.conf
+nft -c -f /etc/nftables.conf
 ```
 
 (`-c` betyder *check only*.)
@@ -1016,7 +1016,7 @@ sudo nft -c -f /etc/nftables.conf
 **Test en enkelt regel før du tilføjer den permanent:**
 
 ```bash
-sudo nft --check add rule inet filter input tcp dport 22 accept
+nft --check add rule inet filter input tcp dport 22 accept
 ```
 
 Det sikrer, at du ikke får syntaksfejl i et aktivt system.
@@ -1026,7 +1026,7 @@ Det sikrer, at du ikke får syntaksfejl i et aktivt system.
 ### 🔄 Nulstilling af alle regler (bruges med omtanke)
 
 ```bash
-sudo nft flush ruleset
+nft flush ruleset
 ```
 
 Sletter hele det aktive regelsæt — brug det kun, hvis du starter forfra.
@@ -1034,7 +1034,7 @@ Sletter hele det aktive regelsæt — brug det kun, hvis du starter forfra.
 > Tip: Lav altid en backup af din nuværende konfiguration, før du flusher:
 >
 > ```bash
-> sudo nft list ruleset > ~/backup-nft-$(date +%F).conf
+> nft list ruleset > ~/backup-nft-$(date +%F).conf
 > ```
 
 ---
@@ -1044,19 +1044,19 @@ Sletter hele det aktive regelsæt — brug det kun, hvis du starter forfra.
 * **Se aktive tabeller:**
 
   ```bash
-  sudo nft list tables
+  nft list tables
   ```
 * **Se statistik for regler:**
 
   ```bash
-  sudo nft list ruleset -a
+  nft list ruleset -a
   ```
 
   (flaget `-a` viser handles og counters)
 * **Slet en specifik regel (via handle):**
 
   ```bash
-  sudo nft delete rule inet filter forward handle 25
+  nft delete rule inet filter forward handle 25
   ```
 
 ---
@@ -1097,8 +1097,8 @@ Det betyder, at ingen trafik tillades, før du aktivt åbner for den.
 Eksempel:
 
 ```bash
-sudo nft add chain inet filter input { type filter hook input priority 0; policy drop; }
-sudo nft add chain inet filter forward { type filter hook forward priority 0; policy drop; }
+nft add chain inet filter input { type filter hook input priority 0; policy drop; }
+nft add chain inet filter forward { type filter hook forward priority 0; policy drop; }
 ```
 
 Når du arbejder med zoner (f.eks. WAN, DMZ, OT), skal hver zone have sin egen adgangspunkt — kun nødvendige forbindelser åbnes med **specifikke regler**.
@@ -1114,10 +1114,10 @@ Eksempler:
 
 ```bash
 # Kun RDP fra VPN til DMZ-jump host
-sudo nft add rule inet filter forward iif "wg0" oif "eth0.20" ip daddr 192.168.20.10 tcp dport 3389 accept
+nft add rule inet filter forward iif "wg0" oif "eth0.20" ip daddr 192.168.20.10 tcp dport 3389 accept
 
 # Kun S7-trafik fra jump host til OT
-sudo nft add rule inet filter forward iif "eth0.20" oif "eth0.30" ip saddr 192.168.20.10 tcp dport 102 accept
+nft add rule inet filter forward iif "eth0.20" oif "eth0.30" ip saddr 192.168.20.10 tcp dport 102 accept
 ```
 
 Alt andet bør afvises eller logges.
@@ -1130,8 +1130,8 @@ På den måde ved du præcis, hvem der må tale med hvem.
 Tillad kun etablerede forbindelser — og afvis alle pakker, der ikke passer til et kendt flow.
 
 ```bash
-sudo nft add rule inet filter forward ct state established,related accept
-sudo nft add rule inet filter forward ct state invalid drop
+nft add rule inet filter forward ct state established,related accept
+nft add rule inet filter forward ct state invalid drop
 ```
 
 **Hvorfor:**
@@ -1145,8 +1145,8 @@ Logning gør det muligt at opdage uventet eller mistænkelig trafik.
 Brug logning på *drop*-regler, men med omtanke — for meget logning kan støje.
 
 ```bash
-sudo nft add rule inet filter input log prefix "DROP_INPUT: " counter drop
-sudo nft add rule inet filter forward log prefix "DROP_FORWARD: " counter drop
+nft add rule inet filter input log prefix "DROP_INPUT: " counter drop
+nft add rule inet filter forward log prefix "DROP_FORWARD: " counter drop
 ```
 
 > Tip: Brug et dedikeret logværktøj (fx `rsyslog`, `journalctl -k`, eller Zeek/Suricata) til at analysere mønstre i logfilerne.
@@ -1173,7 +1173,7 @@ Fx:
 * Gem altid en **versioneret backup** af din konfiguration:
 
   ```bash
-  sudo nft list ruleset > /etc/nftables-$(date +%F).conf
+  nft list ruleset > /etc/nftables-$(date +%F).conf
   ```
 * Gennemgå konfigurationen jævnligt — især efter ændringer i netværket.
 
@@ -1184,7 +1184,7 @@ Fx:
 Test nye regler med:
 
 ```bash
-sudo nft --check add rule inet filter forward ...
+nft --check add rule inet filter forward ...
 ```
 
 Så opdager du fejl, før du låser dig selv ude.
@@ -1218,7 +1218,7 @@ Her er de vigtigste metoder til at analysere, teste og forstå, hvordan `nftable
 Vis alle tabeller, chains og regler i det nuværende regelsæt:
 
 ```bash
-sudo nft list ruleset
+nft list ruleset
 ```
 
 **Forklaring:**
@@ -1227,7 +1227,7 @@ sudo nft list ruleset
 * Brug `-a` for at se **handles** (regelnumre) og **counters** (trafikstatistik):
 
   ```bash
-  sudo nft list ruleset -a
+  nft list ruleset -a
   ```
 
 > Tip: Counters er gode til at bekræfte, at dine regler faktisk bliver ramt.
@@ -1237,8 +1237,8 @@ sudo nft list ruleset
 ### 🧱 2. Se en specifik tabel eller chain
 
 ```bash
-sudo nft list table inet filter
-sudo nft list chain inet filter forward
+nft list table inet filter
+nft list chain inet filter forward
 ```
 
 Brug dette, når du kun vil kontrollere én del af konfigurationen — fx `forward`-kæden for routingtrafik.
@@ -1248,7 +1248,7 @@ Brug dette, når du kun vil kontrollere én del af konfigurationen — fx `forwa
 ### 🧩 3. Overvåg ændringer i realtid
 
 ```bash
-sudo nft monitor
+nft monitor
 ```
 
 Denne kommando viser, når regler aktiveres, matches eller ændres.
@@ -1261,7 +1261,7 @@ Den er særlig nyttig, mens du tester nye regler, eller når du vil se, hvordan 
 For hver regel kan du se, hvor mange pakker og bytes der har matchet:
 
 ```bash
-sudo nft list chain inet filter forward
+nft list chain inet filter forward
 ```
 
 Du ser output som:
@@ -1277,7 +1277,7 @@ Hvis tælleren står stille, betyder det, at reglen **ikke bliver ramt** — må
 ### 🧠 5. Tjek om routing er aktiveret
 
 ```bash
-sudo sysctl net.ipv4.ip_forward
+sysctl net.ipv4.ip_forward
 ```
 
 Et output på:
@@ -1308,8 +1308,8 @@ traceroute 10.0.0.10 # PLC eller enhed i OT-nettet
 * Brug evt. en midlertidig regel:
 
   ```bash
-  sudo nft add rule inet filter forward ip protocol icmp accept
-  sudo nft add rule inet filter forward meta l4proto ipv6-icmp accept
+  nft add rule inet filter forward ip protocol icmp accept
+  nft add rule inet filter forward meta l4proto ipv6-icmp accept
   ```
 ---
 
@@ -1319,29 +1319,29 @@ Her er et samlet, minimalt eksempel, du kan kopiere direkte og få en fungerende
 
 ```bash
 # Aktiver forwarding
-sudo sysctl -w net.ipv4.ip_forward=1
+sysctl -w net.ipv4.ip_forward=1
 
 # Opret tabel og chains
-sudo nft add table inet filter
-sudo nft add chain inet filter input   { type filter hook input   priority 0; policy drop; }
-sudo nft add chain inet filter forward { type filter hook forward priority 0; policy drop; }
-sudo nft add chain inet filter output  { type filter hook output  priority 0; policy accept; }
+nft add table inet filter
+nft add chain inet filter input   { type filter hook input   priority 0; policy drop; }
+nft add chain inet filter forward { type filter hook forward priority 0; policy drop; }
+nft add chain inet filter output  { type filter hook output  priority 0; policy accept; }
 
 # Tillad trafik fra lokalnettet
-sudo nft add rule inet filter input ip saddr 192.168.1.0/24 accept
+nft add rule inet filter input ip saddr 192.168.1.0/24 accept
 
 # Tillad etablerede forbindelser
-sudo nft add rule inet filter input ct state established,related accept
-sudo nft add rule inet filter forward ct state established,related accept
+nft add rule inet filter input ct state established,related accept
+nft add rule inet filter forward ct state established,related accept
 
 # Log og drop alt andet
-sudo nft add rule inet filter input log prefix "DROP_INPUT: " counter drop
-sudo nft add rule inet filter forward log prefix "DROP_FORWARD: " counter drop
+nft add rule inet filter input log prefix "DROP_INPUT: " counter drop
+nft add rule inet filter forward log prefix "DROP_FORWARD: " counter drop
 
 # NAT (masquerade) for udgående trafik
-sudo nft add table ip nat
-sudo nft add chain ip nat postrouting { type nat hook postrouting priority 100; }
-sudo nft add rule ip nat postrouting oif "eth1" masquerade
+nft add table ip nat
+nft add chain ip nat postrouting { type nat hook postrouting priority 100; }
+nft add rule ip nat postrouting oif "eth1" masquerade
 ```
 
 ---
@@ -1351,13 +1351,13 @@ sudo nft add rule ip nat postrouting oif "eth1" masquerade
 Loggede drop-regler kan findes i:
 
 ```bash
-sudo journalctl -k | grep DROP
+journalctl -k | grep DROP
 ```
 
 Eller, hvis du bruger `rsyslog`:
 
 ```bash
-sudo tail -f /var/log/syslog | grep DROP
+tail -f /var/log/syslog | grep DROP
 ```
 
 Du kan genkende reglerne på dine `log prefix`-mærker, f.eks.:
@@ -1391,13 +1391,13 @@ Hvis pakker ikke videresendes, kan årsagen være manglende rute eller forkert i
 Når du ændrer filer, kan du indlæse dem igen uden genstart:
 
 ```bash
-sudo nft -f /etc/nftables.conf
+nft -f /etc/nftables.conf
 ```
 
 Valider først:
 
 ```bash
-sudo nft -c -f /etc/nftables.conf
+nft -c -f /etc/nftables.conf
 ```
 
 (`-c` betyder “check only” – ingen ændringer udføres.)
@@ -1409,14 +1409,14 @@ sudo nft -c -f /etc/nftables.conf
 Hvis systemet er låst ned af fejlkonfiguration:
 
 ```bash
-sudo nft flush ruleset
+nft flush ruleset
 ```
 
 Dette fjerner alle regler midlertidigt (trafikken flyder frit igen).
 Husk derefter at gendanne din gemte konfiguration:
 
 ```bash
-sudo nft -f /etc/nftables.conf
+nft -f /etc/nftables.conf
 ```
 
 ---
