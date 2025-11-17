@@ -113,13 +113,8 @@ Kontrollér at alle links er “up” i GNS3, når noderne er startet.
 
 Antagelse: Nødvendige pakker (vlan, iproute2) er allerede installeret.
 
-1. Indlæs VLAN-modulet i kernel (hvis ikke allerede loaded):
 
-```bash
-modprobe 8021q
-```
-
-2. Verificér at interfacet `eth0` findes (eller find det rigtige navn):
+1. Verificér at interfacet `eth0` findes (eller find det rigtige navn):
 
 ```bash
 ip link show
