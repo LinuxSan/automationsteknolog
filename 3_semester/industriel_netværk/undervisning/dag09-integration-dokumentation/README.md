@@ -31,6 +31,8 @@ Der er kun **ét fysisk kabel** mellem routeren og switchen. For at kunne føre 
 
 Logisk topologi:
 
+<img width="1917" height="1030" alt="image" src="https://github.com/user-attachments/assets/715fa470-3f39-41b9-ba0c-dab6c66461f0" />
+
 * **Linux-router**
 
   * Ét interface mod switchen: `eth0` (trunk)
