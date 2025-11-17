@@ -1,7 +1,3 @@
-Klart — her er en lille, skudsikker manual til at få en Windows-VM til at tage imod **RDP** fra din host. Den dækker både GUI-klik og “én-linjers” i PowerShell/CMD, plus de klassiske fælder.
-
----
-
 # Guide: Få en Windows-VM til at køre RDP (host → VM)
 
 ## Forudsætninger
