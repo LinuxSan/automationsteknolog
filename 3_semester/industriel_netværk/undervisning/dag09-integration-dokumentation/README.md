@@ -142,6 +142,15 @@ ip link add link eth0 name eth0.120 type vlan id 120
 ip link add link eth0 name eth0.130 type vlan id 130
 ```
 
+Kontrol: 
+
+```bash
+ip -d -link show
+```
+
+<img width="1917" height="1028" alt="image" src="https://github.com/user-attachments/assets/8ddfeee3-f780-4cae-b059-3a8235745864" />
+
+
 Tildel IP-adresser iht. IP-planen:
 
 ```bash
@@ -161,6 +170,8 @@ ip link set eth0.130 up
 sysctl -w net.ipv4.ip_forward=1
 ```
 
+Brug `clear` til at ryde console
+
 Kontrol:
 
 ```bash
@@ -170,64 +181,21 @@ ip -d link show eth0.110
 Tjek at der står, at det er et VLAN-interface med `vlan id 110`.
 Gentag evt. for `eth0.120` og `eth0.130`.
 
+<img width="1917" height="1030" alt="image" src="https://github.com/user-attachments/assets/852d0090-a19c-4274-8a22-b37a74198e12" />
+
 ---
 
 ## Trin 4 – Konfigurer switchen (VLAN og porte)
 
 Gå på switchens konsol og udfør følgende.
 
-1. Opret VLAN 110, 120 og 130:
+1. Opret VLAN 110, 120 og 130 på port 1,2 og 3 (port 1 forbeholdt til dotq):
 
-```text
-conf t
-  vlan 110
-    name PRODUKTION
-  vlan 120
-    name ADMIN
-  vlan 130
-    name GAESTER
-  exit
-```
-
-2. Konfigurér access-porte til Alpine-hosts:
-
-```text
-  interface f0/1
-    switchport mode access
-    switchport access vlan 110
-
-  interface f0/2
-    switchport mode access
-    switchport access vlan 120
-
-  interface f0/3
-    switchport mode access
-    switchport access vlan 130
-```
-
-3. Konfigurér trunk-port til routeren (f0/0):
-
-```text
-  interface f0/0
-    switchport trunk encapsulation dot1q
-    switchport mode trunk
-    switchport trunk allowed vlan 110,120,130
-end
-wr
-```
-
-Kontrol:
-
-```text
-show vlan brief
-show interfaces trunk
-```
+<img width="1917" height="1028" alt="image" src="https://github.com/user-attachments/assets/b98ca9f3-9810-43c8-a89d-e1a17876e26e" />
 
 Sikr dig, at:
 
-* VLAN 110, 120 og 130 findes.
-* f0/1, f0/2, f0/3 står i korrekt VLAN.
-* f0/0 er trunk og bærer de tre VLAN.
+* VLAN 110, 120 og 130 findes `ip -d link show`
 
 ---
 
@@ -275,8 +243,11 @@ ip route add default via 192.168.110.1
 
 ```bash
 ip addr show dev eth0
-ip route show
+ip route show dev eth0
 ```
+
+<img width="1918" height="1029" alt="image" src="https://github.com/user-attachments/assets/73615690-68f0-404c-bcd5-cfffb72e067d" />
+
 
 ---
 
@@ -306,8 +277,11 @@ ip route add default via 192.168.120.1
 
 ```bash
 ip addr show dev eth0
-ip route show
+ip route show dev eth0
 ```
+
+<img width="1916" height="1028" alt="image" src="https://github.com/user-attachments/assets/ec162f2a-cecf-45bf-91dc-3eaeaff58b70" />
+
 
 ---
 
@@ -337,8 +311,10 @@ ip route add default via 192.168.130.1
 
 ```bash
 ip addr show dev eth0
-ip route show
+ip route show dev eth0
 ```
+
+<img width="1918" height="1029" alt="image" src="https://github.com/user-attachments/assets/9666237b-fd51-434c-8b22-b1e7bbab83b2" />
 
 ---
 
@@ -349,19 +325,19 @@ ip route show
 Fra **Host1** (Alpine):
 
 ```bash
-ping 192.168.110.1
+ping -c4 192.168.110.1
 ```
 
 Fra **Host2**:
 
 ```bash
-ping 192.168.120.1
+ping -c4 192.168.120.1
 ```
 
 Fra **Host3**:
 
 ```bash
-ping 192.168.130.1
+ping -c4 192.168.130.1
 ```
 
 Alle tre tests skal lykkes. Hvis ikke: tjek IP-adresser, gateway og om `eth0` er `UP`.
