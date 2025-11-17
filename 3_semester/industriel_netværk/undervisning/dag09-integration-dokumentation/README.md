@@ -120,6 +120,9 @@ Antagelse: Nødvendige pakker (vlan, iproute2) er allerede installeret.
 ip link show
 ```
 
+<img width="1917" height="1028" alt="image" src="https://github.com/user-attachments/assets/a60ee12d-b4ab-42ad-b16e-92ff873c0856" />
+
+
 Notér navnet på interfacet mod switchen (forudsat `eth0` – hvis det hedder noget andet, brug det navn i resten af øvelsen).
 
 ---
