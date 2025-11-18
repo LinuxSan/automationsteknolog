@@ -21,15 +21,5 @@
 - Noter fra diskussion og feedbackrunde
 - Opsamlingsark til refleksion
 
----
-
-### Eksempel på dagsprogram
-1. Velkomst og introduktion til opsamlingsdagen
-2. Præsentationer af mini-projekter
-3. Peer review og feedback
-4. Fælles diskussion og refleksion
-5. Perspektivering og afslutning
-
----
 
 *Formålet med dagen er at samle op på læring, dele erfaringer og give konstruktiv feedback, så alle får mest muligt ud af forløbet.*
